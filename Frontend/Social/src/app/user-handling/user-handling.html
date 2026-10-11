@@ -155,3 +155,7 @@
     <button matButton type="submit" [disabled]="mailForm.invalid">Update</button>
   </form>
 </div>
+
+<div class="delete-button">
+  <button matButton="elevated" (click)="openDialog('300ms', '150ms')">Delete</button>
+</div>

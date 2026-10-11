@@ -1,3 +1,6 @@
+import { Router } from '@angular/router';
+import { DeleteUserDialog } from '../delete-user-dialog/delete-user-dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ChangeEmailRequest } from '../_models/changeEmailRequest';
 import { ChangePasswordRequest } from '../_models/changePasswordRequest';
 import { UserUpdate } from '../_models/userUpdate';
@@ -16,6 +19,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../services/auth.service';
+import { B } from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-user-handling',
@@ -28,6 +32,8 @@ export class UserHandling implements OnInit {
   public isUserUpdateEnabled = signal(false);
   public selectedFileName: string | null = null;
   public auth = inject(AuthService);
+  readonly dialog = inject(MatDialog);
+  private router = inject(Router);
 
   public userForm = new FormGroup({
     userName: new FormControl('', {
@@ -162,6 +168,7 @@ export class UserHandling implements OnInit {
       },
       (error) => {
         console.log('::ERROR::', error);
+        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
       },
     );
   }
@@ -278,5 +285,39 @@ export class UserHandling implements OnInit {
         this.passwordForm.markAsUntouched();
       },
     );
+  }
+
+  private deleteUser(): void {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
+    });
+
+    this.http.delete(env.userDeleteUri, { headers: headers }).subscribe(
+      (success) => {
+        console.log('::SUCCESS::', success);
+        this.auth.logout();
+        this.router.navigate(['/login']);
+        this.matBar.open('User successfully deleted.', 'Close', { duration: 3000 });
+      },
+      (error) => {
+        console.log('::ERROR::', error);
+        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
+      },
+    );
+  }
+
+  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+    const dialogRef = this.dialog.open(DeleteUserDialog, {
+      width: '460px',
+      enterAnimationDuration,
+      exitAnimationDuration,
+    });
+
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result === true) {
+        this.deleteUser();
+      }
+    });
   }
 }

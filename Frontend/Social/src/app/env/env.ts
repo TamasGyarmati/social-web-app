@@ -10,6 +10,7 @@ export const env = {
   userUpdateUri: 'http://localhost:5000/User/all',
   userUpdatePasswordUri: 'http://localhost:5000/User/password',
   userUpdateEmailUri: 'http://localhost:5000/User/email',
+  userDeleteUri: 'http://localhost:5000/User/me',
   authRegisterUri: 'http://localhost:5000/api/Auth/register',
   jwtAccessToken: 'social-access-token',
   jwtAccessTokenExp: 'social-access-token-expiration',
