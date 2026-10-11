@@ -9,7 +9,7 @@
   <button matButton *ngIf="!this.isLoading()" [routerLink]="['/create-post']">Create post</button>
 </div>
 
-<div class="filter-buttons">
+<div class="filter-buttons" *ngIf="this.auth.isLoggedIn()">
   <div class="filter-button">
     <button matButton (click)="filterByMe()" *ngIf="!this.isLoading()">Filter by me</button>
   </div>

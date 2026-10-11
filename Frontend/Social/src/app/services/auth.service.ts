@@ -15,7 +15,10 @@ export class AuthService {
 
   constructor(private router: Router) {
     this.checkIfLoggedIn();
+    this.whoami();
+  }
 
+  private whoami(): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
@@ -24,7 +27,7 @@ export class AuthService {
     this.http.get<{ user: User }>(`${env.whoamiUri}`, { headers: headers }).subscribe(
       (success) => {
         this.user.set(success.user);
-        console.log('::SUCCESS_USER::', success);
+        console.log('::SUCCESS::', success);
       },
       (error) => {
         console.log('::ERROR::', error);

@@ -1,5 +1,4 @@
 import { effect } from '@angular/core';
-import { OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { env } from '../env/env';
 import { Component, input, output, signal } from '@angular/core';
@@ -8,6 +7,8 @@ import { MATERIAL_IMPORTS } from '../_shared/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Comment } from '../_models/comment';
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-comment-item',
@@ -32,7 +33,11 @@ export class CommentItem {
     isLiked: boolean;
   }>();
 
-  constructor(private httpClient: HttpClient) {
+  constructor(
+    private httpClient: HttpClient,
+    public auth: AuthService,
+    private router: Router,
+  ) {
     effect(() => {
       this.likes.set(this.comment().likes);
       this.isLiked.set(this.comment().isLiked);
@@ -67,6 +72,11 @@ export class CommentItem {
   }
 
   toggleReplyInput(): void {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     if (this.activeReplyCommentId() === this.comment().id) {
       this.replyClicked.emit(null);
     } else {

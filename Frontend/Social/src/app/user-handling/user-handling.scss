@@ -1,45 +1,267 @@
-.file-input {
-  margin-top: 15px;
+@import '../_shared/variables.scss';
 
-  .selected-file {
+$section-bg: $card-bg;
+$section-border: $card-border;
+$section-hover-border: $card-border-hover;
+$input-text: $text-primary;
+$input-muted: $text-secondary;
+$input-accent: $accent-color;
+$input-hover-bg: $nav-hover;
+
+:host {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 32px 24px 48px;
+  color: $text-primary;
+}
+
+h1 {
+  margin: 0 0 32px;
+  color: $text-primary;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.8px;
+  text-align: center;
+}
+
+.update-user-info,
+.avatar-upload {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto 28px;
+  padding: 28px;
+  box-sizing: border-box;
+
+  background: $section-bg;
+  border: 1px solid $section-border;
+  border-radius: 18px;
+
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease;
+
+  &:hover {
+    border-color: $section-hover-border;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  }
+}
+
+// User data
+
+.update-user-info {
+  > mat-checkbox {
     display: block;
-    text-align: center;
-    color: #4caf50;
-    font-size: 14px;
-    word-break: break-word;
+    margin-bottom: 24px;
   }
 
-  label {
+  .forms {
+    width: 100%;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .update-user-btn {
     display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+
+    button {
+      min-width: 120px;
+      min-height: 44px;
+      padding: 0 24px;
+
+      color: white;
+      background: $go-back-btn-color;
+      border-radius: 10px;
+
+      font-weight: 600;
+
+      transition:
+        background-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
+
+      &:hover:not(:disabled) {
+        background: $accent-color;
+        box-shadow: 0 5px 16px rgba(96, 165, 250, 0.18);
+        transform: translateY(-1px);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        color: $text-secondary;
+        background: #26313d;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Avatar upload
+
+.avatar-upload {
+  .file-input {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
+    margin: 0;
 
-    width: 12rem;
-    margin-bottom: 1rem;
-    padding: 14px 20px;
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
 
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
+      width: 100%;
+      min-height: 56px;
+      padding: 14px 20px;
+      box-sizing: border-box;
 
-    background: rgba(255, 255, 255, 0.06);
-    cursor: pointer;
+      color: $text-primary;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed $section-hover-border;
+      border-radius: 12px;
 
-    font-size: 15px;
-    transition: 0.2s ease;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
 
-    mat-icon {
-      font-size: 20px;
-      width: 20px;
-      height: 20px;
+      transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease;
+
+      mat-icon {
+        flex-shrink: 0;
+        width: 22px;
+        height: 22px;
+        color: $input-accent;
+        font-size: 22px;
+        line-height: 22px;
+      }
+
+      &:hover {
+        background: $input-hover-bg;
+        border-color: $input-accent;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
     }
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.4);
+    input[type='file'] {
+      display: none;
+    }
+
+    .selected-file {
+      display: block;
+      max-width: 100%;
+      color: #77d460;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+      overflow-wrap: anywhere;
     }
   }
 
-  input[type='file'] {
-    display: none;
+  .update-avatar-button {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+
+    button {
+      min-width: 120px;
+      min-height: 44px;
+      padding: 0 24px;
+
+      color: white;
+      background: $go-back-btn-color;
+      border-radius: 10px;
+
+      font-weight: 600;
+
+      transition:
+        background-color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
+
+      &:hover:not(:disabled) {
+        background: $accent-color;
+        box-shadow: 0 5px 16px rgba(96, 165, 250, 0.18);
+        transform: translateY(-1px);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        color: $text-secondary;
+        background: #26313d;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+    }
+  }
+}
+
+// Responsivity
+
+@media (max-width: 600px) {
+  :host {
+    padding: 24px 12px 32px;
+  }
+
+  h1 {
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+  }
+
+  .update-user-info,
+  .avatar-upload {
+    padding: 20px 16px;
+    margin-bottom: 20px;
+    border-radius: 14px;
+  }
+
+  .update-user-info {
+    > mat-checkbox {
+      margin-bottom: 20px;
+    }
+  }
+
+  .update-user-btn,
+  .update-avatar-button {
+    button {
+      width: 100%;
+    }
+  }
+
+  .avatar-upload {
+    .file-input {
+      label {
+        padding: 13px 12px;
+        font-size: 14px;
+      }
+    }
   }
 }
