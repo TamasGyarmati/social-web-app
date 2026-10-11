@@ -17,8 +17,8 @@ public class UserController(IUserLogic _logic) : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Returns all the active users.")]
-    public async Task<ActionResult<List<GetUsersResponseDto>>> GetAllUsers(CancellationToken ct = default)
-        => await _logic.GetUsersAsync(ct);
+    public async Task<ActionResult<List<GetUsersResponseDto>>> GetAllUsers(bool isDeleted, CancellationToken ct = default)
+        => await _logic.GetUsersAsync(ct, isDeleted);
 
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(GetUserByIdResponseDto), StatusCodes.Status200OK)]
@@ -80,6 +80,45 @@ public class UserController(IUserLogic _logic) : ControllerBase
         try
         {
             var result = await _logic.UploadAsync(dto, currentUserId, ct);
+
+            return result switch
+            {
+                UploadAvatarResult.UserNotFound error => NotFound(new { error.Message }),
+                UploadAvatarResult.FailedToUpdateAvatar error => BadRequest(new { error.Message }),
+                UploadAvatarResult.ImageProcessingError error => BadRequest(new { error.Message }),
+                UploadAvatarResult.Success response => Ok(new UploadAvatarResponseDto(response.RelativePath)),
+                _ => StatusCode(500)
+            };
+        }
+        catch (NotAllowedExtensionException ex)
+        {
+            return BadRequest(new { ex.Message });
+        }
+    }
+
+    [HttpPost("avatar/id")]
+    [Authorize]
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(typeof(UploadAvatarResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [EndpointSummary("Uploads the avatar from the provided DTO for the provided User.")]
+    [EndpointDescription("Returns the relative path of the uploaded Avatar.")]
+    public async Task<ActionResult<UploadAvatarResponseDto>> UploadAvatarByUserIdAsync(
+        string userId,
+        [FromForm] UploadAvatarRequestDto dto,
+        CancellationToken ct = default)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        try
+        {
+            var result = await _logic.UploadAsync(dto, userId, ct);
 
             return result switch
             {

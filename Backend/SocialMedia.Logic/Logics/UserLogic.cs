@@ -13,7 +13,7 @@ namespace SocialMedia.Logic.Logics;
 
 public interface IUserLogic
 {
-    Task<List<GetUsersResponseDto>> GetUsersAsync(CancellationToken ct = default);
+    Task<List<GetUsersResponseDto>> GetUsersAsync(CancellationToken ct = default, bool isDeleted = true);
     Task<GetUserByIdResult> GetUserByIdAsync(string userId, CancellationToken ct = default);
     Task<UploadAvatarResult> UploadAsync(UploadAvatarRequestDto dto, string currentUserId, CancellationToken ct = default);
     Task<UpdateUserResult> UpdateAsync(UpdateUserRequestDto dto, string currentUserId, CancellationToken ct = default);
@@ -33,11 +33,18 @@ public class UserLogic(
     IUserRepository _repo,
     UserManager<AppUser> _userManager) : IUserLogic
 {
-    public async Task<List<GetUsersResponseDto>> GetUsersAsync(CancellationToken ct = default)
+    public async Task<List<GetUsersResponseDto>> GetUsersAsync(CancellationToken ct = default, bool isDeleted = true)
     {
-        var users = await _userManager.Users.Where(u => !u.IsDeleted).ToListAsync(ct);
-        var response = users.Select(x => x.FromDomainToGetUsersDto()).ToList();
-        return response;
+        var query = _userManager.Users.AsQueryable();
+
+        if (!isDeleted)
+        {
+            query = query.Where(u => !u.IsDeleted);
+        }
+
+        var users = await query.ToListAsync(ct);
+
+        return users.Select(x => x.FromDomainToGetUsersDto()).ToList();
     }
 
     public async Task<GetUserByIdResult> GetUserByIdAsync(string userId, CancellationToken ct = default)
@@ -340,11 +347,7 @@ public class UserLogic(
             return new SoftDeleteUserResult.Forbidden("Can't delete an admin account.");
         }
 
-        var followsWasDeleted = await _repo.DeleteFollowsAsync(currentUserId, ct);
-        if (followsWasDeleted is 0)
-        {
-            return new SoftDeleteUserResult.DeletionFailed("The user followings/followers deletion was unsuccessful.");
-        }
+        _ = await _repo.DeleteFollowsAsync(currentUserId, ct);
 
         var userWasDeleted = await _repo.SoftDeleteUserAsync(currentUserId, ct);
 

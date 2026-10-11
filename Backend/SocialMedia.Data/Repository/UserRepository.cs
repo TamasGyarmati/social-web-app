@@ -16,8 +16,8 @@ public interface IUserRepository
 public class UserRepository(SocialMediaDbContext _db) : IUserRepository
 {
     public async Task<FollowDbStatus> CreateFollowAsync(
-        string followedId, 
-        string followerId, 
+        string followedId,
+        string followerId,
         CancellationToken ct = default)
     {
         var targetExists = await _db.AppUsers.AnyAsync(x => x.Id == followedId, ct);
@@ -28,7 +28,7 @@ public class UserRepository(SocialMediaDbContext _db) : IUserRepository
 
         var alreadyFollowing = await _db.UserFollows
             .AnyAsync(uf => uf.FollowerId == followerId && uf.FollowedId == followedId, ct);
-        
+
         if (alreadyFollowing)
         {
             return FollowDbStatus.AlreadyFollowing;
@@ -62,7 +62,7 @@ public class UserRepository(SocialMediaDbContext _db) : IUserRepository
                 .SetProperty(u => u.NormalizedUserName, $"[DELETED_USER_{userId[..8]}]")
                 .SetProperty(u => u.Email, (string?)null)
                 .SetProperty(u => u.NormalizedEmail, (string?)null)
-                .SetProperty(u => u.AvatarUrl, (string?)null)
+                .SetProperty(u => u.AvatarUrl, "/images/default/deleted_user.png")
                 .SetProperty(u => u.IsDeleted, true)
                 .SetProperty(u => u.DeletedAt, DateTime.UtcNow)
                 .SetProperty(u => u.FirstName, (string?)null)
@@ -88,7 +88,7 @@ public class UserRepository(SocialMediaDbContext _db) : IUserRepository
             .ExecuteUpdateAsync(s => s
                 .SetProperty(u => u.RefreshToken, (string?)null)
                 .SetProperty(u => u.RefreshTokenExpiryTime, DateTime.UtcNow)
-                .SetProperty(u => u.SecurityStamp,  Guid.NewGuid().ToString()), 
+                .SetProperty(u => u.SecurityStamp, Guid.NewGuid().ToString()),
                 ct);
     }
 }

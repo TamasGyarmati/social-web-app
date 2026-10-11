@@ -38,7 +38,7 @@ public class AuthLogic(
             Email = dto.Email,
             IsDeleted = false,
             EmailConfirmed = false,
-            AvatarUrl = "/images/avatars/default_avatar.png"
+            AvatarUrl = "/images/default/default_avatar.png"
         };
 
         var result = await _userManager.CreateAsync(user, dto.Password);
