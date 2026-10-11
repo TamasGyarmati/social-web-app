@@ -6,7 +6,7 @@
   >
 
   <div class="forms">
-    <form [formGroup]="userForm">
+    <form [formGroup]="userForm" (ngSubmit)="updateUser()">
       <mat-form-field appearance="outline">
         <mat-label>Username</mat-label>
         <input matInput formControlName="userName" required />
@@ -27,17 +27,13 @@
         <mat-icon matSuffix>person</mat-icon>
         <mat-error>Last Name is required</mat-error>
       </mat-form-field>
+
+      <div class="update-user-btn">
+        <button type="submit" matButton [disabled]="!isUserUpdateEnabled() || userForm.invalid">
+          Update
+        </button>
+      </div>
     </form>
-  </div>
-  <div class="update-user-btn">
-    <button
-      type="submit"
-      (click)="updateUser()"
-      matButton
-      [disabled]="!isUserUpdateEnabled() || userForm.invalid"
-    >
-      Update
-    </button>
   </div>
 </div>
 

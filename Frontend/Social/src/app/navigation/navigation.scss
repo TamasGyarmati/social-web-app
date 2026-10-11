@@ -103,6 +103,12 @@
   font-weight: 500;
   white-space: nowrap;
 
+  img {
+    width: $nav-img-size;
+    height: $nav-img-size;
+    border-radius: 20px;
+  }
+
   &:hover {
     cursor: pointer;
   }
@@ -227,6 +233,12 @@
 
     font-size: 14px;
     overflow-wrap: anywhere;
+
+    img {
+      width: $nav-img-size;
+      height: $nav-img-size;
+      border-radius: 20px;
+    }
 
     &:hover {
       cursor: pointer;

@@ -1,24 +1,21 @@
 <div class="comments">
   <div class="comment-input">
-    <mat-form-field appearance="outline">
-      <mat-label>Write a comment...</mat-label>
-      <mat-icon matPrefix>chat_bubble_outline</mat-icon>
-      <input
-        [(ngModel)]="this.commentContent"
-        matInput
-        type="text"
-        placeholder="Write a comment..."
-      />
-      <button
-        (click)="createComment()"
-        mat-icon-button
-        matSuffix
-        type="button"
-        aria-label="Post comment"
-      >
-        <mat-icon>send</mat-icon>
-      </button>
-    </mat-form-field>
+    <form (ngSubmit)="createComment()">
+      <mat-form-field appearance="outline">
+        <mat-label>Write a comment...</mat-label>
+        <mat-icon matPrefix>chat_bubble_outline</mat-icon>
+        <input
+          [(ngModel)]="this.commentContent"
+          name="commentContent"
+          matInput
+          type="text"
+          placeholder="Write a comment..."
+        />
+        <button mat-icon-button matSuffix type="button" aria-label="Post comment">
+          <mat-icon>send</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
   </div>
 
   <h3>Comments</h3>

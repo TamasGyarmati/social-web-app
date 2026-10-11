@@ -20,20 +20,22 @@
   </div>
 
   <div class="comment-input" *ngIf="activeReplyCommentId() === comment().id">
-    <mat-form-field appearance="outline">
-      <mat-label>Write a comment...</mat-label>
-      <mat-icon matPrefix>chat_bubble_outline</mat-icon>
-      <input matInput [(ngModel)]="this.reply" type="text" placeholder="Write a comment..." />
-      <button
-        mat-icon-button
-        matSuffix
-        (click)="createReply(comment())"
-        type="button"
-        aria-label="Post comment"
-      >
-        <mat-icon>send</mat-icon>
-      </button>
-    </mat-form-field>
+    <form (ngSubmit)="createReply(comment())">
+      <mat-form-field appearance="outline">
+        <mat-label>Write a comment...</mat-label>
+        <mat-icon matPrefix>chat_bubble_outline</mat-icon>
+        <input
+          matInput
+          [(ngModel)]="this.reply"
+          name="reply"
+          type="text"
+          placeholder="Write a comment..."
+        />
+        <button mat-icon-button matSuffix type="button" aria-label="Post comment">
+          <mat-icon>send</mat-icon>
+        </button>
+      </mat-form-field>
+    </form>
   </div>
 
   <div class="replies" *ngIf="getReplies().length > 0">

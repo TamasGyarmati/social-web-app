@@ -53,11 +53,8 @@ export class UserHandling implements OnInit {
   private http = inject(HttpClient);
   private matBar = inject(MatSnackBar);
 
-  constructor() {
-    this.userForm.disable();
-  }
-
   ngOnInit(): void {
+    this.userForm.disable();
     this.whoami();
   }
 
@@ -78,8 +75,18 @@ export class UserHandling implements OnInit {
       Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
     });
 
-    this.http.post(env.userPostAvatarUri, formData, { headers }).subscribe(
+    this.http.post<{ avatarUrl: string }>(env.userPostAvatarUri, formData, { headers }).subscribe(
       (success) => {
+        this.auth.user.update((user) =>
+          user
+            ? {
+                ...user,
+
+                avatarUrl: success.avatarUrl,
+              }
+            : user,
+        );
+
         this.selectedFileName = null;
         this.postForm.reset();
         this.matBar.open('Successfully uploaded the avatar', 'Close', { duration: 3000 });
@@ -119,7 +126,6 @@ export class UserHandling implements OnInit {
         );
         this.whoami();
         this.toggleUserUpdate();
-        this.userForm.reset();
         this.matBar.open('Successfully updated your profile', 'Close', { duration: 3000 });
         console.log('::SUCCESS::', success);
       },

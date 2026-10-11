@@ -24,7 +24,7 @@
 
   <div class="nav-right">
     <div class="user-info" *ngIf="this.auth.isLoggedIn()" [routerLink]="['/user-handling']">
-      <mat-icon>account_circle</mat-icon>
+      <img [src]="this.apiUri + '/' + this.auth.user()?.avatarUrl" />
       <span>@{{ this.auth.user()?.userName }}</span>
     </div>
 
@@ -37,7 +37,7 @@
 
   <div class="mobile-menu" [class.open]="isMobileMenuOpen()">
     <div class="mobile-user" *ngIf="this.auth.isLoggedIn()" [routerLink]="['/user-handling']">
-      <mat-icon>account_circle</mat-icon>
+      <img [src]="this.apiUri + '/' + this.auth.user()?.avatarUrl" />
       <span>@{{ this.auth.user()?.userName }}</span>
     </div>
 

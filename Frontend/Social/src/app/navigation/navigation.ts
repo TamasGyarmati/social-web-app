@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { MatAnchor } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { MATERIAL_IMPORTS } from '../_shared/material';
+import { env } from '../env/env';
 
 @Component({
   selector: 'app-navigation',
@@ -16,6 +17,7 @@ import { MATERIAL_IMPORTS } from '../_shared/material';
 export class Navigation {
   constructor(public auth: AuthService) {}
 
+  public readonly apiUri = env.apiUri;
   public readonly isMobileMenuOpen = signal<boolean>(false);
 
   public logout(): void {
