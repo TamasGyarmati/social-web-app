@@ -1,6 +1,14 @@
 <h1>Manage your account</h1>
 
 <div class="update-user-info">
+  <div class="section-header">
+    <mat-icon>manage_accounts</mat-icon>
+    <div>
+      <h2>Personal information</h2>
+      <p>Update your account details</p>
+    </div>
+  </div>
+
   <mat-checkbox [checked]="!isUserUpdateEnabled()" (change)="toggleUserUpdate()"
     >Uncheck to update</mat-checkbox
   >
@@ -38,6 +46,14 @@
 </div>
 
 <div class="avatar-upload">
+  <div class="section-header">
+    <mat-icon>account_circle</mat-icon>
+    <div>
+      <h2>Profile picture</h2>
+      <p>Upload a new avatar for your account</p>
+    </div>
+  </div>
+
   <form [formGroup]="postForm">
     <div class="file-input">
       <label for="image">
@@ -55,4 +71,87 @@
   <div class="update-avatar-button">
     <button matButton (click)="updateAvatar()" [disabled]="checkFileName()">Upload</button>
   </div>
+</div>
+
+<div class="update-password">
+  <div class="section-header">
+    <mat-icon>lock</mat-icon>
+    <div>
+      <h2>Change password</h2>
+      <p>Keep your account secure with a new password</p>
+    </div>
+  </div>
+
+  <form [formGroup]="passwordForm" (ngSubmit)="updatePassword()">
+    <mat-form-field appearance="outline">
+      <mat-label>Current Password</mat-label>
+      <input type="password" matInput formControlName="currentPassword" />
+      <mat-icon matSuffix>password</mat-icon>
+      <mat-error
+        *ngIf="
+          passwordForm.controls.currentPassword.hasError('required') &&
+          passwordForm.controls.currentPassword.touched
+        "
+      >
+        Current Password is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>New Password</mat-label>
+      <input type="password" matInput formControlName="newPassword" />
+      <mat-icon matSuffix>password</mat-icon>
+      <mat-error
+        *ngIf="
+          passwordForm.controls.newPassword.hasError('required') &&
+          passwordForm.controls.newPassword.touched
+        "
+      >
+        New Password is required
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Confirm Password</mat-label>
+      <input type="password" matInput formControlName="confirmPassword" />
+      <mat-icon matSuffix>password</mat-icon>
+      <mat-error
+        *ngIf="
+          passwordForm.controls.confirmPassword.hasError('required') &&
+          passwordForm.controls.confirmPassword.touched
+        "
+      >
+        Confirm Password is required
+      </mat-error>
+    </mat-form-field>
+
+    <button matButton type="submit" [disabled]="passwordForm.invalid">Update</button>
+  </form>
+</div>
+<div class="update-mail">
+  <div class="section-header">
+    <mat-icon>mail</mat-icon>
+    <div>
+      <h2>Change mail</h2>
+      <p>Keep your account secure with a new mail</p>
+    </div>
+  </div>
+
+  <form [formGroup]="mailForm" (ngSubmit)="updateMail()">
+    <h2>Current email: {{ this.user()?.email }}</h2>
+    <mat-form-field appearance="outline">
+      <mat-label>New Email</mat-label>
+      <input type="email" matInput formControlName="newEmail" />
+      <mat-icon matSuffix>mail</mat-icon>
+      <mat-error
+        *ngIf="
+          mailForm.controls.newEmail.hasError('required') && mailForm.controls.newEmail.touched
+        "
+      >
+        Email is required
+      </mat-error>
+    </mat-form-field>
+
+    <button matButton type="submit" [disabled]="mailForm.invalid">Update</button>
+  </form>
 </div>

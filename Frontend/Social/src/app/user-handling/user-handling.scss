@@ -26,7 +26,9 @@ h1 {
 }
 
 .update-user-info,
-.avatar-upload {
+.avatar-upload,
+.update-password,
+.update-mail {
   width: 100%;
   max-width: 620px;
   margin: 0 auto 28px;
@@ -46,6 +48,46 @@ h1 {
   &:hover {
     border-color: $section-hover-border;
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 26px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid $card-border;
+
+    > mat-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      width: 44px;
+      height: 44px;
+      font-size: 24px;
+
+      color: $accent-color;
+      background: rgba(96, 165, 250, 0.1);
+      border: 1px solid rgba(96, 165, 250, 0.15);
+      border-radius: 12px;
+    }
+
+    h2 {
+      margin: 0 0 4px;
+      color: $text-primary;
+      font-size: 1.05rem;
+      font-weight: 650;
+      letter-spacing: -0.2px;
+    }
+
+    p {
+      margin: 0;
+      color: $text-secondary;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
   }
 }
 
@@ -224,6 +266,127 @@ h1 {
   }
 }
 
+// Password update
+
+.update-password {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    align-self: flex-end;
+
+    min-width: 120px;
+    min-height: 44px;
+    padding: 0 24px;
+
+    color: white;
+    background: $go-back-btn-color;
+    border-radius: 10px;
+
+    font-weight: 600;
+
+    transition:
+      background-color 180ms ease,
+      transform 180ms ease,
+      box-shadow 180ms ease;
+
+    &:hover:not(:disabled) {
+      background: $accent-color;
+      box-shadow: 0 5px 16px rgba(96, 165, 250, 0.18);
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      color: $text-secondary;
+      background: #26313d;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Email update
+
+.update-mail {
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+
+    > h2 {
+      margin: 0 0 12px;
+      color: $text-primary;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.6;
+      overflow-wrap: anywhere;
+
+      &::before {
+        content: '';
+        display: inline-block;
+        width: 3px;
+        height: 16px;
+        margin-right: 10px;
+        vertical-align: -3px;
+        background: $accent-color;
+        border-radius: 2px;
+      }
+    }
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    align-self: flex-end;
+
+    min-width: 120px;
+    min-height: 44px;
+    padding: 0 24px;
+
+    color: white;
+    background: $go-back-btn-color;
+    border-radius: 10px;
+    font-weight: 600;
+
+    transition:
+      background-color 180ms ease,
+      transform 180ms ease,
+      box-shadow 180ms ease;
+
+    &:hover:not(:disabled) {
+      background: $accent-color;
+      box-shadow: 0 5px 16px rgba(96, 165, 250, 0.18);
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      color: $text-secondary;
+      background: #26313d;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  }
+}
+
 // Responsivity
 
 @media (max-width: 600px) {
@@ -237,10 +400,32 @@ h1 {
   }
 
   .update-user-info,
-  .avatar-upload {
+  .avatar-upload,
+  .update-password,
+  .update-mail {
     padding: 20px 16px;
     margin-bottom: 20px;
     border-radius: 14px;
+
+    .section-header {
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+
+      > mat-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
+      }
+
+      h2 {
+        font-size: 1rem;
+      }
+
+      p {
+        font-size: 0.8rem;
+      }
+    }
   }
 
   .update-user-info {
@@ -250,7 +435,9 @@ h1 {
   }
 
   .update-user-btn,
-  .update-avatar-button {
+  .update-avatar-button,
+  .update-password,
+  .update-mail {
     button {
       width: 100%;
     }

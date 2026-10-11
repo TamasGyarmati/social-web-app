@@ -8,6 +8,8 @@ export const env = {
   whoamiUri: 'http://localhost:5000/User/whoami',
   userPostAvatarUri: 'http://localhost:5000/User/avatar',
   userUpdateUri: 'http://localhost:5000/User/all',
+  userUpdatePasswordUri: 'http://localhost:5000/User/password',
+  userUpdateEmailUri: 'http://localhost:5000/User/email',
   authRegisterUri: 'http://localhost:5000/api/Auth/register',
   jwtAccessToken: 'social-access-token',
   jwtAccessTokenExp: 'social-access-token-expiration',

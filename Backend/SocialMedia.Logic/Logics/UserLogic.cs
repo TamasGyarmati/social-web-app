@@ -176,7 +176,7 @@ public class UserLogic(
 
         return result.Succeeded
             ? new UpdatePasswordResult.Success("Password updated.")
-            : new UpdatePasswordResult.PasswordChangeFailed("The change of password was unsuccessful");
+            : new UpdatePasswordResult.PasswordChangeFailed("The given password didn't match.");
     }
 
     public async Task<GenerateEmailTokenResult> GenerateEmailChangeTokenAsync(

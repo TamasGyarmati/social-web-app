@@ -1,3 +1,5 @@
+import { ChangeEmailRequest } from '../_models/changeEmailRequest';
+import { ChangePasswordRequest } from '../_models/changePasswordRequest';
 import { UserUpdate } from '../_models/userUpdate';
 import { User } from '../_models/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -47,6 +49,36 @@ export class UserHandling implements OnInit {
   public postForm = new FormGroup({
     image: new FormControl<File | null>(null, {
       validators: [Validators.required],
+    }),
+  });
+
+  public passwordForm = new FormGroup(
+    {
+      currentPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      newPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+      confirmPassword: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
+    },
+    {
+      validators: (form) =>
+        form.get('newPassword')?.value === form.get('confirmPassword')?.value
+          ? null
+          : { passwordMismatch: true },
+    },
+  );
+
+  public mailForm = new FormGroup({
+    newEmail: new FormControl('', {
+      nonNullable: true,
+      validators: [Validators.required, Validators.email],
     }),
   });
 
@@ -110,7 +142,6 @@ export class UserHandling implements OnInit {
     });
 
     const userUpdate: UserUpdate = this.userForm.getRawValue();
-    console.log(userUpdate);
 
     this.http.put(env.userUpdateUri, userUpdate, { headers: headers }).subscribe(
       (success) => {
@@ -180,5 +211,72 @@ export class UserHandling implements OnInit {
 
   checkFileName(): boolean {
     return this.selectedFileName === null;
+  }
+
+  updatePassword(): void {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
+    });
+
+    const passwordUpdate: ChangePasswordRequest = {
+      oldPassword: this.passwordForm.controls.currentPassword.value,
+      newPassword: this.passwordForm.controls.newPassword.value,
+    };
+
+    this.http.put(env.userUpdatePasswordUri, passwordUpdate, { headers: headers }).subscribe(
+      (success) => {
+        this.matBar.open('Successfully updated your profile', 'Close', { duration: 3000 });
+        this.passwordForm.reset();
+        this.passwordForm.markAsPristine();
+        this.passwordForm.markAsUntouched();
+        console.log('::SUCCESS::', success);
+      },
+      (error) => {
+        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
+        this.passwordForm.reset();
+        this.passwordForm.markAsPristine();
+        this.passwordForm.markAsUntouched();
+        console.log('::ERROR::', error);
+      },
+    );
+  }
+
+  updateMail(): void {
+    if (this.mailForm.invalid) {
+      this.mailForm.markAllAsTouched();
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
+    });
+
+    const emailUpdate: ChangeEmailRequest = this.mailForm.getRawValue();
+
+    this.http.put(env.userUpdateEmailUri, emailUpdate, { headers: headers }).subscribe(
+      (success) => {
+        console.log('::SUCCESS::', success);
+        this.matBar.open('Confirmation link to your new email was sent out!', 'Close', {
+          duration: 3000,
+        });
+        this.mailForm.reset();
+        this.passwordForm.markAsPristine();
+        this.passwordForm.markAsUntouched();
+      },
+      (error) => {
+        console.log('::ERROR::', error);
+        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
+        this.mailForm.reset();
+        this.passwordForm.markAsPristine();
+        this.passwordForm.markAsUntouched();
+      },
+    );
   }
 }
