@@ -2,13 +2,19 @@
 
 html {
   height: 100%;
+
   @include mat.theme(
     (
       color: (
         primary: mat.$azure-palette,
         tertiary: mat.$blue-palette,
       ),
-      typography: Roboto,
+
+      typography: (
+        plain-family: 'Nunito, sans-serif',
+        brand-family: 'Nunito, sans-serif',
+      ),
+
       density: 0,
     )
   );
@@ -16,14 +22,24 @@ html {
 
 body {
   color-scheme: dark;
-
   color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
+  font-family: 'Nunito', sans-serif;
   background-color: #0d1218;
-
   margin: 0;
   min-height: 100vh;
+}
+
+button,
+input,
+textarea,
+select,
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-unelevated-button,
+.mat-mdc-form-field,
+.mat-mdc-input-element {
+  font-family: 'Nunito', sans-serif;
 }
 
 /* You can add global styles to this file, and also import other style files */
