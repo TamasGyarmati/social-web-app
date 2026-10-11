@@ -1,46 +1,44 @@
-h3 {
-  margin-top: 40vh;
-  margin-bottom: 10px;
-}
-
-#linkedin-paragraph,
-#mail-paragraph {
-  transition: all 0.5s;
-
-  &:hover {
-    transform: translateY(-5px);
-  }
-}
-
-#mail,
-#linkedin {
-  text-decoration: none;
-  color: white;
-}
-
-#mail-icon,
-#linkedin-icon {
-  padding-right: 15px;
-}
-
 footer {
   padding: 50px 100px;
   text-align: center;
+
+  h3 {
+    margin-top: 40vh;
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
 
   .info {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: center;
     gap: 20px;
+
+    p {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      transition: transform 0.5s;
+
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+
+    mat-icon {
+      position: static;
+      top: auto;
+      padding: 0;
+      margin: 0;
+      flex-shrink: 0;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      line-height: 24px;
+    }
   }
-}
-
-mat-divider {
-  margin: 30px 0;
-}
-
-mat-icon {
-  font-size: 1.4em;
-  position: relative;
-  top: 0.5em;
 }
