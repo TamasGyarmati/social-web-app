@@ -82,6 +82,7 @@ export class Login implements OnInit {
         localStorage.setItem(env.jwtAccessTokenExp, success.accessTokenExpireDate);
         localStorage.setItem(env.jwtRefreshToken, success.refreshToken);
         localStorage.setItem(env.jwtRefreshTokenExp, success.refreshTokenExpireDate);
+
         this.auth.loadUser();
 
         this.snackBar.open('Login was successful!', 'Close', {
@@ -93,8 +94,8 @@ export class Login implements OnInit {
         console.log('::SUCCESS::', success);
       },
       (error) => {
-        console.log('::ERROR::', error);
         this.snackBar.open(error.error.message, 'Close', { duration: 5000 });
+        console.log('::ERROR::', error);
       },
     );
   }
