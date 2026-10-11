@@ -25,6 +25,34 @@ h1 {
   text-align: center;
 }
 
+.account-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  max-width: 1240px;
+  margin: 0 auto;
+  align-items: stretch;
+
+  .left-column,
+  .right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .update-user-info,
+  .avatar-upload,
+  .update-password,
+  .update-mail {
+    max-width: 100%;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+}
+
 .update-user-info,
 .avatar-upload,
 .update-password,
@@ -450,5 +478,11 @@ h1 {
         font-size: 14px;
       }
     }
+  }
+}
+
+@media (max-width: 960px) {
+  .account-grid {
+    grid-template-columns: 1fr;
   }
 }
