@@ -1,68 +1,175 @@
-.comment-input {
-  margin-top: 1rem;
-  width: 100%;
-
-  mat-form-field {
-    width: 100%;
-  }
-
-  button {
-    border: none;
-    outline: none;
-    box-shadow: none;
-    background: transparent;
-  }
-}
-
-.reply {
-  button {
-    background: transparent;
-    border: 0;
-  }
-}
-
-.liked {
-  color: red;
-}
+@import '../_shared/variables.scss';
 
 .comment {
-  padding: 15px 0;
+  padding: 16px 0;
+  color: $text-primary;
+  overflow-wrap: anywhere;
 
   .comment-header {
+    display: flex;
+    align-items: center;
     margin-bottom: 8px;
+
+    strong {
+      color: $text-primary;
+      font-size: 0.95rem;
+      font-weight: 650;
+      transition: color 180ms ease;
+    }
   }
 
   .comment-content {
-    margin-bottom: 10px;
-    line-height: 1.5;
+    margin-bottom: 12px;
+    color: $text-primary;
+    font-size: 0.95rem;
+    line-height: 1.65;
+    white-space: pre-wrap;
   }
 
   .comment-actions {
     display: flex;
-    gap: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
 
     > div {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      min-height: 32px;
 
+      color: $text-secondary;
       cursor: pointer;
+      transition: color 180ms ease;
+
+      &:hover {
+        color: $accent-color;
+      }
     }
 
     mat-icon {
-      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+
       width: 18px;
       height: 18px;
+      font-size: 18px;
+      line-height: 18px;
+
+      transition:
+        transform 180ms ease,
+        color 180ms ease;
     }
 
     span {
-      font-size: 14px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .liked {
+      color: $danger-color;
+    }
+
+    > div:first-child:hover mat-icon {
+      transform: scale(1.12);
+    }
+
+    .reply {
+      button {
+        padding: 0;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      &:hover mat-icon {
+        transform: translateX(2px);
+      }
+    }
+  }
+
+  .comment-input {
+    width: 100%;
+    margin-top: 14px;
+    animation: comment-input-appear 180ms ease;
+
+    mat-form-field {
+      width: 100%;
+    }
+
+    button {
+      border: none;
+      outline: none;
+      box-shadow: none;
+      background: transparent;
+      color: $accent-color;
+      transition:
+        color 180ms ease,
+        transform 180ms ease;
+
+      &:hover {
+        color: lighten($accent-color, 10%);
+        transform: scale(1.08);
+      }
     }
   }
 
   .replies {
-    margin-left: 30px;
-    padding-left: 15px;
-    border-left: 1px solid rgba(255, 255, 255, 0.2);
+    margin-top: 12px;
+    margin-left: 12px;
+    padding-left: 20px;
+    border-left: 2px solid $card-border;
+    transition: border-color 180ms ease;
+
+    &:hover {
+      border-left-color: $card-border-hover;
+    }
+
+    .comment {
+      padding: 12px 0;
+    }
+  }
+}
+
+@keyframes comment-input-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .comment {
+    padding: 12px 0;
+
+    .comment-content {
+      font-size: 0.9rem;
+    }
+
+    .comment-actions {
+      gap: 14px;
+    }
+
+    .replies {
+      margin-left: 4px;
+      padding-left: 12px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .comment,
+  .comment * {
+    animation: none !important;
+    transition: none !important;
   }
 }

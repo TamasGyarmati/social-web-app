@@ -1,10 +1,12 @@
+@import '../_shared/variables.scss';
+
 .comments {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 18px;
 
-  padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 24px;
+  border-top: 1px solid $card-border;
 
   .comment-input {
     width: 100%;
@@ -18,10 +20,30 @@
       outline: none;
       box-shadow: none;
       background: transparent;
+      color: $accent-color;
+      transition:
+        color 180ms ease,
+        transform 180ms ease;
+
+      &:hover {
+        color: lighten($accent-color, 10%);
+        transform: scale(1.08);
+      }
     }
   }
 
   h3 {
-    margin: 0;
+    margin: 4px 0 0;
+    color: $text-primary;
+    font-size: 1.5rem;
+    font-weight: 650;
+    letter-spacing: -0.2px;
+  }
+}
+
+@media (max-width: 600px) {
+  .comments {
+    gap: 14px;
+    padding-top: 18px;
   }
 }

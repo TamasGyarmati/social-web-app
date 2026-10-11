@@ -176,29 +176,50 @@ mat-progress-spinner {
 
       .data {
         display: inline-flex;
+
         align-items: center;
+
         gap: 6px;
+
         color: $text-secondary;
+
         cursor: pointer;
+
         transition: color 0.2s ease;
 
         &:hover {
-          color: $text-primary;
+          color: $accent-color;
         }
 
         mat-icon {
           display: block;
+
           flex-shrink: 0;
+
           width: 20px;
+
           height: 20px;
+
           font-size: 20px;
+
           line-height: 20px;
+
+          transition:
+            transform 0.2s ease,
+            color 0.2s ease;
+        }
+
+        &:hover mat-icon {
+          transform: scale(1.12);
         }
 
         p {
           margin: 0;
+
           padding: 0;
+
           font-size: 14px;
+
           line-height: 20px;
         }
 
