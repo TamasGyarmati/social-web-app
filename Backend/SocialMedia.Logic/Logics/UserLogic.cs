@@ -39,7 +39,7 @@ public class UserLogic(
         var response = users.Select(x => x.FromDomainToGetUsersDto()).ToList();
         return response;
     }
-    
+
     public async Task<GetUserByIdResult> GetUserByIdAsync(string userId, CancellationToken ct = default)
     {
         var user = await _userManager.Users
@@ -49,20 +49,20 @@ public class UserLogic(
             .Include(u => u.Following)
                 .ThenInclude(f => f.Followed)
             .FirstOrDefaultAsync(u => u.Id == userId, ct);
-        
+
         if (user is null)
         {
             return new GetUserByIdResult.UserNotFound("The user was not found.");
         }
-        
+
         var response = user.FromDomainToGetUserByIdDto();
-        
+
         return new GetUserByIdResult.Success(response);
     }
-    
+
     public async Task<UploadAvatarResult> UploadAsync(
-        UploadAvatarRequestDto dto, 
-        string currentUserId, 
+        UploadAvatarRequestDto dto,
+        string currentUserId,
         CancellationToken ct = default)
     {
         var user = await _userManager.FindByIdAsync(currentUserId);
@@ -70,15 +70,15 @@ public class UserLogic(
         {
             return new UploadAvatarResult.UserNotFound("User was not found.");
         }
-        
+
         var oldAvatar = user.AvatarUrl;
-        
+
         var relativePath = await _imageProcessor.ProcessAndSaveAvatarAsync(dto.Image, ct);
         if (relativePath is null)
         {
             return new UploadAvatarResult.ImageProcessingError("Failed to upload avatar.");
         }
-        
+
         user.AvatarUrl = relativePath;
 
         IdentityResult result;
@@ -91,24 +91,24 @@ public class UserLogic(
             _imageProcessor.DeleteImage(relativePath);
             throw; // need to throw it but aspnet wont throw the 500
         }
-        
+
         if (!result.Succeeded)
         {
             _imageProcessor.DeleteImage(relativePath);
             return new UploadAvatarResult.FailedToUpdateAvatar("Failed to upload avatar.");
         }
-        
+
         if (oldAvatar is not null)
         {
             _imageProcessor.DeleteImage(oldAvatar);
         }
-        
+
         return new UploadAvatarResult.Success(relativePath);
     }
 
     public async Task<UpdateUserResult> UpdateAsync(
-        UpdateUserRequestDto dto, 
-        string currentUserId, 
+        UpdateUserRequestDto dto,
+        string currentUserId,
         CancellationToken ct = default)
     {
         var user = await _userManager.FindByIdAsync(currentUserId);
@@ -116,15 +116,12 @@ public class UserLogic(
         {
             return new UpdateUserResult.UserNotFound("The user was not found.");
         }
-        
-        var oldAvatarUrl = user.AvatarUrl;
-        string? newAvatarUrl = null;
 
         if (!string.IsNullOrWhiteSpace(dto.FirstName))
         {
             user.FirstName = dto.FirstName.Trim();
         }
-        
+
         if (!string.IsNullOrWhiteSpace(dto.LastName))
         {
             user.LastName = dto.LastName.Trim();
@@ -139,16 +136,6 @@ public class UserLogic(
             }
         }
 
-        if (dto.Avatar is not null && dto.Avatar.Length > 0)
-        {
-            newAvatarUrl = await _imageProcessor.ProcessAndSaveAvatarAsync(dto.Avatar, ct);
-            if (newAvatarUrl is null)
-            {
-                return new UpdateUserResult.FailedToUpdateUser("Failed to process avatar.");
-            }
-            user.AvatarUrl = newAvatarUrl;
-        }
-
         IdentityResult updateResult;
         try
         {
@@ -156,33 +143,20 @@ public class UserLogic(
         }
         catch (OperationCanceledException)
         {
-            if (newAvatarUrl is not null)
-            {
-                _imageProcessor.DeleteImage(newAvatarUrl);
-            }
             throw;
         }
 
         if (!updateResult.Succeeded)
         {
-            if (newAvatarUrl is not null)
-            {
-                _imageProcessor.DeleteImage(newAvatarUrl);
-            }
             return new UpdateUserResult.FailedToUpdateUser("Failed to update the user.");
-        }
-
-        if (newAvatarUrl is not null && !string.IsNullOrWhiteSpace(oldAvatarUrl))
-        {
-            _imageProcessor.DeleteImage(oldAvatarUrl);
         }
 
         return new UpdateUserResult.Success("User updated.");
     }
 
     public async Task<UpdatePasswordResult> UpdatePasswordAsync(
-        UpdatePasswordRequestDto dto, 
-        string currentUserId, 
+        UpdatePasswordRequestDto dto,
+        string currentUserId,
         CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(dto.OldPassword) || string.IsNullOrWhiteSpace(dto.NewPassword))
@@ -195,19 +169,19 @@ public class UserLogic(
         {
             return new UpdatePasswordResult.UserNotFound("The user was not found.");
         }
-        
+
         ct.ThrowIfCancellationRequested();
-        
+
         var result = await _userManager.ChangePasswordAsync(user, dto.OldPassword, dto.NewPassword);
 
         return result.Succeeded
             ? new UpdatePasswordResult.Success("Password updated.")
             : new UpdatePasswordResult.PasswordChangeFailed("The change of password was unsuccessful");
     }
-    
+
     public async Task<GenerateEmailTokenResult> GenerateEmailChangeTokenAsync(
-        EmailChangeRequestDto dto, 
-        string currentUserId, 
+        EmailChangeRequestDto dto,
+        string currentUserId,
         CancellationToken ct = default)
     {
         var result = await ValidateEmailChangeAsync(dto, currentUserId, ct);
@@ -217,9 +191,9 @@ public class UserLogic(
         }
 
         var user = ((ValidateEmailResult.Success)result).User;
-        
+
         ct.ThrowIfCancellationRequested();
-        
+
         var rawToken = await _userManager.GenerateChangeEmailTokenAsync(user, dto.NewEmail.Trim());
         var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(rawToken));
 
@@ -227,8 +201,8 @@ public class UserLogic(
     }
 
     async Task<ValidateEmailResult> ValidateEmailChangeAsync(
-        EmailChangeRequestDto dto, 
-        string currentUserId, 
+        EmailChangeRequestDto dto,
+        string currentUserId,
         CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(dto.NewEmail))
@@ -241,19 +215,19 @@ public class UserLogic(
         {
             return new ValidateEmailResult.UserNotFound("The user was not found.");
         }
-        
+
         ct.ThrowIfCancellationRequested();
 
         var existingUser = await _userManager.FindByEmailAsync(dto.NewEmail);
-        
-        return existingUser is null 
+
+        return existingUser is null
             ? new ValidateEmailResult.Success(user)
             : new ValidateEmailResult.UserWithEmailExist("User with email address already exists.");
     }
 
     public async Task<SendEmailConfirmationResult> SendEmailChangeConfirmationAsync(
-        string email, 
-        string confirmationLink, 
+        string email,
+        string confirmationLink,
         CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(confirmationLink))
@@ -262,7 +236,7 @@ public class UserLogic(
         }
 
         var subject = "Confirm Your New Email Address";
-        
+
         var htmlBody = $"""
                         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;">
                             <h2 style="color: #333;">Email Change Request</h2>
@@ -297,11 +271,11 @@ public class UserLogic(
             return new SendEmailConfirmationResult.SendingEmailFailed("Something went wrong with sending the email.");
         }
     }
-    
+
     public async Task<ConfirmEmailChangeResult> ConfirmEmailChangeAsync(
-        string userId, 
-        string newEmail, 
-        string token, 
+        string userId,
+        string newEmail,
+        string token,
         CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(newEmail) ||
@@ -315,7 +289,7 @@ public class UserLogic(
         {
             return new ConfirmEmailChangeResult.UserNotFound("The user was not found.");
         }
-        
+
         ct.ThrowIfCancellationRequested();
 
         string rawToken;
@@ -327,26 +301,26 @@ public class UserLogic(
         {
             return new ConfirmEmailChangeResult.EmailChangeFailed("The email change failed.");
         }
-        
+
         var result = await _userManager.ChangeEmailAsync(user, newEmail, rawToken);
-        
+
         return result.Succeeded
             ? new ConfirmEmailChangeResult.Success("The email was changed.")
             : new ConfirmEmailChangeResult.EmailChangeFailed("The email change failed.");
     }
 
     public async Task<FollowResult> CreateFollowAsync(
-        string targerUserId, 
-        string currentUserId, 
+        string targerUserId,
+        string currentUserId,
         CancellationToken ct = default)
     {
         if (string.Equals(targerUserId, currentUserId, StringComparison.OrdinalIgnoreCase))
         {
             return new FollowResult.CannotFollowSelf("Cannot follow self.");
         }
-        
+
         var dbStatus = await _repo.CreateFollowAsync(targerUserId, currentUserId, ct);
-        
+
         return dbStatus switch
         {
             FollowDbStatus.Success => new FollowResult.Success("Follow was successful!"),
@@ -365,17 +339,17 @@ public class UserLogic(
         {
             return new SoftDeleteUserResult.Forbidden("Can't delete an admin account.");
         }
-        
+
         var followsWasDeleted = await _repo.DeleteFollowsAsync(currentUserId, ct);
         if (followsWasDeleted is 0)
         {
             return new SoftDeleteUserResult.DeletionFailed("The user followings/followers deletion was unsuccessful.");
         }
-        
+
         var userWasDeleted = await _repo.SoftDeleteUserAsync(currentUserId, ct);
-        
-        return userWasDeleted is not 0 
-            ? new SoftDeleteUserResult.Success("The user was successfully deleted.") 
+
+        return userWasDeleted is not 0
+            ? new SoftDeleteUserResult.Success("The user was successfully deleted.")
             : new SoftDeleteUserResult.DeletionFailed("The user was not deleted.");
     }
 
@@ -391,23 +365,23 @@ public class UserLogic(
     public async Task<AddToAdminResult> AddToAdminAsync(string userId, CancellationToken ct = default)
     {
         ct.ThrowIfCancellationRequested();
-        
+
         var user = await _userManager.FindByIdAsync(userId);
         if (user is null)
         {
             return new AddToAdminResult.UserNotFound("The user was not found.");
         }
-        
+
         ct.ThrowIfCancellationRequested();
-        
+
         var result = await _userManager.AddToRoleAsync(user, "Admin");
         if (!result.Succeeded)
         {
             return new AddToAdminResult.RoleAdditionFailed("The role addition was failed", result.Errors);
         }
-        
+
         await _repo.LogOutUserAsync(userId, ct);
-        
+
         return new AddToAdminResult.Success("The user was successfully added.");
     }
 }

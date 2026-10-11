@@ -23,9 +23,9 @@
   </div>
 
   <div class="nav-right">
-    <div class="user-info" *ngIf="this.auth.isLoggedIn()" (click)="temp()">
+    <div class="user-info" *ngIf="this.auth.isLoggedIn()" [routerLink]="['/user-handling']">
       <mat-icon>account_circle</mat-icon>
-      <span>@{{ this.auth.activeUser() }}</span>
+      <span>@{{ this.auth.user()?.userName }}</span>
     </div>
 
     <button id="hamburger-btn" matButton class="hamburger" (click)="toggleMobileMenu()">
@@ -36,9 +36,9 @@
   </div>
 
   <div class="mobile-menu" [class.open]="isMobileMenuOpen()">
-    <div class="mobile-user" *ngIf="this.auth.isLoggedIn()">
+    <div class="mobile-user" *ngIf="this.auth.isLoggedIn()" [routerLink]="['/user-handling']">
       <mat-icon>account_circle</mat-icon>
-      <span>@{{ this.auth.activeUser() }}</span>
+      <span>@{{ this.auth.user()?.userName }}</span>
     </div>
 
     <button matButton [routerLink]="['/feed']" (click)="closeMobileMenu()">

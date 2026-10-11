@@ -29,8 +29,4 @@ export class Navigation {
   closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
   }
-
-  temp(): void {
-    alert('asd');
-  }
 }

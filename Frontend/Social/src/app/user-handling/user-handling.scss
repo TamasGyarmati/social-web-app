@@ -1,0 +1,45 @@
+.file-input {
+  margin-top: 15px;
+
+  .selected-file {
+    display: block;
+    text-align: center;
+    color: #4caf50;
+    font-size: 14px;
+    word-break: break-word;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    width: 12rem;
+    margin-bottom: 1rem;
+    padding: 14px 20px;
+
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.06);
+    cursor: pointer;
+
+    font-size: 15px;
+    transition: 0.2s ease;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  input[type='file'] {
+    display: none;
+  }
+}

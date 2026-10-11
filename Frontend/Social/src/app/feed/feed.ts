@@ -21,6 +21,7 @@ import {
   MatDialogModule,
 } from '@angular/material/dialog';
 import { DialogAnimation } from '../dialog-animation/dialog-animation';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-feed',
@@ -35,13 +36,13 @@ export class Feed implements OnInit {
   public openedComments = signal<Set<string>>(new Set());
   public comments = signal<Map<string, CommentToPost[]>>(new Map());
   public isLoading = signal<boolean>(true);
-  public currentUserId = localStorage.getItem('userid');
   readonly dialog = inject(MatDialog);
 
   constructor(
     private httpClient: HttpClient,
     private matBar: MatSnackBar,
     private router: Router,
+    public auth: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -245,7 +246,7 @@ export class Feed implements OnInit {
   }
 
   filterByMe(): void {
-    var postsById = this.posts().filter((item) => item.creatorById === this.currentUserId);
+    var postsById = this.posts().filter((item) => item.creatorById === this.auth.user()?.id);
     this.currentPosts.set(postsById);
   }
 

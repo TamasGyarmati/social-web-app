@@ -78,14 +78,11 @@ export class Login implements OnInit {
 
     this.http.post<TokenModel>(`${env.authLoginUri}`, loginModel).subscribe(
       (success) => {
-        localStorage.setItem('username', this.formattedEmail);
-        localStorage.setItem('userid', success.userId);
         localStorage.setItem(env.jwtAccessToken, success.accessToken);
         localStorage.setItem(env.jwtAccessTokenExp, success.accessTokenExpireDate);
         localStorage.setItem(env.jwtRefreshToken, success.refreshToken);
         localStorage.setItem(env.jwtRefreshTokenExp, success.refreshTokenExpireDate);
         this.auth.checkIfLoggedIn();
-        this.auth.activeUser.set(this.formattedEmail);
         this.snackBar
           .open('Login was successful!', 'Close', { duration: 5000 })
           .afterDismissed()

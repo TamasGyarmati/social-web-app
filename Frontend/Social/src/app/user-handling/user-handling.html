@@ -1,1 +1,62 @@
-<p>user-handling works!</p>
+<h1>Manage your account</h1>
+
+<div class="update-user-info">
+  <mat-checkbox [checked]="!isUserUpdateEnabled()" (change)="toggleUserUpdate()"
+    >Uncheck to update</mat-checkbox
+  >
+
+  <div class="forms">
+    <form [formGroup]="userForm">
+      <mat-form-field appearance="outline">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="userName" required />
+        <mat-icon matSuffix>account_circle</mat-icon>
+        <mat-error>Username is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>First Name</mat-label>
+        <input matInput formControlName="firstName" required />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error>First Name is required</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Last Name</mat-label>
+        <input matInput formControlName="lastName" required />
+        <mat-icon matSuffix>person</mat-icon>
+        <mat-error>Last Name is required</mat-error>
+      </mat-form-field>
+    </form>
+  </div>
+  <div class="update-user-btn">
+    <button
+      type="submit"
+      (click)="updateUser()"
+      matButton
+      [disabled]="!isUserUpdateEnabled() || userForm.invalid"
+    >
+      Update
+    </button>
+  </div>
+</div>
+
+<div class="avatar-upload">
+  <form [formGroup]="postForm">
+    <div class="file-input">
+      <label for="image">
+        <mat-icon>image</mat-icon>
+        <span>Upload avatar</span>
+      </label>
+
+      <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" />
+
+      <span class="selected-file" *ngIf="selectedFileName">
+        {{ selectedFileName }}
+      </span>
+    </div>
+  </form>
+  <div class="update-avatar-button">
+    <button matButton (click)="updateAvatar()" [disabled]="checkFileName()">Upload</button>
+  </div>
+</div>

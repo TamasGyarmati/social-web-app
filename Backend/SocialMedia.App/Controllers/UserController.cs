@@ -19,7 +19,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
     [EndpointSummary("Returns all the active users.")]
     public async Task<ActionResult<List<GetUsersResponseDto>>> GetAllUsers(CancellationToken ct = default)
         => await _logic.GetUsersAsync(ct);
-    
+
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(GetUserByIdResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -36,7 +36,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
             _ => StatusCode(500)
         };
     }
-    
+
     [HttpGet("whoami")]
     [Authorize]
     [EndpointSummary("Returns YOU.")]
@@ -57,7 +57,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
             _ => StatusCode(500)
         };
     }
-    
+
     [HttpPost("avatar")]
     [Authorize]
     [Consumes("multipart/form-data")]
@@ -68,7 +68,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
     [EndpointSummary("Uploads a user the avatar from the provided DTO.")]
     [EndpointDescription("Returns the relative path of the uploaded Avatar.")]
     public async Task<ActionResult<UploadAvatarResponseDto>> UploadAvatarAsync(
-        [FromForm] UploadAvatarRequestDto dto, 
+        [FromForm] UploadAvatarRequestDto dto,
         CancellationToken ct = default)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -76,11 +76,11 @@ public class UserController(IUserLogic _logic) : ControllerBase
         {
             return Unauthorized();
         }
-        
+
         try
         {
             var result = await _logic.UploadAsync(dto, currentUserId, ct);
-            
+
             return result switch
             {
                 UploadAvatarResult.UserNotFound error => NotFound(new { error.Message }),
@@ -98,14 +98,13 @@ public class UserController(IUserLogic _logic) : ControllerBase
 
     [HttpPut("all")]
     [Authorize]
-    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(UserMessageResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [EndpointSummary("Updates the user through the provided DTO.")]
     public async Task<ActionResult<UserMessageResponseDto>> UpdateUserAsync(
-        [FromForm] UpdateUserRequestDto dto,
+        UpdateUserRequestDto dto,
         CancellationToken ct = default)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -113,7 +112,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
         {
             return Unauthorized();
         }
-        
+
         var result = await _logic.UpdateAsync(dto, currentUserId, ct);
 
         return result switch
@@ -126,7 +125,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
             _ => StatusCode(500)
         };
     }
-    
+
     [HttpPut("password")]
     [Authorize]
     [ProducesResponseType(typeof(UserMessageResponseDto), StatusCodes.Status200OK)]
@@ -140,9 +139,9 @@ public class UserController(IUserLogic _logic) : ControllerBase
         {
             return Unauthorized();
         }
-        
+
         var result = await _logic.UpdatePasswordAsync(dto, currentUserId, ct);
-        
+
         return result switch
         {
             UpdatePasswordResult.PasswordChangeFailed error => BadRequest(new { error.Message }),
@@ -152,7 +151,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
             _ => StatusCode(500)
         };
     }
-    
+
     [HttpPut("email")]
     [Authorize]
     [ProducesResponseType(typeof(UserMessageResponseDto), StatusCodes.Status200OK)]
@@ -166,7 +165,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
         {
             return Unauthorized();
         }
-        
+
         var generatedTokenResult = await _logic.GenerateEmailChangeTokenAsync(dto, currentUserId, ct);
         if (generatedTokenResult is GenerateEmailTokenResult.EmailValidationFailed validationError)
         {
@@ -189,7 +188,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
         SendEmailConfirmationResult result;
         if (confirmationLink is not null)
         {
-            result = await _logic.SendEmailChangeConfirmationAsync(dto.NewEmail, confirmationLink, ct);  
+            result = await _logic.SendEmailChangeConfirmationAsync(dto.NewEmail, confirmationLink, ct);
         }
         else
         {
@@ -212,19 +211,19 @@ public class UserController(IUserLogic _logic) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Confirms the email through the sent out confirmation link.")]
     public async Task<ActionResult<UserMessageResponseDto>> ConfirmEmailChange(
-        [FromQuery] string userId, 
-        [FromQuery] string newEmail, 
+        [FromQuery] string userId,
+        [FromQuery] string newEmail,
         [FromQuery] string token,
         CancellationToken ct = default)
     {
         var result = await _logic.ConfirmEmailChangeAsync(userId, newEmail, token, ct);
-        
+
         return result switch
         {
             ConfirmEmailChangeResult.ArgumentsRequired error => BadRequest(new { error.Message }),
             ConfirmEmailChangeResult.EmailChangeFailed error => BadRequest(new { error.Message }),
             ConfirmEmailChangeResult.UserNotFound error => NotFound(new { error.Message }),
-            ConfirmEmailChangeResult.Success response => Ok( new UserMessageResponseDto(response.Message)),
+            ConfirmEmailChangeResult.Success response => Ok(new UserMessageResponseDto(response.Message)),
             _ => StatusCode(500)
         };
     }
@@ -265,7 +264,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
     public async Task<ActionResult<UserSoftDeleteResponseDto>> SoftDeleteUser(CancellationToken ct = default)
     {
         var isAdmin = User.IsInRole("Admin");
-        
+
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (currentUserId is null)
         {

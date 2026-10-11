@@ -228,6 +228,10 @@
     font-size: 14px;
     overflow-wrap: anywhere;
 
+    &:hover {
+      cursor: pointer;
+    }
+
     mat-icon {
       flex-shrink: 0;
       color: $nav-accent;

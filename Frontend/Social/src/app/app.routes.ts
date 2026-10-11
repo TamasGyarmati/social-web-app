@@ -5,6 +5,7 @@ import { Register } from './register/register';
 import { Feed } from './feed/feed';
 import { CreatePost } from './create-post/create-post';
 import { AuthService } from './services/auth.service';
+import { UserHandling } from './user-handling/user-handling';
 
 export const routes: Routes = [
   { path: '', component: Feed },
@@ -12,6 +13,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'create-post', component: CreatePost, canActivate: [AuthService] },
+  { path: 'user-handling', component: UserHandling, canActivate: [AuthService] },
   { path: 'not-found', component: NotFound },
   { path: '**', redirectTo: 'not-found', pathMatch: 'full' },
 ];

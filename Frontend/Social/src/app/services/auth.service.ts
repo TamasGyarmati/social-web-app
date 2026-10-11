@@ -1,17 +1,35 @@
-import { Injectable, signal } from '@angular/core';
+import { User } from '../_models/user';
+import { inject, Injectable, signal } from '@angular/core';
 import { env } from '../env/env';
 import { Router } from '@angular/router';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   public isLoggedIn = signal(false);
-  public activeUser = signal<string>('');
-  public activeUserId = signal<string>('');
+  public user = signal<User | null>(null);
+
+  private http = inject(HttpClient);
 
   constructor(private router: Router) {
     this.checkIfLoggedIn();
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
+    });
+
+    this.http.get<{ user: User }>(`${env.whoamiUri}`, { headers: headers }).subscribe(
+      (success) => {
+        this.user.set(success.user);
+        console.log('::SUCCESS_USER::', success);
+      },
+      (error) => {
+        console.log('::ERROR::', error);
+      },
+    );
   }
 
   public canActivate(): boolean {
@@ -28,7 +46,6 @@ export class AuthService {
 
     if (!token || !expiration) {
       this.isLoggedIn.set(false);
-      this.activeUser.set('');
       return;
     }
 
@@ -36,14 +53,6 @@ export class AuthService {
     const loggedIn = expirationTime > Date.now();
 
     this.isLoggedIn.set(loggedIn);
-
-    if (loggedIn) {
-      this.activeUser.set(localStorage.getItem('username') ?? '');
-      this.activeUserId.set(localStorage.getItem('userid') ?? '');
-    } else {
-      this.activeUser.set('');
-      this.activeUserId.set('');
-    }
   }
 
   public logout(): void {
@@ -52,7 +61,6 @@ export class AuthService {
     localStorage.removeItem(env.jwtRefreshToken);
     localStorage.removeItem(env.jwtRefreshTokenExp);
 
-    this.activeUser.set('');
     this.isLoggedIn.set(false);
 
     this.router.navigate(['/feed']);

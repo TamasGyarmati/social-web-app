@@ -32,7 +32,7 @@
       <button
         id="delete-button"
         matButton="elevated"
-        *ngIf="post.creatorById === this.currentUserId"
+        *ngIf="post.creatorById === this.auth.user()?.id"
         (click)="openDialog('300ms', '150ms', post)"
       >
         Delete
