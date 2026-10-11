@@ -1,9 +1,9 @@
-<mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading()"></mat-progress-spinner>
-
 <div class="header">
   <h1>Welcome to <i>Social</i></h1>
   <h4>Share your moments, connect with others</h4>
 </div>
+
+<mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading()"></mat-progress-spinner>
 
 <div class="create-post-button">
   <button matButton *ngIf="!this.isLoading()" [routerLink]="['/create-post']">Create post</button>

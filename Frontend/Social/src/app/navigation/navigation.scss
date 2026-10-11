@@ -103,6 +103,10 @@
   font-weight: 500;
   white-space: nowrap;
 
+  &:hover {
+    cursor: pointer;
+  }
+
   mat-icon {
     color: $nav-accent;
   }

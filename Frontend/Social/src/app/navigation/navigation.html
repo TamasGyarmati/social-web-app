@@ -23,7 +23,7 @@
   </div>
 
   <div class="nav-right">
-    <div class="user-info" *ngIf="this.auth.isLoggedIn()">
+    <div class="user-info" *ngIf="this.auth.isLoggedIn()" (click)="temp()">
       <mat-icon>account_circle</mat-icon>
       <span>@{{ this.auth.activeUser() }}</span>
     </div>
