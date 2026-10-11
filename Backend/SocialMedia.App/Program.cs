@@ -14,6 +14,14 @@ using SocialMedia.Logic.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Env
+DotEnv.Load(Path.Combine(
+    builder.Environment.ContentRootPath,
+    ".env"
+));
+
+builder.Configuration.AddEnvironmentVariables();
+
 // Database
 builder.Services.AddDbContext<SocialMediaDbContext>(opt =>
 {

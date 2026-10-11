@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Env
+.env
+.env.*
+!.env.example
+
+# My ignores
 .DS_Store
 node_modules/
 Extra/
