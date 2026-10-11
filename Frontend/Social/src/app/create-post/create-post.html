@@ -1,51 +1,53 @@
-<h1>Create Post</h1>
+<div class="create-post-page">
+  <h1>Create Post</h1>
 
-<mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading()"></mat-progress-spinner>
+  <mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading()"></mat-progress-spinner>
 
-<div class="my-container" *ngIf="!this.isLoading()">
-  <form [formGroup]="postForm">
-    <mat-form-field appearance="outline">
-      <mat-label>Title</mat-label>
-      <input matInput formControlName="title" />
-      <mat-icon matSuffix>text_fields</mat-icon>
-      <mat-hint>Title of the post</mat-hint>
-      <mat-error>You must fill out the title!</mat-error>
-    </mat-form-field>
+  <div class="my-container" *ngIf="!this.isLoading()">
+    <form [formGroup]="postForm">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+        <mat-icon matSuffix>text_fields</mat-icon>
+        <mat-hint>Title of the post</mat-hint>
+        <mat-error>You must fill out the title!</mat-error>
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description"></textarea>
-      <mat-icon matSuffix>text_fields</mat-icon>
-      <mat-hint>Description of the post</mat-hint>
-      <mat-error>You must fill out the description!</mat-error>
-    </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description"></textarea>
+        <mat-icon matSuffix>text_fields</mat-icon>
+        <mat-hint>Description of the post</mat-hint>
+        <mat-error>You must fill out the description!</mat-error>
+      </mat-form-field>
 
-    <div class="file-input">
-      <label for="image">
-        <mat-icon>image</mat-icon>
-        <span>Choose an image</span>
-      </label>
+      <div class="file-input">
+        <label for="image">
+          <mat-icon>image</mat-icon>
+          <span>Choose an image</span>
+        </label>
 
-      <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" />
+        <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" />
 
-      <span class="selected-file" *ngIf="selectedFileName">
-        {{ selectedFileName }}
-      </span>
+        <span class="selected-file" *ngIf="selectedFileName">
+          {{ selectedFileName }}
+        </span>
+      </div>
+    </form>
+
+    <div class="buttons">
+      <button
+        type="button"
+        mat-flat-button
+        color="accent"
+        class="create-button"
+        (click)="createPost()"
+      >
+        Create
+      </button>
+      <button type="button" class="go-back-btn" mat-flat-button color="accent" (click)="goBack()">
+        Go back
+      </button>
     </div>
-  </form>
-
-  <div class="buttons">
-    <button
-      type="button"
-      mat-flat-button
-      color="accent"
-      class="create-button"
-      (click)="createPost()"
-    >
-      Create
-    </button>
-    <button type="button" class="go-back-btn" mat-flat-button color="accent" (click)="goBack()">
-      Go back
-    </button>
   </div>
 </div>
