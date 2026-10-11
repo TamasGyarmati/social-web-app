@@ -15,7 +15,10 @@ export class AuthService {
 
   constructor(private router: Router) {
     this.checkIfLoggedIn();
-    this.whoami();
+
+    if (this.isLoggedIn()) {
+      this.whoami();
+    }
   }
 
   private whoami(): void {
@@ -33,6 +36,16 @@ export class AuthService {
         console.log('::ERROR::', error);
       },
     );
+  }
+
+  public loadUser(): void {
+    this.checkIfLoggedIn();
+
+    if (this.isLoggedIn()) {
+      this.whoami();
+    } else {
+      this.user.set(null);
+    }
   }
 
   public canActivate(): boolean {

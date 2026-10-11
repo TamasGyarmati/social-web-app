@@ -82,15 +82,15 @@ export class Login implements OnInit {
         localStorage.setItem(env.jwtAccessTokenExp, success.accessTokenExpireDate);
         localStorage.setItem(env.jwtRefreshToken, success.refreshToken);
         localStorage.setItem(env.jwtRefreshTokenExp, success.refreshTokenExpireDate);
-        this.auth.checkIfLoggedIn();
-        this.snackBar
-          .open('Login was successful!', 'Close', { duration: 5000 })
-          .afterDismissed()
-          .subscribe(() => {
-            this.router.navigate(['/feed']);
-          });
-        console.log('::SUCCESS::', success);
+        this.auth.loadUser();
+
+        this.snackBar.open('Login was successful!', 'Close', {
+          duration: 5000,
+        });
+
         this.router.navigate(['/feed']);
+
+        console.log('::SUCCESS::', success);
       },
       (error) => {
         console.log('::ERROR::', error);
