@@ -24,6 +24,7 @@ export class CreatePost implements OnInit {
   public selectedFileName: string = '';
 
   public isLoading = signal<boolean>(true);
+  public postGettingCreated = signal<boolean>(false);
 
   public postForm = new FormGroup({
     title: new FormControl('', {
@@ -44,6 +45,8 @@ export class CreatePost implements OnInit {
   }
 
   public createPost(): void {
+    this.postGettingCreated.set(true);
+
     if (this.postForm.invalid) {
       this.postForm.markAllAsTouched();
       return;
@@ -68,6 +71,7 @@ export class CreatePost implements OnInit {
       next: (successfully) => {
         this.router.navigate(['/feed']);
         this.matBar.open('Post created successfully', 'Close', { duration: 3000 });
+        this.postGettingCreated.set(false);
         console.log('::SUCCESS::', successfully);
       },
 

@@ -415,6 +415,46 @@ h1 {
   }
 }
 
+.remove-account {
+  display: flex;
+  justify-content: center;
+  margin-top: 5rem;
+
+  button {
+    min-width: 120px;
+    min-height: 44px;
+    padding: 0 24px;
+
+    color: white;
+    background: $danger-color;
+    border-radius: 10px;
+
+    font-weight: 600;
+
+    transition:
+      background-color 180ms ease,
+      transform 180ms ease,
+      box-shadow 180ms ease;
+
+    &:hover:not(:disabled) {
+      background: $danger-color-hover;
+      box-shadow: 0 5px 16px $danger-color-hover-box-shadow;
+      transform: translateY(-1px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    &:disabled {
+      color: $text-secondary;
+      background: #26313d;
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+  }
+}
+
 // Responsivity
 
 @media (max-width: 600px) {

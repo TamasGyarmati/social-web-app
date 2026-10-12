@@ -10,6 +10,11 @@
         <span>Feed</span>
       </button>
 
+      <button matButton [routerLink]="['/users']">
+        <mat-icon>person</mat-icon>
+        <span>Users</span>
+      </button>
+
       <button matButton [routerLink]="['/login']" *ngIf="!this.auth.isLoggedIn()">
         <mat-icon>login</mat-icon>
         <span>Login</span>

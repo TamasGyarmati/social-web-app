@@ -4,7 +4,6 @@ $dialog-bg: #131a22;
 $dialog-border: #26313d;
 $text-primary: #e8edf3;
 $text-secondary: #8d9bab;
-$danger-color: #f87171;
 $danger-bg: rgba(248, 113, 113, 0.1);
 
 .dialog {
@@ -108,10 +107,10 @@ $danger-bg: rgba(248, 113, 113, 0.1);
 
     #yes-button {
       color: #fff;
-      background: #dc4545;
+      background: $danger-color;
 
       &:hover {
-        background: #ef5350;
+        background: $danger-color-hover;
       }
     }
   }
@@ -144,11 +143,5 @@ $danger-bg: rgba(248, 113, 113, 0.1);
         padding: 0 12px;
       }
     }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .dialog mat-dialog-actions button {
-    transition: none;
   }
 }
