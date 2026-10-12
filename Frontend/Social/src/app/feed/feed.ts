@@ -37,6 +37,7 @@ export class Feed implements OnInit {
   public comments = signal<Map<string, CommentToPost[]>>(new Map());
   public isLoading = signal<boolean>(true);
   readonly dialog = inject(MatDialog);
+  private isFiltered = signal<boolean>(false);
 
   constructor(
     private httpClient: HttpClient,
@@ -246,12 +247,14 @@ export class Feed implements OnInit {
   }
 
   filterByMe(): void {
-    var postsById = this.posts().filter((item) => item.creatorById === this.auth.user()?.id);
-    this.currentPosts.set(postsById);
-  }
+    this.isFiltered.update((value) => !value);
 
-  filterByAll(): void {
-    this.currentPosts.set(this.posts());
+    if (this.isFiltered()) {
+      var postsById = this.posts().filter((item) => item.creatorById === this.auth.user()?.id);
+      this.currentPosts.set(postsById);
+    } else {
+      this.currentPosts.set(this.posts());
+    }
   }
 
   filterByDate(): void {
