@@ -18,12 +18,6 @@ Backend/SocialMedia.App/Logs/
 SocialMedia.App/Logs/
 *.log
 
-**/wwwroot/images/avatars/*
-**/wwwroot/images/posts/*
-
-!**/wwwroot/images/avatars/.gitkeep
-!**/wwwroot/images/posts/.gitkeep
-
 # User-specific files
 *.suo
 *.user
