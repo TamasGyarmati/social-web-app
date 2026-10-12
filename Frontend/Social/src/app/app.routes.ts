@@ -4,7 +4,7 @@ import { Login } from './login/login';
 import { Register } from './register/register';
 import { Feed } from './feed/feed';
 import { CreatePost } from './create-post/create-post';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './_services/auth.service';
 import { UserHandling } from './user-handling/user-handling';
 
 export const routes: Routes = [
