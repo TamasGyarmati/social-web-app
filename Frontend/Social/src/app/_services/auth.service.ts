@@ -1,6 +1,6 @@
 import { User } from '../_models/user';
 import { inject, Injectable, signal } from '@angular/core';
-import { env } from '../env/env';
+import { env } from '../_env/env';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 

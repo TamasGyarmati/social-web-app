@@ -1,7 +1,7 @@
 import { RegisterError } from '../_models/registerError';
 import { OnInit } from '@angular/core';
 import { signal } from '@angular/core';
-import { env } from '../env/env';
+import { env } from '../_env/env';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';

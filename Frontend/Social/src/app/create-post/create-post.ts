@@ -7,7 +7,7 @@ import { CommonModule, Location } from '@angular/common';
 import { inject } from '@angular/core';
 import { signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { env } from '../env/env';
+import { env } from '../_env/env';
 
 @Component({
   selector: 'app-create-post',

@@ -7,7 +7,7 @@ import { UserUpdate } from '../_models/userUpdate';
 import { User } from '../_models/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { env } from '../env/env';
+import { env } from '../_env/env';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import {
@@ -18,7 +18,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../_services/auth.service';
 import { B } from '@angular/cdk/keycodes';
 
 @Component({

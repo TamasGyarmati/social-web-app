@@ -1,4 +1,4 @@
-import { env } from '../env/env';
+import { env } from '../_env/env';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Comment } from '../_models/comment';
 import { Component, input, output, signal } from '@angular/core';

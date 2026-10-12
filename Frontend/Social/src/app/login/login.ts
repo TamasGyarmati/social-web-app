@@ -1,7 +1,7 @@
 import { OnInit } from '@angular/core';
 import { signal } from '@angular/core';
 import { Token as TokenModel } from '../_models/token';
-import { env } from '../env/env';
+import { env } from '../_env/env';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -11,7 +11,7 @@ import { Login as LoginModel } from '../_models/login';
 import { CommonModule } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MATERIAL_IMPORTS } from '../_shared/material';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-login',

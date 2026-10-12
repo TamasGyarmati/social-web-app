@@ -1,5 +1,5 @@
 import { CommentToPost } from '../_models/commentToPost';
-import { env } from '../env/env';
+import { env } from '../_env/env';
 import { getAllPost } from '../_models/getAllPost';
 import { inject, signal } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -21,7 +21,7 @@ import {
   MatDialogModule,
 } from '@angular/material/dialog';
 import { DialogAnimation } from '../dialog-animation/dialog-animation';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-feed',

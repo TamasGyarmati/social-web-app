@@ -1,13 +1,13 @@
 import { effect } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { env } from '../env/env';
+import { env } from '../_env/env';
 import { Component, input, output, signal } from '@angular/core';
 import { CommentToPost } from '../_models/commentToPost';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Comment } from '../_models/comment';
-import { AuthService } from '../services/auth.service';
+import { AuthService } from '../_services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
