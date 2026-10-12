@@ -4,10 +4,33 @@
   text-align: center;
 
   #status-code {
-    margin-top: 10rem;
+    margin-top: 12rem;
   }
 
-  button[matButton] {
-    color: $blue-btn-color;
+  #content {
+    margin-bottom: 3rem;
+  }
+
+  button {
+    min-width: 120px;
+    min-height: 44px;
+    padding: 0 24px;
+
+    color: white;
+    background: $go-back-btn-color;
+    border-radius: 10px;
+
+    font-weight: 600;
+
+    transition:
+      background-color 180ms ease,
+      transform 180ms ease,
+      box-shadow 180ms ease;
+
+    &:hover:not(:disabled) {
+      background: $accent-color;
+      box-shadow: 0 5px 16px $accent-color-hover-box-shadow;
+      transform: translateY(-1px);
+    }
   }
 }

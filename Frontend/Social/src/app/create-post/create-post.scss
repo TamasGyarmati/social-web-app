@@ -187,7 +187,7 @@
 
       &:hover {
         background: $accent-color;
-        box-shadow: 0 5px 16px rgba(96, 165, 250, 0.18);
+        box-shadow: 0 5px 16px $accent-color-hover-box-shadow;
       }
     }
 

@@ -9,7 +9,7 @@ import { UserHandling } from './user-handling/user-handling';
 import { Users } from './users/users';
 
 export const routes: Routes = [
-  { path: '', component: Feed },
+  { path: '', redirectTo: 'feed', pathMatch: 'full' },
   { path: 'feed', component: Feed },
   { path: 'login', component: Login },
   { path: 'register', component: Register },

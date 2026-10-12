@@ -103,6 +103,8 @@
   font-weight: 500;
   white-space: nowrap;
 
+  transition: transform 0.3s;
+
   img {
     width: $nav-img-size;
     height: $nav-img-size;
@@ -111,6 +113,11 @@
 
   &:hover {
     cursor: pointer;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(1);
   }
 
   mat-icon {
