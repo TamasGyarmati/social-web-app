@@ -8,11 +8,11 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Comment } from '../_models/comment';
 import { AuthService } from '../_services/auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-comment-item',
-  imports: [MATERIAL_IMPORTS, CommonModule, FormsModule],
+  imports: [MATERIAL_IMPORTS, CommonModule, FormsModule, RouterLink],
   templateUrl: './comment-item.html',
   styleUrl: './comment-item.scss',
 })

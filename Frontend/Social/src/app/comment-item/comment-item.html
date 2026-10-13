@@ -1,6 +1,6 @@
 <div class="comment">
   <div class="comment-header">
-    <strong>@{{ comment().userName }}</strong>
+    <strong [routerLink]="['/user', comment().createdById]">@{{ comment().userName }}</strong>
   </div>
 
   <div class="comment-content">
