@@ -32,6 +32,12 @@ public record GetFollowersByIdResponseDto(
     string? AvatarUrl
 );
 
+public record GetFollowingsByIdResponseDto(
+    string Id,
+    string UserName,
+    string? AvatarUrl
+);
+
 public record UploadAvatarRequestDto(
     IFormFile Image
 );
