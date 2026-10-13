@@ -20,7 +20,7 @@
 
 <div class="my-container" *ngIf="!this.isLoading()">
   <div class="feed-card" *ngFor="let post of this.currentPosts()">
-    <div class="feed-user-data">
+    <div class="feed-user-data" [routerLink]="['/user', post.creatorById]">
       <img class="avatar" [src]="this.apiUri + '/' + post.creatorAvatarUrl" alt="" />
       <div class="feed-user-info">
         <h2>@{{ post.creatorUserName }}</h2>
