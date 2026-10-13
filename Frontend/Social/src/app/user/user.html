@@ -42,9 +42,22 @@
         <button
           mat-flat-button
           type="button"
+          class="manage-account-button"
+          [routerLink]="['/user-handling']"
+          *ngIf="currentUser.id === this.auth.user()?.id"
+        >
+          <mat-icon> manage </mat-icon>
+
+          <span> Manage account </span>
+        </button>
+
+        <button
+          mat-flat-button
+          type="button"
           class="follow-button"
           [class.unfollow-button]="isFollowing() === true"
           (click)="followUser()"
+          *ngIf="currentUser.id !== this.auth.user()?.id"
         >
           <mat-icon>
             {{ isFollowing() ? 'person_remove' : 'person_add' }}

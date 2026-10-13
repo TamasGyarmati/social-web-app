@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { env } from '../_env/env';
 import { User as UserModel } from '../_models/user';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,10 +10,11 @@ import { FollowResponse } from '../_models/followResponse';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { FollowDialog } from '../follow-dialog/follow-dialog';
+import { AuthService } from '../_services/auth.service';
 
 @Component({
   selector: 'app-user',
-  imports: [MATERIAL_IMPORTS, CommonModule, FormsModule],
+  imports: [MATERIAL_IMPORTS, CommonModule, FormsModule, RouterLink],
   templateUrl: './user.html',
   styleUrl: './user.scss',
 })
@@ -24,6 +25,7 @@ export class User implements OnInit {
   private route = inject(ActivatedRoute);
   private matBar = inject(MatSnackBar);
   readonly dialog = inject(MatDialog);
+  public auth = inject(AuthService);
   public apiUri = env.apiUri;
   public isFollowing = signal<boolean | null>(null);
   public isFollowingMe = signal<boolean | null>(null);

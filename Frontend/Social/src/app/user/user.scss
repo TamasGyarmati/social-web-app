@@ -10,7 +10,7 @@
 
 .user-page {
   width: 100%;
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
 
   > h1 {
@@ -146,6 +146,10 @@
   }
 }
 
+.manage-account-button {
+  border-radius: 40px;
+}
+
 // Follow status badges
 
 .follow-status {
@@ -188,7 +192,8 @@
 
 // Follow / unfollow button
 
-.follow-button {
+.follow-button,
+.manage-account-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -224,8 +229,8 @@
   }
 
   &:hover {
-    background: rgba(0, 123, 255, 0.829);
-    box-shadow: 0 5px 16px rgba(0, 85, 176, 0.445);
+    background: $accent-color;
+    box-shadow: 0 5px 16px $accent-color-hover-box-shadow;
     border-color: rgba(0, 44, 86, 0.5);
     transform: translateY(-1px);
   }
