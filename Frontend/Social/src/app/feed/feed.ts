@@ -22,6 +22,7 @@ import {
 } from '@angular/material/dialog';
 import { DialogAnimation } from '../dialog-animation/dialog-animation';
 import { AuthService } from '../_services/auth.service';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-feed',
@@ -38,6 +39,7 @@ export class Feed implements OnInit {
   public isLoading = signal<boolean>(true);
   readonly dialog = inject(MatDialog);
   private isFiltered = signal<boolean>(false);
+  private isDateDescending = signal<boolean>(false);
 
   constructor(
     private httpClient: HttpClient,
@@ -246,19 +248,28 @@ export class Feed implements OnInit {
     });
   }
 
-  filterByMe(): void {
-    this.isFiltered.update((value) => !value);
+  applyFilters(): void {
+    let filteredPosts = [...this.posts()];
 
     if (this.isFiltered()) {
-      var postsById = this.posts().filter((item) => item.creatorById === this.auth.user()?.id);
-      this.currentPosts.set(postsById);
-    } else {
-      this.currentPosts.set(this.posts());
+      filteredPosts = filteredPosts.filter((item) => item.creatorById === this.auth.user()?.id);
     }
+
+    if (this.isDateDescending()) {
+      filteredPosts.reverse();
+    }
+
+    this.currentPosts.set(filteredPosts);
+  }
+
+  filterByMe(): void {
+    this.isFiltered.update((value) => !value);
+    this.applyFilters();
   }
 
   filterByDate(): void {
-    this.currentPosts.set(this.posts().reverse());
+    this.isDateDescending.update((value) => !value);
+    this.applyFilters();
   }
 
   openDialog(
