@@ -16,6 +16,7 @@ public interface IUserLogic
     Task<List<GetUsersResponseDto>> GetUsersAsync(CancellationToken ct = default, bool isDeleted = true);
     Task<GetUserByIdResult> GetUserByIdAsync(string userId, CancellationToken ct = default);
     Task<GetUserByIdResult> GetUserByIdForFollowsAsync(string userId, string currentUsedId, CancellationToken ct = default);
+    Task<GetFollowersByIdResult> GetFollowersByIdAsync(string userId, CancellationToken ct = default);
     Task<UploadAvatarResult> UploadAsync(UploadAvatarRequestDto dto, string currentUserId, CancellationToken ct = default);
     Task<UpdateUserResult> UpdateAsync(UpdateUserRequestDto dto, string currentUserId, CancellationToken ct = default);
     Task<UpdatePasswordResult> UpdatePasswordAsync(UpdatePasswordRequestDto dto, string currentUserId, CancellationToken ct = default);
@@ -86,6 +87,31 @@ public class UserLogic(
         var response = user.FromDomainToGetUserByIdDto(currentUsedId);
 
         return new GetUserByIdResult.Success(response);
+    }
+
+    public async Task<GetFollowersByIdResult> GetFollowersByIdAsync(string userId, CancellationToken ct = default)
+    {
+        var user = await _userManager.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Select(u => new
+            {
+                Followers = u.Followers
+                    .Select(f => new GetFollowersByIdResponseDto(
+                        f.Follower!.Id,
+                        f.Follower.UserName ?? string.Empty,
+                        f.Follower.AvatarUrl
+                    ))
+                    .ToList()
+            })
+            .FirstOrDefaultAsync(ct);
+
+        if (user is null)
+        {
+            return new GetFollowersByIdResult.UserNotFound("The user was not found.");
+        }
+
+        return new GetFollowersByIdResult.Success(user.Followers);
     }
 
     public async Task<UploadAvatarResult> UploadAsync(

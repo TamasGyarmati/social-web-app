@@ -43,6 +43,29 @@ public class UserController(IUserLogic _logic) : ControllerBase
         };
     }
 
+    [HttpGet("{id}/followers")]
+    [ProducesResponseType(typeof(GetFollowersByIdResponseDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [EndpointSummary("Returns the followers for the provided userId.")]
+    public async Task<ActionResult<List<GetFollowersByIdResponseDto>>> GetFollowersById(string id, CancellationToken ct = default)
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await _logic.GetFollowersByIdAsync(id, ct);
+
+        return result switch
+        {
+            GetFollowersByIdResult.UserNotFound error => NotFound(new { error.Message }),
+            GetFollowersByIdResult.Success response => Ok(response),
+            _ => StatusCode(500)
+        };
+    }
+
     [HttpGet("whoami")]
     [Authorize]
     [EndpointSummary("Returns YOU.")]
