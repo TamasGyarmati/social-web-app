@@ -1,1 +1,57 @@
-<p>user works!</p>
+<div class="user-page">
+  <h1>User Profile</h1>
+
+  <mat-progress-spinner mode="indeterminate" *ngIf="isLoading()"></mat-progress-spinner>
+
+  <ng-container *ngIf="!isLoading() && user() as currentUser">
+    <div class="profile-card">
+      <!-- Profile header -->
+      <div class="profile-header">
+        <div class="avatar-container">
+          <img
+            class="profile-avatar"
+            [src]="
+              currentUser.avatarUrl
+                ? this.apiUri + '/' + currentUser.avatarUrl
+                : 'assets/default-avatar.png'
+            "
+            [alt]="currentUser.userName + ' avatar'"
+          />
+        </div>
+
+        <div class="profile-info">
+          <h2>{{ currentUser.firstName }} {{ currentUser.lastName }}</h2>
+          <p class="username">@{{ currentUser.userName }}</p>
+
+          <p class="email">
+            <mat-icon>mail_outline</mat-icon>
+            {{ currentUser.email }}
+          </p>
+        </div>
+
+        <button mat-flat-button type="button" class="follow-button">
+          <mat-icon>person_add</mat-icon>
+          Follow
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider"></div>
+
+      <!-- Statistics -->
+      <div class="profile-stats">
+        <button type="button" class="stat" aria-label="View followers">
+          <span class="stat-value">{{ currentUser.followerCount }}</span>
+          <span class="stat-label">Followers</span>
+        </button>
+
+        <div class="stat-divider"></div>
+
+        <button type="button" class="stat" aria-label="View following">
+          <span class="stat-value">{{ currentUser.followingCount }}</span>
+          <span class="stat-label">Following</span>
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>
