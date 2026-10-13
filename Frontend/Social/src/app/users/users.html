@@ -1,1 +1,49 @@
-<h1>This page is under development!</h1>
+<h1>Users</h1>
+
+<mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading()"></mat-progress-spinner>
+
+<div class="search-container" *ngIf="!this.isLoading()">
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search users</mat-label>
+
+    <mat-icon matPrefix>search</mat-icon>
+
+    <input
+      matInput
+      type="text"
+      placeholder="Search by username..."
+      [value]="searchText()"
+      (input)="onSearch($event)"
+    />
+
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      aria-label="Clear search"
+      *ngIf="searchText()"
+      (click)="clearSearch()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+</div>
+
+<div class="users-container" *ngIf="!this.isLoading()">
+  <div class="card" *ngFor="let user of filteredUsers()" [routerLink]="['/user', user.id]">
+    <img
+      class="user-avatar"
+      [src]="apiUri + '/' + user.imageUrl"
+      [alt]="user.userName + ' avatar'"
+    />
+
+    <div class="user-info">
+      <h2>{{ user.userName }}</h2>
+      <span>View profile</span>
+    </div>
+
+    <mat-icon class="navigate-icon">chevron_right</mat-icon>
+  </div>
+
+  <p class="no-results" *ngIf="filteredUsers().length === 0">No users found.</p>
+</div>

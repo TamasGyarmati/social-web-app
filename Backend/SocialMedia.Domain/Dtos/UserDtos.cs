@@ -8,7 +8,8 @@ public record GetUsersResponseDto(
     string UserName,
     string FirstName,
     string LastName,
-    string Email
+    string Email,
+    string ImageUrl
 );
 
 public record GetUserByIdResponseDto(
@@ -81,10 +82,11 @@ public static class UserMappingExtensions
             user.UserName ?? string.Empty,
             user.FirstName,
             user.LastName,
-            user.Email ?? string.Empty
+            user.Email ?? string.Empty,
+            user.AvatarUrl ?? string.Empty
         );
     }
-    
+
     public static GetUserByIdResponseDto FromDomainToGetUserByIdDto(this AppUser user)
     {
         return new GetUserByIdResponseDto(

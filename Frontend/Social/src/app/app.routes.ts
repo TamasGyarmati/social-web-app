@@ -7,6 +7,7 @@ import { CreatePost } from './create-post/create-post';
 import { AuthService } from './_services/auth.service';
 import { UserHandling } from './user-handling/user-handling';
 import { Users } from './users/users';
+import { User } from './user/user';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'feed', pathMatch: 'full' },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'create-post', component: CreatePost, canActivate: [AuthService] },
   { path: 'user-handling', component: UserHandling, canActivate: [AuthService] },
   { path: 'users', component: Users, canActivate: [AuthService] },
+  { path: 'user/:id', component: User, canActivate: [AuthService] },
   { path: 'not-found', component: NotFound },
   { path: '**', redirectTo: 'not-found', pathMatch: 'full' },
 ];

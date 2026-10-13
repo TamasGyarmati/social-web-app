@@ -1,4 +1,184 @@
+@import '../_shared/variables.scss';
+
+:host {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 32px 24px 48px;
+  color: $text-primary;
+}
+
 h1 {
+  margin: 0 0 32px;
+  color: $text-primary;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.8px;
   text-align: center;
-  margin-top: 15rem;
+}
+
+mat-progress-spinner {
+  margin: 0 auto;
+  margin-top: 10rem;
+}
+
+.search-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto 24px;
+}
+
+.search-field {
+  width: 100%;
+
+  mat-icon[matPrefix] {
+    margin-right: 8px;
+    color: $text-secondary;
+  }
+
+  button[matSuffix] {
+    color: $text-secondary;
+    transition: color 180ms ease;
+    margin-right: 0.5rem;
+
+    &:hover {
+      color: $accent-color;
+    }
+  }
+}
+
+.no-results {
+  grid-column: 1 / -1;
+  margin: 32px 0;
+  color: $text-secondary;
+  font-size: 1rem;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .search-container {
+    margin-bottom: 20px;
+  }
+}
+
+.users-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: 18px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  background: $card-bg;
+  border: 1px solid $card-border;
+  border-radius: 16px;
+  cursor: pointer;
+  transition:
+    transform 200ms ease,
+    border-color 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+
+  &:hover {
+    background: $nav-hover;
+    border-color: $card-border-hover;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+    transform: translateY(-3px);
+
+    .navigate-icon {
+      color: $accent-color;
+      transform: translateX(3px);
+    }
+
+    .user-info h2 {
+      color: $accent-color;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 3px;
+  }
+
+  .user-avatar {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    object-fit: cover;
+    border: 2px solid $card-border-hover;
+    border-radius: 50%;
+    background: $feed-bg;
+  }
+
+  .user-info {
+    flex: 1;
+    min-width: 0;
+
+    h2 {
+      margin: 0 0 5px;
+      color: $text-primary;
+      font-size: 1rem;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+      transition: color 180ms ease;
+    }
+
+    span {
+      color: $text-secondary;
+      font-size: 0.8rem;
+    }
+  }
+
+  .navigate-icon {
+    flex-shrink: 0;
+    color: $text-secondary;
+    transition:
+      color 180ms ease,
+      transform 180ms ease;
+  }
+}
+
+@media (max-width: 600px) {
+  :host {
+    padding: 24px 12px 32px;
+  }
+
+  h1 {
+    margin-bottom: 24px;
+    font-size: 1.8rem;
+  }
+
+  .users-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    padding: 16px;
+    gap: 14px;
+
+    .user-avatar {
+      width: 48px;
+      height: 48px;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card * {
+    transition: none !important;
+  }
+
+  .card:hover {
+    transform: none;
+  }
 }
