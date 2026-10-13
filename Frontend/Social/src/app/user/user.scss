@@ -4,7 +4,7 @@
   display: block;
   width: 100%;
   box-sizing: border-box;
-  padding: 32px 24px 48px;
+  padding: 36px 24px 48px;
   color: $text-primary;
 }
 
@@ -13,12 +13,12 @@
   max-width: 900px;
   margin: 0 auto;
 
-  h1 {
+  > h1 {
     margin: 0 0 32px;
     color: $text-primary;
-    font-size: clamp(1.8rem, 4vw, 2.5rem);
-    font-weight: 700;
-    letter-spacing: -0.8px;
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: -1px;
     text-align: center;
   }
 
@@ -27,23 +27,36 @@
   }
 }
 
+// Profile card
+
 .profile-card {
   width: 100%;
   box-sizing: border-box;
   padding: 32px;
+  overflow: hidden;
+
   background: $card-bg;
   border: 1px solid $card-border;
-  border-radius: 18px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  border-radius: 20px;
+
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+
   transition:
     border-color 200ms ease,
     box-shadow 200ms ease;
 
   &:hover {
     border-color: $card-border-hover;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+
+    box-shadow:
+      0 12px 32px rgba(0, 0, 0, 0.18),
+      0 2px 5px rgba(0, 0, 0, 0.08);
   }
 }
+
+// Profile header
 
 .profile-header {
   display: flex;
@@ -52,15 +65,21 @@
   min-width: 0;
 }
 
+// Avatar
+
 .avatar-container {
+  position: relative;
   flex-shrink: 0;
-  width: 110px;
-  height: 110px;
+  width: 112px;
+  height: 112px;
   padding: 4px;
   box-sizing: border-box;
+
+  background: $feed-bg;
   border: 2px solid $accent-color;
   border-radius: 50%;
-  background: $feed-bg;
+
+  box-shadow: 0 0 0 5px rgba(96, 165, 250, 0.07);
 }
 
 .profile-avatar {
@@ -71,22 +90,34 @@
   border-radius: 50%;
 }
 
+// Profile information
+
 .profile-info {
   flex: 1;
   min-width: 0;
 
+  .name-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 7px;
+  }
+
   h2 {
-    margin: 0 0 6px;
+    margin: 0;
     color: $text-primary;
     font-size: clamp(1.25rem, 3vw, 1.7rem);
-    font-weight: 700;
+    font-weight: 750;
+    letter-spacing: -0.6px;
     overflow-wrap: anywhere;
   }
 
   .username {
-    margin: 0 0 16px;
+    margin: 0 0 15px;
     color: $text-secondary;
     font-size: 0.95rem;
+    font-weight: 500;
   }
 
   .email {
@@ -94,20 +125,68 @@
     align-items: center;
     gap: 8px;
     margin: 0;
+
     color: $text-secondary;
     font-size: 0.9rem;
     overflow-wrap: anywhere;
 
     mat-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       flex-shrink: 0;
-      width: 20px;
-      height: 20px;
+
+      width: 19px;
+      height: 19px;
+
       color: $accent-color;
-      font-size: 20px;
-      line-height: 20px;
+      font-size: 19px;
+      line-height: 19px;
     }
   }
 }
+
+// Follow status badges
+
+.follow-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+
+  width: fit-content;
+  padding: 6px 10px;
+  box-sizing: border-box;
+
+  border: 1px solid transparent;
+  border-radius: 8px;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+
+  mat-icon {
+    width: 15px;
+    height: 15px;
+    font-size: 15px;
+    line-height: 15px;
+  }
+}
+
+.follows-you {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.09);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.not-following {
+  color: $text-secondary;
+  background: rgba(141, 155, 171, 0.07);
+  border-color: rgba(141, 155, 171, 0.17);
+}
+
+// Follow / unfollow button
 
 .follow-button {
   display: inline-flex;
@@ -115,49 +194,82 @@
   justify-content: center;
   flex-shrink: 0;
   gap: 8px;
-  min-width: 120px;
+
+  min-width: 125px;
   min-height: 44px;
-  padding: 0 20px;
-  color: white;
+  padding: 0 18px;
+  box-sizing: border-box;
+
+  color: #fff;
   background: $go-back-btn-color;
-  border: none;
-  border-radius: 10px;
-  font-weight: 600;
+  border: 1px solid rgba(0, 48, 96, 0.774);
+  border-radius: 11px;
+
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  cursor: pointer;
+
   transition:
     background-color 180ms ease,
-    transform 180ms ease,
-    box-shadow 180ms ease;
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
 
   mat-icon {
-    width: 20px;
-    height: 20px;
-    font-size: 20px;
-    line-height: 20px;
+    width: 19px;
+    height: 19px;
+    font-size: 19px;
+    line-height: 19px;
   }
 
   &:hover {
-    background: $accent-color;
-    box-shadow: 0 5px 16px rgba(96, 165, 250, 0.18);
+    background: rgba(0, 123, 255, 0.829);
+    box-shadow: 0 5px 16px rgba(0, 85, 176, 0.445);
+    border-color: rgba(0, 44, 86, 0.5);
     transform: translateY(-1px);
   }
 
   &:active {
     transform: translateY(0);
+    box-shadow: none;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 3px;
   }
 }
+
+.follow-button.unfollow-button {
+  color: $text-primary;
+  background: rgba(248, 113, 113, 0.09);
+  border-color: rgba(202, 57, 57, 0.5);
+
+  &:hover {
+    color: #fca5a5;
+    background: rgba(254, 52, 52, 0.3);
+    border-color: rgba(248, 113, 113, 0.3);
+    box-shadow: none;
+  }
+}
+
+// Divider
 
 .divider {
   width: 100%;
   height: 1px;
-  margin: 28px 0 24px;
+  margin: 30px 0 24px;
   background: $card-border;
 }
+
+// Followers / following statistics
 
 .profile-stats {
   display: flex;
   align-items: stretch;
   justify-content: center;
-  gap: 0;
+  gap: 12px;
 }
 
 .stat {
@@ -167,19 +279,26 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
+
   min-width: 0;
-  padding: 12px;
+  padding: 16px 12px;
+  box-sizing: border-box;
+
   color: inherit;
   background: transparent;
-  border: none;
-  border-radius: 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+
   cursor: pointer;
+
   transition:
     background-color 180ms ease,
+    border-color 180ms ease,
     transform 180ms ease;
 
   &:hover {
     background: $nav-hover;
+    border-color: $card-border;
     transform: translateY(-2px);
 
     .stat-value {
@@ -191,6 +310,10 @@
     }
   }
 
+  &:active {
+    transform: translateY(0);
+  }
+
   &:focus-visible {
     outline: 2px solid $accent-color;
     outline-offset: 2px;
@@ -198,14 +321,19 @@
 
   .stat-value {
     color: $text-primary;
-    font-size: 1.6rem;
-    font-weight: 700;
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+
     transition: color 180ms ease;
   }
 
   .stat-label {
     color: $text-secondary;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+
     transition: color 180ms ease;
   }
 }
@@ -217,19 +345,21 @@
   background: $card-border;
 }
 
+// Tablet and mobile
+
 @media (max-width: 650px) {
   :host {
     padding: 24px 12px 32px;
   }
 
-  .user-page h1 {
+  .user-page > h1 {
     margin-bottom: 24px;
     font-size: 1.8rem;
   }
 
   .profile-card {
     padding: 24px 18px;
-    border-radius: 14px;
+    border-radius: 16px;
   }
 
   .profile-header {
@@ -244,6 +374,20 @@
 
   .profile-info {
     flex: 1 1 calc(100% - 110px);
+
+    .name-row {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .username {
+      margin-bottom: 12px;
+    }
+  }
+
+  .follow-status {
+    font-size: 0.72rem;
   }
 
   .follow-button {
@@ -252,33 +396,51 @@
   }
 
   .divider {
-    margin: 24px 0 18px;
+    margin: 24px 0 16px;
+  }
+
+  .profile-stats {
+    gap: 6px;
   }
 
   .stat {
-    padding: 12px 8px;
+    padding: 14px 8px;
 
     .stat-value {
-      font-size: 1.4rem;
+      font-size: 1.45rem;
     }
 
     .stat-label {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .profile-card,
-  .follow-button,
-  .stat,
-  .stat-value,
-  .stat-label {
-    transition: none !important;
+// Small mobile screens
+
+@media (max-width: 380px) {
+  .profile-card {
+    padding: 20px 14px;
   }
 
-  .follow-button:hover,
-  .stat:hover {
-    transform: none;
+  .profile-header {
+    gap: 14px;
+  }
+
+  .avatar-container {
+    width: 72px;
+    height: 72px;
+  }
+
+  .profile-info {
+    flex-basis: calc(100% - 90px);
+  }
+
+  .profile-info h2 {
+    font-size: 1.2rem;
+  }
+
+  .profile-info .email {
+    font-size: 0.8rem;
   }
 }

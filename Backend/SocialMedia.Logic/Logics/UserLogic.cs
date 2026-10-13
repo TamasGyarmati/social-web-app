@@ -396,7 +396,7 @@ public class UserLogic(
     {
         if (string.Equals(targerUserId, currentUserId, StringComparison.OrdinalIgnoreCase))
         {
-            return new FollowResult.CannotFollowSelf("Cannot follow self.");
+            return new FollowResult.CannotFollowSelf("Cannot follow yourself.");
         }
 
         var dbStatus = await _repo.CreateFollowAsync(targerUserId, currentUserId, ct);

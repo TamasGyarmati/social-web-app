@@ -10,4 +10,5 @@ export interface User {
   followerUsernames: string[];
   followingUsernames: string[];
   isFollowing: boolean;
+  isFollowingMe: boolean;
 }

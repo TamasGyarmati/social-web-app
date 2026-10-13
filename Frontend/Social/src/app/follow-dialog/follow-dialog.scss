@@ -1,0 +1,148 @@
+@import '../_shared/variables.scss';
+
+:host {
+  display: block;
+  color: $text-primary;
+}
+
+.follow-dialog {
+  width: 100%;
+  min-width: 320px;
+  max-width: 440px;
+  max-height: 75vh;
+  box-sizing: border-box;
+  padding: 24px;
+  overflow-y: auto;
+  background: $card-bg;
+  color: $text-primary;
+  border-radius: 16px;
+
+  h2 {
+    margin: 0 0 22px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+  }
+}
+
+mat-progress-spinner {
+  margin: 0 auto;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  gap: 14px;
+  padding: 12px 14px;
+  box-sizing: border-box;
+
+  color: $text-primary;
+  background: $feed-bg;
+  border: 1px solid $card-border;
+  border-radius: 12px;
+
+  text-align: left;
+  cursor: pointer;
+
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    transform 180ms ease;
+
+  &:hover {
+    background: $nav-hover;
+    border-color: $card-border-hover;
+    transform: translateY(-1px);
+
+    .arrow-icon {
+      color: $accent-color;
+      transform: translateX(3px);
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $accent-color;
+    outline-offset: 2px;
+  }
+}
+
+.user-avatar {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
+  border: 2px solid $card-border;
+  border-radius: 50%;
+  background: $nav-bg;
+}
+
+.username {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: $text-primary;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow-icon {
+  flex-shrink: 0;
+  color: $text-secondary;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 36px 16px;
+  color: $text-secondary;
+  text-align: center;
+
+  mat-icon {
+    width: 40px;
+    height: 40px;
+    color: $text-secondary;
+    font-size: 40px;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .follow-dialog {
+    min-width: 0;
+    padding: 18px;
+  }
+
+  .user-card {
+    gap: 12px;
+    padding: 10px 12px;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+  }
+}

@@ -23,7 +23,8 @@ public record GetUserByIdResponseDto(
     int FollowingCount,
     List<string> FollowerUsernames,
     List<string> FollowingUsernames,
-    bool IsFollowing
+    bool IsFollowing,
+    bool IsFollowingMe
 );
 
 public record GetFollowersByIdResponseDto(
@@ -120,7 +121,8 @@ public static class UserMappingExtensions
                 .Select(x => x.Followed?.UserName ?? string.Empty)
                 .Where(u => !string.IsNullOrWhiteSpace(u))
                 .ToList(),
-            currentUserId is not null && user.Followers.Any(x => x.FollowerId == currentUserId)
+            currentUserId is not null && user.Followers.Any(x => x.FollowerId == currentUserId),
+            currentUserId is not null && user.Following.Any(x => x.FollowedId == currentUserId)
         );
     }
 }

@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FollowResponse } from '../_models/followResponse';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
+import { FollowDialog } from '../follow-dialog/follow-dialog';
 
 @Component({
   selector: 'app-user',
@@ -21,21 +23,22 @@ export class User implements OnInit {
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
   private matBar = inject(MatSnackBar);
+  readonly dialog = inject(MatDialog);
   public apiUri = env.apiUri;
   public isFollowing = signal<boolean | null>(null);
+  public isFollowingMe = signal<boolean | null>(null);
 
   ngOnInit(): void {
-    this.getUserById();
+    this.route.paramMap.subscribe((params) => {
+      const userId = params.get('id');
+
+      if (userId) {
+        this.getUserById(userId);
+      }
+    });
   }
 
-  getUserById(): void {
-    const userId = this.route.snapshot.paramMap.get('id');
-
-    if (!userId) {
-      console.error('User ID not found in route!');
-      return;
-    }
-
+  getUserById(userId: string): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
@@ -48,6 +51,7 @@ export class User implements OnInit {
           console.log('::SUCCESS::', success);
           this.user.set(success.user);
           this.isFollowing.set(success.user.isFollowing);
+          this.isFollowingMe.set(success.user.isFollowingMe);
           this.isLoading.set(false);
         },
         (error) => {
@@ -74,13 +78,43 @@ export class User implements OnInit {
       .subscribe({
         next: (success) => {
           console.log('::SUCCESS::', success);
-          this.getUserById();
+          this.getUserById(userId);
           this.matBar.open(success.message, 'Close', { duration: 3000 });
         },
         error: (error) => {
           console.log('::ERROR::', error);
-          this.matBar.open(error.message, 'Close', { duration: 3000 });
+          this.matBar.open(error.error.message, 'Close', { duration: 3000 });
         },
       });
+  }
+
+  openDialog(
+    type: 'followers' | 'following',
+    enterAnimationDuration: string,
+    exitAnimationDuration: string,
+  ): void {
+    const userId = this.route.snapshot.paramMap.get('id');
+
+    if (!userId) {
+      console.error('User ID not found in route!');
+      return;
+    }
+
+    const dialogRef = this.dialog.open(FollowDialog, {
+      width: '440px',
+      enterAnimationDuration,
+      exitAnimationDuration,
+      data: {
+        userId: userId,
+        type: type,
+      },
+    });
+
+    /*
+    dialogRef.afterClosed().subscribe((result: boolean) => {
+      if (result === true) {
+        // mi történjen?
+      }
+    }); */
   }
 }

@@ -5,22 +5,32 @@
 
   <ng-container *ngIf="!isLoading() && user() as currentUser">
     <div class="profile-card">
-      <!-- Profile header -->
       <div class="profile-header">
         <div class="avatar-container">
           <img
             class="profile-avatar"
             [src]="
-              currentUser.avatarUrl
-                ? this.apiUri + '/' + currentUser.avatarUrl
-                : 'assets/default-avatar.png'
+              currentUser.avatarUrl ? apiUri + currentUser.avatarUrl : 'assets/default-avatar.png'
             "
             [alt]="currentUser.userName + ' avatar'"
           />
         </div>
 
         <div class="profile-info">
-          <h2>{{ currentUser.firstName }} {{ currentUser.lastName }}</h2>
+          <div class="name-row">
+            <h2>{{ currentUser.firstName }} {{ currentUser.lastName }}</h2>
+
+            <span *ngIf="isFollowingMe() === true" class="follow-status follows-you">
+              <mat-icon>person_check</mat-icon>
+              Follows you
+            </span>
+
+            <span *ngIf="isFollowingMe() === false" class="follow-status not-following">
+              <mat-icon>person_outline</mat-icon>
+              Doesn't follow you
+            </span>
+          </div>
+
           <p class="username">@{{ currentUser.userName }}</p>
 
           <p class="email">
@@ -29,10 +39,20 @@
           </p>
         </div>
 
-        <button mat-flat-button type="button" class="follow-button" (click)="followUser()">
-          <mat-icon>person_add</mat-icon>
-          <span *ngIf="this.isFollowing() === false">Follow</span>
-          <span *ngIf="this.isFollowing() === true">Unfollow</span>
+        <button
+          mat-flat-button
+          type="button"
+          class="follow-button"
+          [class.unfollow-button]="isFollowing() === true"
+          (click)="followUser()"
+        >
+          <mat-icon>
+            {{ isFollowing() ? 'person_remove' : 'person_add' }}
+          </mat-icon>
+
+          <span>
+            {{ isFollowing() ? 'Unfollow' : 'Follow' }}
+          </span>
         </button>
       </div>
 
@@ -41,14 +61,24 @@
 
       <!-- Statistics -->
       <div class="profile-stats">
-        <button type="button" class="stat" aria-label="View followers">
+        <button
+          type="button"
+          class="stat"
+          aria-label="View followers"
+          (click)="openDialog('followers', '300ms', '150ms')"
+        >
           <span class="stat-value">{{ currentUser.followerCount }}</span>
           <span class="stat-label">Followers</span>
         </button>
 
         <div class="stat-divider"></div>
 
-        <button type="button" class="stat" aria-label="View following">
+        <button
+          type="button"
+          class="stat"
+          aria-label="View following"
+          (click)="openDialog('following', '300ms', '150ms')"
+        >
           <span class="stat-value">{{ currentUser.followingCount }}</span>
           <span class="stat-label">Following</span>
         </button>

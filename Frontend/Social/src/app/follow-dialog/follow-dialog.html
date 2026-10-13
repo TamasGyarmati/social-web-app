@@ -1,1 +1,70 @@
-<p>follow-dialog works!</p>
+<div class="follow-dialog">
+  <ng-container *ngIf="data.type === 'followers'; else followingTitle">
+    <h2>Followers</h2>
+  </ng-container>
+
+  <ng-template #followingTitle>
+    <h2>Following</h2>
+  </ng-template>
+
+  <mat-progress-spinner mode="indeterminate" *ngIf="isLoading()"></mat-progress-spinner>
+
+  <div class="user-list" *ngIf="!isLoading()">
+    <ng-container *ngIf="data.type === 'followers'">
+      <button
+        type="button"
+        class="user-card"
+        *ngFor="let follower of followers()"
+        [routerLink]="['/user', follower.id]"
+        (click)="closeDialog()"
+      >
+        <img
+          class="user-avatar"
+          [src]="
+            follower.avatarUrl ? this.apiUri + follower.avatarUrl : 'assets/default-avatar.png'
+          "
+          [alt]="follower.userName + ' avatar'"
+        />
+
+        <span class="username">{{ follower.userName }}</span>
+
+        <mat-icon class="arrow-icon">chevron_right</mat-icon>
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="data.type === 'following'">
+      <button
+        type="button"
+        class="user-card"
+        *ngFor="let following of followings()"
+        [routerLink]="['/user', following.id]"
+        (click)="closeDialog()"
+      >
+        <img
+          class="user-avatar"
+          [src]="
+            following.avatarUrl ? this.apiUri + following.avatarUrl : 'assets/default-avatar.png'
+          "
+          [alt]="following.userName + ' avatar'"
+        />
+
+        <span class="username">{{ following.userName }}</span>
+
+        <mat-icon class="arrow-icon">chevron_right</mat-icon>
+      </button>
+    </ng-container>
+  </div>
+
+  <div
+    class="empty-state"
+    *ngIf="
+      (data.type === 'followers' && followers()?.length === 0 && !this.isLoading()) ||
+      (data.type === 'following' && followings()?.length === 0 && !this.isLoading())
+    "
+  >
+    <mat-icon>people_outline</mat-icon>
+    <p>
+      {{ data.type === 'followers' ? 'No followers yet.' : 'Not following anyone yet.' }}
+    </p>
+  </div>
+</div>
