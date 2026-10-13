@@ -13,6 +13,7 @@ export const env = {
   userDeleteUri: 'http://localhost:5000/User/me',
   userGetAllUri: 'http://localhost:5000/User/all',
   userGetByIdUri: 'http://localhost:5000/User',
+  userFollowByIdUri: 'http://localhost:5000/User/follow',
   authRegisterUri: 'http://localhost:5000/api/Auth/register',
   jwtAccessToken: 'social-access-token',
   jwtAccessTokenExp: 'social-access-token-expiration',

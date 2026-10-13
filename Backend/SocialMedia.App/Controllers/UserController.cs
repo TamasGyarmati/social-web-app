@@ -285,10 +285,10 @@ public class UserController(IUserLogic _logic) : ControllerBase
 
         return result switch
         {
-            FollowResult.AlreadyFollowing error => BadRequest(new { error.Message }),
             FollowResult.CannotFollowSelf error => BadRequest(new { error.Message }),
             FollowResult.TargetUserNotFound error => BadRequest(new { error.Message }),
-            FollowResult.Success response => Ok(new FollowUserResponseDto(response.Message, id)),
+            FollowResult.Unfollowed response => Ok(new FollowUserResponseDto(response.Message, id, false)),
+            FollowResult.Followed response => Ok(new FollowUserResponseDto(response.Message, id, true)),
             _ => StatusCode(500)
         };
     }

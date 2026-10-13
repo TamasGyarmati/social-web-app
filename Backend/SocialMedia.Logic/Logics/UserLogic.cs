@@ -330,9 +330,9 @@ public class UserLogic(
 
         return dbStatus switch
         {
-            FollowDbStatus.Success => new FollowResult.Success("Follow was successful!"),
+            FollowDbStatus.Followed => new FollowResult.Followed("Followed successfully"),
+            FollowDbStatus.Unfollowed => new FollowResult.Unfollowed("Unfollowed successfully."),
             FollowDbStatus.TargetNotFound => new FollowResult.TargetUserNotFound("Target user not found."),
-            FollowDbStatus.AlreadyFollowing => new FollowResult.AlreadyFollowing("Already following."),
             _ => throw new InvalidOperationException("Unhandled DB follow status.")
         };
     }

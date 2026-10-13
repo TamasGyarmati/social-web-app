@@ -39,12 +39,44 @@ export class User implements OnInit {
         (success) => {
           console.log('::SUCCESS::', success);
           this.user.set(success.user);
-          console.log(this.user());
           this.isLoading.set(false);
         },
         (error) => {
           console.log('::ERROR::', error);
         },
       );
+  }
+
+  followUser(): void {
+    const userId = this.route.snapshot.paramMap.get('id');
+
+    if (!userId) {
+      console.error('User ID not found in route!');
+      return;
+    }
+
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
+    });
+
+    this.http
+      .post(
+        env.userFollowByIdUri,
+        {},
+        {
+          params: { id: userId },
+
+          headers: headers,
+        },
+      )
+      .subscribe({
+        next: (success) => {
+          console.log('::SUCCESS::', success);
+        },
+        error: (error) => {
+          console.log('::ERROR::', error);
+        },
+      });
   }
 }

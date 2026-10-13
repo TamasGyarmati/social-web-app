@@ -51,7 +51,8 @@ public record UploadAvatarResponseDto(
 
 public record FollowUserResponseDto(
     string Message,
-    string FollowedId
+    string FollowedId,
+    bool IsFollowing
 );
 
 public record UserMessageResponseDto(

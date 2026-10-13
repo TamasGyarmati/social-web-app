@@ -27,11 +27,14 @@ public class UserRepository(SocialMediaDbContext _db) : IUserRepository
         }
 
         var alreadyFollowing = await _db.UserFollows
-            .AnyAsync(uf => uf.FollowerId == followerId && uf.FollowedId == followedId, ct);
+            .FirstOrDefaultAsync(uf => uf.FollowerId == followerId && uf.FollowedId == followedId, ct);
 
-        if (alreadyFollowing)
+        if (alreadyFollowing is not null)
         {
-            return FollowDbStatus.AlreadyFollowing;
+            _db.UserFollows.Remove(alreadyFollowing);
+            await _db.SaveChangesAsync(ct);
+
+            return FollowDbStatus.Unfollowed;
         }
 
         var userFollow = new UserFollow
@@ -41,16 +44,9 @@ public class UserRepository(SocialMediaDbContext _db) : IUserRepository
         };
 
         _db.UserFollows.Add(userFollow);
+        await _db.SaveChangesAsync(ct);
 
-        try
-        {
-            await _db.SaveChangesAsync(ct);
-            return FollowDbStatus.Success;
-        }
-        catch (DbUpdateException)
-        {
-            return FollowDbStatus.AlreadyFollowing;
-        }
+        return FollowDbStatus.Followed;
     }
 
     public async Task<int> SoftDeleteUserAsync(string userId, CancellationToken ct = default)

@@ -2,7 +2,7 @@ namespace SocialMedia.Domain.Enums;
 
 public enum FollowDbStatus
 {
-    Success,
+    Followed,
     TargetNotFound,
-    AlreadyFollowing
+    Unfollowed
 }
