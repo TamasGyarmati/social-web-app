@@ -36,18 +36,39 @@
   margin-bottom: 10px;
 
   button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+
+    color: #fff;
+    background: $go-back-btn-color;
+    border: 1px solid transparent;
     border-radius: 12px;
+
+    font-size: 0.9rem;
+    font-weight: 650;
+
     transition:
       transform 0.2s ease,
-      box-shadow 0.2s ease;
+      box-shadow 0.2s ease,
+      background-color 0.2s ease;
 
     &:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      background: $accent-color;
+      box-shadow: 0 5px 16px $accent-color-hover-box-shadow;
     }
 
     &:active {
-      transform: scale(0.95);
+      transform: scale(0.97);
+      box-shadow: none;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $accent-color;
+      outline-offset: 3px;
     }
   }
 }
@@ -62,26 +83,66 @@ mat-progress-spinner {
 
 .filter-buttons {
   display: flex;
-  flex-direction: row;
   justify-content: center;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 32px;
+  gap: 12px;
+  margin: 24px auto 32px;
 
   .filter-button {
     button {
-      border-radius: 10px;
-      transition:
-        background-color 0.3s ease,
-        transform 0.2s ease,
-        box-shadow 0.3s ease !important;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 18px;
 
-      &:hover {
-        transform: scale(1.05);
+      color: $text-secondary;
+      background: $card-bg;
+      border: 1px solid $card-border;
+      border-radius: 10px;
+
+      font-size: 0.9rem;
+      font-weight: 650;
+
+      transition:
+        color 180ms ease,
+        background-color 180ms ease,
+        border-color 180ms ease,
+        box-shadow 180ms ease;
+
+      mat-icon {
+        width: 19px;
+        height: 19px;
+        font-size: 19px;
+        line-height: 19px;
       }
 
-      &:active {
-        transform: scale(0.98);
+      &:hover {
+        color: $text-primary;
+        background: $nav-hover;
+        border-color: $card-border-hover;
+      }
+
+      &.active {
+        color: #ffffff;
+        background: rgba(96, 165, 250, 0.15);
+        border-color: $accent-color;
+        box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.08);
+
+        mat-icon {
+          color: $accent-color;
+        }
+
+        &:hover {
+          background: rgba(96, 165, 250, 0.22);
+        }
+      }
+
+      &:focus-visible {
+        outline: 2px solid $accent-color;
+        outline-offset: 3px;
       }
     }
   }
@@ -318,13 +379,14 @@ mat-progress-spinner {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  #delete-button,
-  .create-post-button button,
-  .filter-buttons button,
-  .feed-card,
-  .feed-image .post,
-  .feed-data .data {
-    transition: none;
+@media (max-width: 480px) {
+  .filter-buttons {
+    gap: 8px;
+    margin: 20px auto 24px;
+
+    .filter-button button {
+      padding: 0 12px;
+      font-size: 0.82rem;
+    }
   }
 }

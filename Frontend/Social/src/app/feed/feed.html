@@ -11,10 +11,24 @@
 
 <div class="filter-buttons" *ngIf="this.auth.isLoggedIn()">
   <div class="filter-button">
-    <button matButton (click)="filterByMe()" *ngIf="!this.isLoading()">Filter by me</button>
+    <button
+      matButton
+      [class.active]="isFiltered()"
+      (click)="filterByMe()"
+      *ngIf="!this.isLoading()"
+    >
+      Filter by me
+    </button>
   </div>
   <div class="filter-button">
-    <button matButton (click)="filterByDate()" *ngIf="!this.isLoading()">Filter by date</button>
+    <button
+      matButton
+      [class.active]="isDateDescending()"
+      (click)="filterByDate()"
+      *ngIf="!this.isLoading()"
+    >
+      Filter by date
+    </button>
   </div>
 </div>
 

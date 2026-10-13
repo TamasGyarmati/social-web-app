@@ -37,9 +37,9 @@ export class Feed implements OnInit {
   public openedComments = signal<Set<string>>(new Set());
   public comments = signal<Map<string, CommentToPost[]>>(new Map());
   public isLoading = signal<boolean>(true);
-  readonly dialog = inject(MatDialog);
-  private isFiltered = signal<boolean>(false);
-  private isDateDescending = signal<boolean>(false);
+  private readonly dialog = inject(MatDialog);
+  public isFiltered = signal<boolean>(false);
+  public isDateDescending = signal<boolean>(false);
 
   constructor(
     private httpClient: HttpClient,
@@ -248,8 +248,8 @@ export class Feed implements OnInit {
     });
   }
 
-  applyFilters(): void {
-    let filteredPosts = [...this.posts()];
+  private applyFilters(): void {
+    let filteredPosts = [...this.posts()]; // spread operator -> másolatot készít
 
     if (this.isFiltered()) {
       filteredPosts = filteredPosts.filter((item) => item.creatorById === this.auth.user()?.id);
@@ -262,17 +262,17 @@ export class Feed implements OnInit {
     this.currentPosts.set(filteredPosts);
   }
 
-  filterByMe(): void {
+  public filterByMe(): void {
     this.isFiltered.update((value) => !value);
     this.applyFilters();
   }
 
-  filterByDate(): void {
+  public filterByDate(): void {
     this.isDateDescending.update((value) => !value);
     this.applyFilters();
   }
 
-  openDialog(
+  public openDialog(
     enterAnimationDuration: string,
     exitAnimationDuration: string,
     post: getAllPost,
