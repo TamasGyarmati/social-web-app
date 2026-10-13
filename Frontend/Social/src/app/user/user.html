@@ -20,12 +20,18 @@
           <div class="name-row">
             <h2>{{ currentUser.firstName }} {{ currentUser.lastName }}</h2>
 
-            <span *ngIf="isFollowingMe() === true" class="follow-status follows-you">
+            <span
+              *ngIf="isFollowingMe() === true && currentUser.id !== this.auth.user()?.id"
+              class="follow-status follows-you"
+            >
               <mat-icon>person_check</mat-icon>
               Follows you
             </span>
 
-            <span *ngIf="isFollowingMe() === false" class="follow-status not-following">
+            <span
+              *ngIf="isFollowingMe() === false && currentUser.id !== this.auth.user()?.id"
+              class="follow-status not-following"
+            >
               <mat-icon>person_outline</mat-icon>
               Doesn't follow you
             </span>
