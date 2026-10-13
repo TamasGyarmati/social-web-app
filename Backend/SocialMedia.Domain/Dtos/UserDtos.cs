@@ -22,7 +22,8 @@ public record GetUserByIdResponseDto(
     int FollowerCount,
     int FollowingCount,
     List<string> FollowerUsernames,
-    List<string> FollowingUsernames
+    List<string> FollowingUsernames,
+    bool IsFollowing
 );
 
 public record UploadAvatarRequestDto(
@@ -88,7 +89,7 @@ public static class UserMappingExtensions
         );
     }
 
-    public static GetUserByIdResponseDto FromDomainToGetUserByIdDto(this AppUser user)
+    public static GetUserByIdResponseDto FromDomainToGetUserByIdDto(this AppUser user, string? currentUserId)
     {
         return new GetUserByIdResponseDto(
             user.Id,
@@ -106,7 +107,8 @@ public static class UserMappingExtensions
             user.Following
                 .Select(x => x.Followed?.UserName ?? string.Empty)
                 .Where(u => !string.IsNullOrWhiteSpace(u))
-                .ToList()
+                .ToList(),
+            currentUserId is not null && user.Followers.Any(x => x.FollowerId == currentUserId)
         );
     }
 }

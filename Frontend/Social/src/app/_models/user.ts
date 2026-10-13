@@ -9,4 +9,5 @@ export interface User {
   followingCount: number;
   followerUsernames: string[];
   followingUsernames: string[];
+  isFollowing: boolean;
 }

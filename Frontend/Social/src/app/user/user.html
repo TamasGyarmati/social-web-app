@@ -31,7 +31,8 @@
 
         <button mat-flat-button type="button" class="follow-button" (click)="followUser()">
           <mat-icon>person_add</mat-icon>
-          Follow
+          <span *ngIf="this.isFollowing() === false">Follow</span>
+          <span *ngIf="this.isFollowing() === true">Unfollow</span>
         </button>
       </div>
 

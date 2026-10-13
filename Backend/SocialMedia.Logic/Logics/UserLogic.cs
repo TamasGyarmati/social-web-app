@@ -15,6 +15,7 @@ public interface IUserLogic
 {
     Task<List<GetUsersResponseDto>> GetUsersAsync(CancellationToken ct = default, bool isDeleted = true);
     Task<GetUserByIdResult> GetUserByIdAsync(string userId, CancellationToken ct = default);
+    Task<GetUserByIdResult> GetUserByIdForFollowsAsync(string userId, string currentUsedId, CancellationToken ct = default);
     Task<UploadAvatarResult> UploadAsync(UploadAvatarRequestDto dto, string currentUserId, CancellationToken ct = default);
     Task<UpdateUserResult> UpdateAsync(UpdateUserRequestDto dto, string currentUserId, CancellationToken ct = default);
     Task<UpdatePasswordResult> UpdatePasswordAsync(UpdatePasswordRequestDto dto, string currentUserId, CancellationToken ct = default);
@@ -62,7 +63,27 @@ public class UserLogic(
             return new GetUserByIdResult.UserNotFound("The user was not found.");
         }
 
-        var response = user.FromDomainToGetUserByIdDto();
+        var response = user.FromDomainToGetUserByIdDto(null);
+
+        return new GetUserByIdResult.Success(response);
+    }
+
+    public async Task<GetUserByIdResult> GetUserByIdForFollowsAsync(string userId, string currentUsedId, CancellationToken ct = default)
+    {
+        var user = await _userManager.Users
+            .AsSplitQuery()
+            .Include(u => u.Followers)
+                .ThenInclude(f => f.Follower)
+            .Include(u => u.Following)
+                .ThenInclude(f => f.Followed)
+            .FirstOrDefaultAsync(u => u.Id == userId, ct);
+
+        if (user is null)
+        {
+            return new GetUserByIdResult.UserNotFound("The user was not found.");
+        }
+
+        var response = user.FromDomainToGetUserByIdDto(currentUsedId);
 
         return new GetUserByIdResult.Success(response);
     }

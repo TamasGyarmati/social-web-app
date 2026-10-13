@@ -27,7 +27,13 @@ public class UserController(IUserLogic _logic) : ControllerBase
     [EndpointSummary("Returns the user by ID.")]
     public async Task<ActionResult<GetUserByIdResponseDto>> GetUserById(string id, CancellationToken ct = default)
     {
-        var result = await _logic.GetUserByIdAsync(id, ct);
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await _logic.GetUserByIdForFollowsAsync(id, currentUserId, ct);
 
         return result switch
         {
@@ -267,7 +273,7 @@ public class UserController(IUserLogic _logic) : ControllerBase
         };
     }
 
-    [HttpPost("follow")]
+    [HttpPost("follow/{id}")]
     [Authorize]
     [ProducesResponseType(typeof(FollowUserResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -6,6 +6,8 @@ import { ActivatedRoute } from '@angular/router';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { FollowResponse } from '../_models/followResponse';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user',
@@ -18,9 +20,15 @@ export class User implements OnInit {
   public isLoading = signal<boolean>(true);
   private http = inject(HttpClient);
   private route = inject(ActivatedRoute);
+  private matBar = inject(MatSnackBar);
   public apiUri = env.apiUri;
+  public isFollowing = signal<boolean | null>(null);
 
   ngOnInit(): void {
+    this.getUserById();
+  }
+
+  getUserById(): void {
     const userId = this.route.snapshot.paramMap.get('id');
 
     if (!userId) {
@@ -39,6 +47,7 @@ export class User implements OnInit {
         (success) => {
           console.log('::SUCCESS::', success);
           this.user.set(success.user);
+          this.isFollowing.set(success.user.isFollowing);
           this.isLoading.set(false);
         },
         (error) => {
@@ -61,21 +70,16 @@ export class User implements OnInit {
     });
 
     this.http
-      .post(
-        env.userFollowByIdUri,
-        {},
-        {
-          params: { id: userId },
-
-          headers: headers,
-        },
-      )
+      .post<FollowResponse>(`${env.userFollowByIdUri}/${userId}`, {}, { headers: headers })
       .subscribe({
         next: (success) => {
           console.log('::SUCCESS::', success);
+          this.getUserById();
+          this.matBar.open(success.message, 'Close', { duration: 3000 });
         },
         error: (error) => {
           console.log('::ERROR::', error);
+          this.matBar.open(error.message, 'Close', { duration: 3000 });
         },
       });
   }
