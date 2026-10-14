@@ -55,6 +55,8 @@ export class EditPostDialog implements OnInit {
   }
 
   public updatePost(): void {
+    this.isLoading.set(true);
+
     if (
       this.editPostForm.controls.title.value === this.oldPostData.post.title &&
       this.editPostForm.controls.description.value === this.oldPostData.post.description &&
@@ -90,6 +92,7 @@ export class EditPostDialog implements OnInit {
         (success) => {
           console.log('::SUCCESS::', success);
           console.log(this.editPostForm.controls.image.value);
+          this.isLoading.set(false);
           this.closeDialog(true);
           this.matBar.open('Successfully updated the post', 'Close', { duration: 3000 });
         },
