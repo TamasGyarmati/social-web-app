@@ -8,11 +8,11 @@ import {
 } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-dialog-animation',
+  selector: 'app-delete-post-dialog',
   imports: [MatDialogActions, MatDialogContent, MatDialogClose, MATERIAL_IMPORTS],
-  templateUrl: './dialog-animation.html',
-  styleUrl: './dialog-animation.scss',
+  templateUrl: './delete-post-dialog.html',
+  styleUrl: './delete-post-dialog.scss',
 })
-export class DialogAnimation {
-  readonly dialogRef = inject(MatDialogRef<DialogAnimation>);
+export class DeletePostDialog {
+  readonly dialogRef = inject(MatDialogRef<DeletePostDialog>);
 }

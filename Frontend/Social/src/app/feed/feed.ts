@@ -12,9 +12,9 @@ import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogAnimation } from '../dialog-animation/dialog-animation';
 import { AuthService } from '../_services/auth.service';
 import { EditPostDialog } from '../edit-post-dialog/edit-post-dialog';
+import { DeletePostDialog } from '../delete-post-dialog/delete-post-dialog';
 
 @Component({
   selector: 'app-feed',
@@ -275,7 +275,7 @@ export class Feed implements OnInit {
     exitAnimationDuration: string,
     post: getAllPost,
   ): void {
-    const dialogRef = this.dialog.open(DialogAnimation, {
+    const dialogRef = this.dialog.open(DeletePostDialog, {
       width: '460px',
       enterAnimationDuration,
       exitAnimationDuration,

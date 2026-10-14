@@ -146,9 +146,3 @@ $danger-bg: rgba(248, 113, 113, 0.1);
     }
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .dialog mat-dialog-actions button {
-    transition: none;
-  }
-}

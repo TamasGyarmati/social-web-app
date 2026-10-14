@@ -169,11 +169,3 @@
     }
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .comment,
-  .comment * {
-    animation: none !important;
-    transition: none !important;
-  }
-}

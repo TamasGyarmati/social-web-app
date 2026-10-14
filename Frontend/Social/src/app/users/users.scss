@@ -171,14 +171,3 @@ mat-progress-spinner {
     }
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  .card,
-  .card * {
-    transition: none !important;
-  }
-
-  .card:hover {
-    transform: none;
-  }
-}
