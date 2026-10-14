@@ -151,10 +151,10 @@ mat-progress-spinner {
 .my-container {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 8rem;
   width: 60%;
   max-width: $post-max-width;
-  margin: 0 auto;
+  margin: 5rem auto;
   padding-bottom: 48px;
 
   .feed-card {
@@ -328,7 +328,8 @@ mat-progress-spinner {
 @media (max-width: 600px) {
   .my-container {
     width: 94%;
-    gap: 20px;
+    margin-top: 5rem;
+    gap: 5rem;
 
     .feed-card {
       gap: 16px;
