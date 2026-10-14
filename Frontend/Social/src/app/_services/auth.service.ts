@@ -21,6 +21,14 @@ export class AuthService {
     }
   }
 
+  public canActivate(): boolean {
+    if (!this.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+    return true;
+  }
+
   private whoami(): void {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -46,14 +54,6 @@ export class AuthService {
     } else {
       this.user.set(null);
     }
-  }
-
-  public canActivate(): boolean {
-    if (!this.isLoggedIn()) {
-      this.router.navigate(['/login']);
-      return false;
-    }
-    return true;
   }
 
   public checkIfLoggedIn(): void {
