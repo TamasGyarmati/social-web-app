@@ -41,10 +41,18 @@
         <h3 style="font-size: 15px">{{ getDayCount(post) }}</h3>
       </div>
       <button
+        id="edit-button"
+        matButton="elevated"
+        *ngIf="post.creatorById === this.auth.user()?.id"
+        (click)="openEditDialog('300ms', '150ms', post)"
+      >
+        Edit
+      </button>
+      <button
         id="delete-button"
         matButton="elevated"
         *ngIf="post.creatorById === this.auth.user()?.id"
-        (click)="openDialog('300ms', '150ms', post)"
+        (click)="openDeleteDialog('300ms', '150ms', post)"
       >
         Delete
       </button>

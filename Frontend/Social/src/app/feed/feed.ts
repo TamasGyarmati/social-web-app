@@ -11,18 +11,10 @@ import { Comments } from '../comments/comments';
 import { RouterLink } from '@angular/router';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import {
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-  MatDialogModule,
-} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { DialogAnimation } from '../dialog-animation/dialog-animation';
 import { AuthService } from '../_services/auth.service';
-import { filter } from 'rxjs';
+import { EditPostDialog } from '../edit-post-dialog/edit-post-dialog';
 
 @Component({
   selector: 'app-feed',
@@ -49,6 +41,10 @@ export class Feed implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.getAllPosts();
+  }
+
+  private getAllPosts(): void {
     this.httpClient.get<getAllPost[]>(env.postGetAllUri).subscribe(
       (success) => {
         const sortedPosts = success.sort(
@@ -64,6 +60,8 @@ export class Feed implements OnInit {
             ...post,
           })),
         );
+
+        this.applyFilters();
 
         this.isLoading.set(false);
 
@@ -272,7 +270,7 @@ export class Feed implements OnInit {
     this.applyFilters();
   }
 
-  public openDialog(
+  public openDeleteDialog(
     enterAnimationDuration: string,
     exitAnimationDuration: string,
     post: getAllPost,
@@ -286,6 +284,28 @@ export class Feed implements OnInit {
     dialogRef.afterClosed().subscribe((result: boolean) => {
       if (result === true) {
         this.deletePost(post);
+      }
+    });
+  }
+
+  public openEditDialog(
+    enterAnimationDuration: string,
+    exitAnimationDuration: string,
+    post: getAllPost,
+  ): void {
+    const dialogRef = this.dialog.open(EditPostDialog, {
+      width: '460px',
+      enterAnimationDuration,
+      exitAnimationDuration,
+      data: {
+        post: post,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.getAllPosts();
+        console.log('GETALLPOSTS');
       }
     });
   }

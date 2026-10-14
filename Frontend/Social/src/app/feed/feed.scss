@@ -30,6 +30,15 @@
   }
 }
 
+#edit-button {
+  color: $edit-btn-color;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: #fca5a5;
+  }
+}
+
 .create-post-button {
   display: flex;
   justify-content: center;
@@ -220,7 +229,8 @@ mat-progress-spinner {
         }
       }
 
-      #delete-button {
+      #delete-button,
+      #edit-button {
         flex-shrink: 0;
         margin-left: auto;
         align-self: center;

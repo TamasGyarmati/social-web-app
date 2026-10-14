@@ -111,12 +111,5 @@ export class User implements OnInit {
         type: type,
       },
     });
-
-    /*
-    dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result === true) {
-        // mi történjen?
-      }
-    }); */
   }
 }
