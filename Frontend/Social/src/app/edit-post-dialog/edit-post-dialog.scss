@@ -1,0 +1,279 @@
+@import '../_shared/variables.scss';
+
+$dialog-bg: #131a22;
+$dialog-border: #26313d;
+$edit-color: #fbbf24;
+$edit-bg: rgba(251, 191, 36, 0.1);
+
+.edit-dialog {
+  width: 100%;
+  min-width: 380px;
+  max-width: 460px;
+  padding: 32px;
+  box-sizing: border-box;
+
+  color: $text-primary;
+  background: $dialog-bg;
+  border: 1px solid $dialog-border;
+  border-radius: 20px;
+
+  .dialog-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+
+    .edit-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+
+      color: $edit-color;
+      background: $edit-bg;
+      border: 1px solid rgba(251, 191, 36, 0.18);
+      border-radius: 14px;
+
+      mat-icon {
+        width: 24px;
+        height: 24px;
+        font-size: 24px;
+      }
+    }
+
+    h1 {
+      margin: 0;
+      padding: 0;
+      color: $text-primary;
+      font-size: 1.4rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+  }
+
+  mat-progress-spinner {
+    margin: 40px auto;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  textarea {
+    min-height: 120px;
+    resize: vertical;
+  }
+
+  .file-input {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+
+    label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      width: 100%;
+      min-height: 64px;
+      padding: 16px 20px;
+      box-sizing: border-box;
+
+      color: $text-primary;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed $card-border-hover;
+      border-radius: 12px;
+
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+
+      transition:
+        background-color 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease;
+
+      mat-icon {
+        flex-shrink: 0;
+        width: 22px;
+        height: 22px;
+        color: $edit-color;
+        font-size: 22px;
+        line-height: 22px;
+      }
+
+      &:hover {
+        background: rgba(251, 191, 36, 0.05);
+        border-color: $edit-color;
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+
+      &:focus-visible {
+        outline: 2px solid $accent-color;
+        outline-offset: 3px;
+      }
+    }
+
+    input[type='file'] {
+      display: none;
+    }
+
+    .selected-file {
+      max-width: 100%;
+      color: #77d460;
+      font-size: 13px;
+      line-height: 1.5;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+    padding-top: 22px;
+    border-top: 1px solid $card-border;
+
+    button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      min-width: 100px;
+      min-height: 44px;
+      padding: 0 18px;
+      margin: 0;
+
+      border: none;
+      border-radius: 10px;
+
+      font-size: 0.9rem;
+      font-weight: 600;
+
+      transition:
+        background-color 180ms ease,
+        color 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease;
+
+      mat-icon {
+        width: 18px;
+        height: 18px;
+        font-size: 18px;
+      }
+
+      &:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:focus-visible {
+        outline: 2px solid $accent-color;
+        outline-offset: 3px;
+      }
+    }
+
+    .edit-button {
+      color: #fff;
+      background: #d99a16;
+
+      &:hover:not(:disabled) {
+        background: #f0b429;
+        box-shadow: 0 5px 16px rgba(251, 191, 36, 0.3);
+        transform: translateY(-1px);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        color: #8d9bab;
+        background: #26313d;
+        box-shadow: none;
+        cursor: not-allowed;
+        opacity: 0.65;
+      }
+    }
+
+    .go-back-button {
+      color: $text-primary;
+      background: $nav-hover;
+      border: 1px solid $card-border-hover;
+
+      &:hover {
+        background: #263647;
+        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .edit-dialog {
+    min-width: 0;
+    padding: 24px;
+
+    .dialog-header {
+      gap: 12px;
+
+      .edit-icon {
+        width: 42px;
+        height: 42px;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+      }
+    }
+
+    form {
+      gap: 14px;
+    }
+
+    textarea {
+      min-height: 110px;
+    }
+
+    .file-input {
+      label {
+        padding: 14px 12px;
+        font-size: 14px;
+      }
+    }
+
+    .buttons {
+      gap: 8px;
+      margin-top: 6px;
+      padding-top: 20px;
+
+      button {
+        min-width: 0;
+        flex: 1;
+        padding: 0 12px;
+      }
+    }
+  }
+}

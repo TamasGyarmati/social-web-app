@@ -40,22 +40,24 @@
         <h2>@{{ post.creatorUserName }}</h2>
         <h3 style="font-size: 15px">{{ getDayCount(post) }}</h3>
       </div>
-      <button
-        id="edit-button"
-        matButton="elevated"
-        *ngIf="post.creatorById === this.auth.user()?.id"
-        (click)="openEditDialog('300ms', '150ms', post)"
-      >
-        Edit
-      </button>
-      <button
-        id="delete-button"
-        matButton="elevated"
-        *ngIf="post.creatorById === this.auth.user()?.id"
-        (click)="openDeleteDialog('300ms', '150ms', post)"
-      >
-        Delete
-      </button>
+      <div class="feed-actions">
+        <button
+          id="edit-button"
+          matButton="elevated"
+          *ngIf="post.creatorById === this.auth.user()?.id"
+          (click)="openEditDialog('300ms', '150ms', post)"
+        >
+          Edit
+        </button>
+        <button
+          id="delete-button"
+          matButton="elevated"
+          *ngIf="post.creatorById === this.auth.user()?.id"
+          (click)="openDeleteDialog('300ms', '150ms', post)"
+        >
+          Delete
+        </button>
+      </div>
     </div>
     <div class="feed-image">
       <img class="post" [src]="this.apiUri + '/' + post.imageUrl" alt="" />

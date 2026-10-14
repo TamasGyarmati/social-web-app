@@ -27,6 +27,7 @@ interface EditPostDialogData {
 export class EditPostDialog implements OnInit {
   private http = inject(HttpClient);
   public postData = inject<EditPostDialogData>(MAT_DIALOG_DATA);
+  public oldPostData: EditPostDialogData = this.postData;
   private dialogRef = inject(MatDialogRef<EditPostDialog>);
   public isLoading = signal<boolean>(true);
   private matBar = inject(MatSnackBar);
@@ -54,6 +55,15 @@ export class EditPostDialog implements OnInit {
   }
 
   public updatePost(): void {
+    if (
+      this.editPostForm.controls.title.value === this.oldPostData.post.title &&
+      this.editPostForm.controls.description.value === this.oldPostData.post.description &&
+      this.editPostForm.controls.image.value === null
+    ) {
+      this.closeDialog(false);
+      return;
+    }
+
     if (this.editPostForm.invalid) {
       this.editPostForm.markAllAsTouched();
       return;
@@ -79,7 +89,9 @@ export class EditPostDialog implements OnInit {
       .subscribe(
         (success) => {
           console.log('::SUCCESS::', success);
+          console.log(this.editPostForm.controls.image.value);
           this.closeDialog(true);
+          this.matBar.open('Successfully updated the post', 'Close', { duration: 3000 });
         },
         (error) => {
           console.log('::ERROR::', error);
@@ -87,7 +99,7 @@ export class EditPostDialog implements OnInit {
       );
   }
 
-  private closeDialog(updated: boolean = false): void {
+  public closeDialog(updated: boolean = false): void {
     this.dialogRef.close(updated);
   }
 

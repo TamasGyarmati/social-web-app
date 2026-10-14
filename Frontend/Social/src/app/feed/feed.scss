@@ -229,11 +229,15 @@ mat-progress-spinner {
         }
       }
 
-      #delete-button,
-      #edit-button {
-        flex-shrink: 0;
+      .feed-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
         margin-left: auto;
-        align-self: center;
+
+        button {
+          flex-shrink: 0;
+        }
       }
     }
 
