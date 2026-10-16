@@ -31,7 +31,7 @@ A full-stack social media platform: a **RESTful ASP.NET Core API** paired with a
 
 ### Backend
 
-- **.NET 10** (`net10.0`) / **C#**
+- **.NET 10** / **C#**
 - **ASP.NET Core** — Web framework
 - **ASP.NET Core Identity** — Users, roles, password hashing, email confirmation tokens
 - **JWT Bearer Authentication** — Access + refresh tokens
@@ -138,7 +138,7 @@ SMTP credentials for outgoing mail go in `Backend/SocialMedia.App/appsettings.De
 }
 ```
 
-A local SMTP catcher such as [MailHog](https://github.com/mailhog/MailHog) on port `1025` works well for development.
+A local SMTP catcher such as [MailPit](https://github.com/axllent/mailpit) on port `1025` works well for development.
 
 **Restore, migrate and run:**
 
