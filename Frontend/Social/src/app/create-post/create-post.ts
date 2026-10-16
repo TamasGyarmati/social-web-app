@@ -18,7 +18,6 @@ export class CreatePost implements OnInit {
   public selectedFileName: string = '';
 
   public isLoading = signal<boolean>(true);
-  public postGettingCreated = signal<boolean>(false);
 
   public postForm = new FormGroup({
     title: new FormControl('', {
@@ -47,7 +46,7 @@ export class CreatePost implements OnInit {
       return;
     }
 
-    this.postGettingCreated.set(true);
+    this.isLoading.set(true);
 
     const formData = new FormData();
 
@@ -72,7 +71,7 @@ export class CreatePost implements OnInit {
         });
       },
       complete: () => {
-        this.postGettingCreated.set(false);
+        this.isLoading.set(false);
       },
     });
   }
@@ -88,15 +87,15 @@ export class CreatePost implements OnInit {
     }
   }
 
-  public goBack(): void {
-    this.location.back();
-  }
-
   public onDescriptionEnter(event: Event) {
     const keyboardEvent = event as KeyboardEvent;
     if (!keyboardEvent.shiftKey) {
       event.preventDefault();
       this.createPost();
     }
+  }
+
+  public goBack(): void {
+    this.location.back();
   }
 }

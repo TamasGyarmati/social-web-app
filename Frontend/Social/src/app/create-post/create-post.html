@@ -2,12 +2,8 @@
   <h1>Create Post</h1>
 
   <mat-progress-spinner mode="indeterminate" *ngIf="this.isLoading()"></mat-progress-spinner>
-  <mat-progress-spinner
-    mode="indeterminate"
-    *ngIf="this.postGettingCreated()"
-  ></mat-progress-spinner>
 
-  <div class="my-container" *ngIf="!this.isLoading() && !this.postGettingCreated()">
+  <div class="my-container" *ngIf="!this.isLoading()">
     <form [formGroup]="postForm" (ngSubmit)="createPost()">
       <mat-form-field appearance="outline">
         <mat-label>Title</mat-label>
