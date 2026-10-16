@@ -183,7 +183,7 @@ export const env = {
 };
 ```
 
-> There is no `environment.ts` / file-replacement setup yet, so this file is edited directly for now (see [Known Gaps](#known-gaps--roadmap)).
+> There is no `environment.ts` / file-replacement setup yet, so this file is edited directly for now.
 
 ### Full startup from a clean clone
 
@@ -194,29 +194,6 @@ cd Backend && dotnet restore && dotnet run --project SocialMedia.App
 # Terminal 2 — SPA
 cd Frontend/Social && npm install && npm start
 ```
-
-## 📜 Available Scripts
-
-### Frontend (`Frontend/Social`)
-
-| Command | Description |
-| --- | --- |
-| `npm start` | Start the dev server on <http://localhost:4200> |
-| `npm run build` | Production build into `dist/Social` (hashed assets, budgets enforced) |
-| `npm run watch` | Development build in watch mode |
-| `npm test` | Run the Vitest unit test suite |
-| `ng generate component <name>` | Scaffold a new component (SCSS by default) |
-
-Production builds apply budget limits: **500 kB warning / 1 MB error** for the initial bundle and **4 kB warning / 8 kB error** per component stylesheet.
-
-### Backend
-
-| Command | Description |
-| --- | --- |
-| `dotnet restore` | Restore NuGet dependencies |
-| `dotnet run --project SocialMedia.App` | Run the API on port 5000 |
-| `cd SocialMedia.App && dotnet ef database update` | Apply migrations (run from the web project) |
-| `cd SocialMedia.App && dotnet ef migrations add <Name> --project ../SocialMedia.Data` | Create a new migration |
 
 ## 🔌 API Reference
 
