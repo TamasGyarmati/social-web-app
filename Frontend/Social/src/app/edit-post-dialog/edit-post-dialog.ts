@@ -1,7 +1,6 @@
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { getAllPost } from '../_models/getAllPost';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import { CommonModule } from '@angular/common';
 import {
@@ -12,7 +11,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { env } from '../_env/env';
+import { EditPostService } from '../_services/edit-post.service';
 
 interface EditPostDialogData {
   post: getAllPost;
@@ -25,12 +24,6 @@ interface EditPostDialogData {
   styleUrl: './edit-post-dialog.scss',
 })
 export class EditPostDialog implements OnInit {
-  private http = inject(HttpClient);
-  public postData = inject<EditPostDialogData>(MAT_DIALOG_DATA);
-  public oldPostData: EditPostDialogData = this.postData;
-  private dialogRef = inject(MatDialogRef<EditPostDialog>);
-  public isLoading = signal<boolean>(true);
-  private matBar = inject(MatSnackBar);
   public selectedFileName: string = '';
 
   public editPostForm = new FormGroup({
@@ -45,6 +38,14 @@ export class EditPostDialog implements OnInit {
     image: new FormControl<File | null>(null),
   });
 
+  public isLoading = signal<boolean>(true);
+
+  public postData = inject<EditPostDialogData>(MAT_DIALOG_DATA);
+  public oldPostData: EditPostDialogData = this.postData;
+  private dialogRef = inject(MatDialogRef<EditPostDialog>);
+  private matBar = inject(MatSnackBar);
+  private editPostService: EditPostService = inject(EditPostService);
+
   ngOnInit(): void {
     this.editPostForm.patchValue({
       title: this.postData.post.title,
@@ -55,8 +56,6 @@ export class EditPostDialog implements OnInit {
   }
 
   public updatePost(): void {
-    this.isLoading.set(true);
-
     if (
       this.editPostForm.controls.title.value === this.oldPostData.post.title &&
       this.editPostForm.controls.description.value === this.oldPostData.post.description &&
@@ -71,6 +70,8 @@ export class EditPostDialog implements OnInit {
       return;
     }
 
+    this.isLoading.set(true);
+
     const formData = new FormData();
 
     formData.append('Title', this.editPostForm.controls.title.value);
@@ -82,28 +83,26 @@ export class EditPostDialog implements OnInit {
       formData.append('Image', image);
     }
 
-    let headers = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
+    this.editPostService.updatePost(this.postData.post.id, formData).subscribe({
+      next: (success) => {
+        console.log('::SUCCESS::', success);
+        console.log(this.editPostForm.controls.image.value);
+
+        this.matBar.open('Successfully updated the post', 'Close', { duration: 3000 });
+
+        this.closeDialog(true);
+      },
+
+      error: (error) => {
+        console.log('::ERROR::', error);
+
+        this.isLoading.set(false);
+      },
+
+      complete: () => {
+        this.isLoading.set(false);
+      },
     });
-
-    this.http
-      .put(`${env.postUri}/${this.postData.post.id}`, formData, { headers: headers })
-      .subscribe(
-        (success) => {
-          console.log('::SUCCESS::', success);
-          console.log(this.editPostForm.controls.image.value);
-          this.isLoading.set(false);
-          this.closeDialog(true);
-          this.matBar.open('Successfully updated the post', 'Close', { duration: 3000 });
-        },
-        (error) => {
-          console.log('::ERROR::', error);
-        },
-      );
-  }
-
-  public closeDialog(updated: boolean = false): void {
-    this.dialogRef.close(updated);
   }
 
   public onImageSelected(event: Event): void {
@@ -123,5 +122,9 @@ export class EditPostDialog implements OnInit {
       event.preventDefault();
       this.updatePost();
     }
+  }
+
+  public closeDialog(updated: boolean = false): void {
+    this.dialogRef.close(updated);
   }
 }

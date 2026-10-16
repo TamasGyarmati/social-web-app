@@ -69,6 +69,7 @@ export class CreatePost implements OnInit {
         this.matBar.open('Failed to create post', 'Close', {
           duration: 3000,
         });
+        this.isLoading.set(false);
       },
       complete: () => {
         this.isLoading.set(false);

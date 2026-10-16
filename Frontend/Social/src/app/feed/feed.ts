@@ -282,7 +282,7 @@ export class Feed implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result === true) {
+      if (result) {
         this.deletePost(post);
       }
     });
