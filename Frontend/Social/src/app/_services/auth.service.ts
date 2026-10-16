@@ -12,21 +12,14 @@ export class AuthService {
   public user = signal<User | null>(null);
 
   private http = inject(HttpClient);
+  private router: Router = inject(Router);
 
-  constructor(private router: Router) {
+  constructor() {
     this.checkIfLoggedIn();
 
     if (this.isLoggedIn()) {
       this.whoami();
     }
-  }
-
-  public canActivate(): boolean {
-    if (!this.isLoggedIn()) {
-      this.router.navigate(['/login']);
-      return false;
-    }
-    return true;
   }
 
   private whoami(): void {
@@ -44,6 +37,14 @@ export class AuthService {
         console.log('::ERROR::', error);
       },
     );
+  }
+
+  public canActivate(): boolean {
+    if (!this.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+    return true;
   }
 
   public loadUser(): void {
