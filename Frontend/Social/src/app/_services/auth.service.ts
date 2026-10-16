@@ -8,10 +8,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root',
 })
 export class AuthService {
-  public isLoggedIn = signal(false);
   public user = signal<User | null>(null);
+  public isLoggedIn = signal(false);
 
-  private http = inject(HttpClient);
+  private http: HttpClient = inject(HttpClient);
   private router: Router = inject(Router);
 
   constructor() {
@@ -24,7 +24,6 @@ export class AuthService {
 
   private whoami(): void {
     const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
       Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
     });
 
@@ -42,9 +41,9 @@ export class AuthService {
   public canActivate(): boolean {
     if (!this.isLoggedIn()) {
       this.router.navigate(['/login']);
-      return false;
     }
-    return true;
+
+    return this.isLoggedIn();
   }
 
   public loadUser(): void {
