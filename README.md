@@ -1,4 +1,4 @@
-# Social Web Application
+# Social
 
 A full-stack social media platform: a **RESTful ASP.NET Core API** paired with a complete **Angular single-page application** frontend.
 
