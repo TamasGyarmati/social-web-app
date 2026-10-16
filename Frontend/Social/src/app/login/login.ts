@@ -1,4 +1,4 @@
-import { OnInit } from '@angular/core';
+import { inject, OnInit } from '@angular/core';
 import { signal } from '@angular/core';
 import { Token as TokenModel } from '../_models/token';
 import { env } from '../_env/env';
@@ -20,21 +20,16 @@ import { AuthService } from '../_services/auth.service';
   styleUrl: './login.scss',
 })
 export class Login implements OnInit {
-  public email: FormControl;
-  public password: FormControl;
+  public email: FormControl = new FormControl('', [Validators.required]);
+  public password: FormControl = new FormControl('', [Validators.required, Validators.email]);
   public rememberMe: boolean = false;
   public isLoading = signal<boolean>(true);
   public hide = signal<boolean>(true);
 
-  constructor(
-    private router: Router,
-    private http: HttpClient,
-    private snackBar: MatSnackBar,
-    private auth: AuthService,
-  ) {
-    this.password = new FormControl('', [Validators.required]);
-    this.email = new FormControl('', [Validators.required, Validators.email]);
-  }
+  private router: Router = inject(Router);
+  private http: HttpClient = inject(HttpClient);
+  private snackBar: MatSnackBar = inject(MatSnackBar);
+  private auth: AuthService = inject(AuthService);
 
   ngOnInit(): void {
     this.isLoading.set(false);
