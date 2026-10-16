@@ -1,5 +1,5 @@
 import { RegisterError } from '../_models/registerError';
-import { OnInit } from '@angular/core';
+import { inject, OnInit } from '@angular/core';
 import { signal } from '@angular/core';
 import { env } from '../_env/env';
 import { HttpClient } from '@angular/common/http';
@@ -18,43 +18,25 @@ import { MATERIAL_IMPORTS } from '../_shared/material';
   styleUrl: './register.scss',
 })
 export class Register implements OnInit {
-  public email: FormControl;
-  public password: FormControl;
-  public registerModel: RegisterModel;
-  public acceptTermsAndConditions: boolean;
+  public email: FormControl = new FormControl('', [Validators.required, Validators.email]);
+  public password: FormControl = new FormControl('', [Validators.required]);
+  public registerModel: RegisterModel = {
+    firstName: '',
+    lastName: '',
+    userName: '',
+    email: '',
+    password: '',
+  };
+  public acceptTermsAndConditions: boolean = false;
   public isLoading = signal<boolean>(true);
   public hide = signal<boolean>(true);
 
-  constructor(
-    private http: HttpClient,
-    private snackBar: MatSnackBar,
-    private router: Router,
-  ) {
-    this.acceptTermsAndConditions = false;
-    this.email = new FormControl('', [Validators.required, Validators.email]);
-    this.password = new FormControl('', [Validators.required]);
-    this.registerModel = {
-      firstName: '',
-      lastName: '',
-      userName: '',
-      email: '',
-      password: '',
-    };
-  }
+  private http: HttpClient = inject(HttpClient);
+  private snackBar: MatSnackBar = inject(MatSnackBar);
+  private router: Router = inject(Router);
 
   ngOnInit(): void {
     this.isLoading.set(false);
-  }
-
-  get canRegister(): boolean {
-    return (
-      this.acceptTermsAndConditions &&
-      this.registerModel.firstName.trim() !== '' &&
-      this.registerModel.lastName.trim() !== '' &&
-      this.email.valid &&
-      this.password.valid &&
-      !this.email.hasError('email')
-    );
   }
 
   get getEmailErrorMessage(): string {
@@ -73,12 +55,22 @@ export class Register implements OnInit {
     return this.password.hasError('password') ? 'Not a valid password' : '';
   }
 
-  clickEvent(event: MouseEvent) {
-    this.hide.set(!this.hide());
-    event.stopPropagation();
+  public canRegister(): boolean {
+    return (
+      this.acceptTermsAndConditions &&
+      this.registerModel.firstName.trim() !== '' &&
+      this.registerModel.lastName.trim() !== '' &&
+      this.email.valid &&
+      this.password.valid &&
+      !this.email.hasError('email')
+    );
   }
 
-  sendRegisterCredentials(): void {
+  public toggleHide() {
+    this.hide.set(!this.hide());
+  }
+
+  public sendRegisterCredentials(): void {
     const registerRequestDto: RegisterModel = {
       email: this.email.value ?? '',
       password: this.password.value ?? '',
@@ -89,13 +81,13 @@ export class Register implements OnInit {
 
     this.http.post(`${env.authRegisterUri}`, registerRequestDto).subscribe(
       (success) => {
+        console.log('::SUCCESS::', success);
         this.router.navigate(['/login']);
         this.snackBar.open(
           'Register was successful! We have sent you a confirmation link to your email, you must accept the link to login.',
           'Close',
           { duration: 5000 },
         );
-        console.log('::SUCCESS::', success);
       },
       (error) => {
         console.log('::ERROR::', error);

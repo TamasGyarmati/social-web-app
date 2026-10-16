@@ -68,6 +68,8 @@ export class Login implements OnInit {
 
     this.http.post<TokenModel>(`${env.authLoginUri}`, loginModel).subscribe(
       (success) => {
+        console.log('::SUCCESS::', success);
+
         localStorage.setItem(env.jwtAccessToken, success.accessToken);
         localStorage.setItem(env.jwtAccessTokenExp, success.accessTokenExpireDate);
         localStorage.setItem(env.jwtRefreshToken, success.refreshToken);
@@ -80,12 +82,10 @@ export class Login implements OnInit {
         });
 
         this.router.navigate(['/feed']);
-
-        console.log('::SUCCESS::', success);
       },
       (error) => {
-        this.snackBar.open(error.error.message, 'Close', { duration: 5000 });
         console.log('::ERROR::', error);
+        this.snackBar.open(error.error.message, 'Close', { duration: 5000 });
       },
     );
   }
