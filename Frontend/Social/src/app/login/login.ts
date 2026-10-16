@@ -64,9 +64,8 @@ export class Login implements OnInit {
     return this.email.value.substring(0, this.email.value.indexOf('@'));
   }
 
-  clickEvent(event: MouseEvent) {
+  toggleHide() {
     this.hide.set(!this.hide());
-    event.stopPropagation();
   }
 
   sendLoginCredentials(): void {
