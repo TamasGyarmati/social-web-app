@@ -173,14 +173,21 @@ npm start
 
 Open **<http://localhost:4200>**. The dev server hot-reloads on file changes.
 
-The API base URL is hardcoded in `src/app/_env/env.ts`. If your backend does not run on `http://localhost:5000`, update `apiUri` (and the individual endpoint URLs) there:
+The API base URL is in `src/app/_env/env.ts`. If your backend does not run on `http://localhost:5000`, update the variables `host` and `port` there:
 
 ```ts
+const host = 'localhost';
+const port = 5000;
+
+const apiUri = `http://${host}:${port}`;
+
 export const env = {
-  apiUri: 'http://localhost:5000',
-  authLoginUri: 'http://localhost:5000/api/Auth/login',
-  // ...
-};
+  host,
+  port,
+  apiUri,
+
+  authLoginUri: `${apiUri}/api/Auth/login`,
+  authRegisterUri: `${apiUri}/api/Auth/register`,
 ```
 
 > There is no `environment.ts` / file-replacement setup yet, so this file is edited directly for now.
