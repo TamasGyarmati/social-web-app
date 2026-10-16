@@ -45,7 +45,7 @@
           id="edit-button"
           matButton="elevated"
           *ngIf="post.creatorById === this.auth.user()?.id"
-          (click)="openEditDialog('300ms', '150ms', post)"
+          (click)="openEditDialog('300ms', '0ms', post)"
         >
           Edit
         </button>
