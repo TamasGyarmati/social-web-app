@@ -29,9 +29,7 @@ export class CreatePost implements OnInit {
       nonNullable: true,
       validators: [Validators.required],
     }),
-    image: new FormControl<File | null>(null, {
-      validators: [Validators.required],
-    }),
+    image: new FormControl<File | null>(null, {}),
   });
 
   private location: Location = inject(Location);
@@ -92,5 +90,13 @@ export class CreatePost implements OnInit {
 
   public goBack(): void {
     this.location.back();
+  }
+
+  public onDescriptionEnter(event: Event) {
+    const keyboardEvent = event as KeyboardEvent;
+    if (!keyboardEvent.shiftKey) {
+      event.preventDefault();
+      this.createPost();
+    }
   }
 }

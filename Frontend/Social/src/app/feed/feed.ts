@@ -305,7 +305,6 @@ export class Feed implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.getAllPosts();
-        console.log('GETALLPOSTS');
       }
     });
   }

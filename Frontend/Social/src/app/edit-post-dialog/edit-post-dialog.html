@@ -20,7 +20,11 @@
 
     <mat-form-field appearance="outline">
       <mat-label>Description</mat-label>
-      <textarea matInput formControlName="description"></textarea>
+      <textarea
+        matInput
+        formControlName="description"
+        (keydown.enter)="onDescriptionEnter($event)"
+      ></textarea>
       <mat-icon matSuffix>text_fields</mat-icon>
       <mat-hint>Description of the post</mat-hint>
       <mat-error>You must fill out the description!</mat-error>

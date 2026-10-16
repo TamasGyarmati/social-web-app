@@ -60,7 +60,12 @@
       </div>
     </div>
     <div class="feed-image">
-      <img class="post" [src]="this.apiUri + '/' + post.imageUrl" alt="" />
+      <img
+        class="post"
+        [src]="this.apiUri + '/' + post.imageUrl"
+        alt=""
+        *ngIf="post.imageUrl !== null"
+      />
     </div>
     <div class="feed-content">
       <h1 style="font-size: 30px">{{ post.title }}</h1>

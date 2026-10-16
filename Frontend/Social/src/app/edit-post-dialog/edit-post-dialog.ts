@@ -116,4 +116,12 @@ export class EditPostDialog implements OnInit {
       });
     }
   }
+
+  public onDescriptionEnter(event: Event) {
+    const keyboardEvent = event as KeyboardEvent;
+    if (!keyboardEvent.shiftKey) {
+      event.preventDefault();
+      this.updatePost();
+    }
+  }
 }

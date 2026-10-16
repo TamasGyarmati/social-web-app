@@ -8,7 +8,7 @@
   ></mat-progress-spinner>
 
   <div class="my-container" *ngIf="!this.isLoading() && !this.postGettingCreated()">
-    <form [formGroup]="postForm">
+    <form [formGroup]="postForm" (ngSubmit)="createPost()">
       <mat-form-field appearance="outline">
         <mat-label>Title</mat-label>
         <input matInput formControlName="title" />
@@ -19,7 +19,11 @@
 
       <mat-form-field appearance="outline">
         <mat-label>Description</mat-label>
-        <textarea matInput formControlName="description"></textarea>
+        <textarea
+          matInput
+          formControlName="description"
+          (keydown.enter)="onDescriptionEnter($event)"
+        ></textarea>
         <mat-icon matSuffix>text_fields</mat-icon>
         <mat-hint>Description of the post</mat-hint>
         <mat-error>You must fill out the description!</mat-error>
@@ -31,28 +35,19 @@
           <span>Choose an image</span>
         </label>
 
-        <!-- Ha click lenne change helyett, már akkor lefutna mielőtt a fájl kiválasztásra kerül -->>
+        <!-- Ha click lenne change helyett, már akkor lefutna mielőtt a fájl kiválasztásra kerül -->
         <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" />
 
         <span class="selected-file" *ngIf="selectedFileName">
           {{ selectedFileName }}
         </span>
       </div>
+      <div class="buttons">
+        <button type="button" class="go-back-btn" mat-flat-button color="accent" (click)="goBack()">
+          Go back
+        </button>
+        <button type="submit" mat-flat-button color="accent" class="create-button">Create</button>
+      </div>
     </form>
-
-    <div class="buttons">
-      <button type="button" class="go-back-btn" mat-flat-button color="accent" (click)="goBack()">
-        Go back
-      </button>
-      <button
-        type="button"
-        mat-flat-button
-        color="accent"
-        class="create-button"
-        (click)="createPost()"
-      >
-        Create
-      </button>
-    </div>
   </div>
 </div>
