@@ -6,28 +6,14 @@ A full-stack social media platform: a **RESTful ASP.NET Core API** paired with a
 
 ## ✨ Features
 
-### Frontend (Angular SPA)
-
-- **Authentication** — Register, login, logout, route guarding, JWT-based session persistence
-- **Post Feed** — Public post stream, newest-first sorting, relative timestamps, client-side filters ("only my posts", sort by date)
-- **Post CRUD** — Create posts with image upload, edit posts via dialog, delete posts via confirmation dialog (owner-only actions surfaced in the UI)
-- **Comments** — Threaded comment system with nested replies to arbitrary depth (recursive component), loaded lazily per post and cached
-- **Likes** — Toggle likes on both posts and comments with optimistic UI updates
-- **Follow System** — Follow/unfollow toggle on profiles, follower/following counters, and dialogs listing who follows whom
-- **User Discovery** — Browse all users with live client-side search across username, first and last name
-- **User Profiles** — Avatar, personal details, follow state badges, follower/following stats
-- **Account Management** — Update profile info, upload avatar, change password, change email, delete account (soft-deleted server-side)
-- **App Shell** — Responsive navigation bar with mobile menu, sticky footer, 404 page, Material snackbars for feedback
-
-### Backend (REST API)
-
-- **Auth** — Registration, login, JWT access + refresh tokens, refresh endpoint, email confirmation, logout
-- **Users** — Whoami, get all, get by id, update profile, update password, update email (with confirmation link), avatar upload, soft delete, follow/unfollow, followers/following lists, admin promotion
-- **Posts** — Get all, get by id, create (multipart with image), update, delete, like/unlike toggle
-- **Comments** — Get by post, get by id, create (root or reply), update, delete, like/unlike toggle
-- **Media Management** — Uploads validated against an extension allowlist, decoded and re-encoded with ImageSharp, and served as static files
-- **Email** — SMTP delivery via MailKit for registration, email-change and password-related confirmations
-- **Cross-Origin** — CORS policy scoped to the Angular dev server
+- **Authentication & Security** — JWT authentication with refresh tokens, email confirmation, route guards, and account management.
+- **Social Feed** — Create, edit, delete, and like posts with image uploads, newest-first sorting, and personalized filters.
+- **Threaded Comments** — Nested replies with unlimited depth, lazy loading, caching, and comment likes.
+- **User Profiles & Social Connections** — Custom avatars, profile management, user discovery, follow/unfollow, and follower/following lists.
+- **Account Management** — Update personal details, change email or password, and delete accounts.
+- **Media & Email** — Image validation and processing with ImageSharp, plus email confirmations via MailKit.
+- **Responsive UI** — Mobile-friendly navigation, Angular Material dialogs and snackbars, and a custom 404 page.
+- **REST API** — ASP.NET Core API with authentication, user, post, and comment endpoints, role-based administration, and CORS configuration.
 
 ## 🛠️ Tech Stack
 
