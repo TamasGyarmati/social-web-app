@@ -1,20 +1,32 @@
+const host = 'localhost';
+const port = 5000;
+
+const apiUri = `http://${host}:${port}`;
+
 export const env = {
-  apiUri: 'http://localhost:5000',
-  authLoginUri: 'http://localhost:5000/api/Auth/login',
-  postGetAllUri: 'http://localhost:5000/api/Post/all',
-  commentGetByPostIdUri: 'http://localhost:5000/api/Comment/all',
-  commentUri: 'http://localhost:5000/api/Comment',
-  postUri: 'http://localhost:5000/api/Post',
-  whoamiUri: 'http://localhost:5000/User/whoami',
-  userPostAvatarUri: 'http://localhost:5000/User/avatar',
-  userUpdateUri: 'http://localhost:5000/User/all',
-  userUpdatePasswordUri: 'http://localhost:5000/User/password',
-  userUpdateEmailUri: 'http://localhost:5000/User/email',
-  userDeleteUri: 'http://localhost:5000/User/me',
-  userGetAllUri: 'http://localhost:5000/User/all',
-  userGetByIdUri: 'http://localhost:5000/User',
-  userFollowByIdUri: 'http://localhost:5000/User/follow',
-  authRegisterUri: 'http://localhost:5000/api/Auth/register',
+  host,
+  port,
+  apiUri,
+
+  authLoginUri: `${apiUri}/api/Auth/login`,
+  authRegisterUri: `${apiUri}/api/Auth/register`,
+
+  postGetAllUri: `${apiUri}/api/Post/all`,
+  postUri: `${apiUri}/api/Post`,
+
+  commentGetByPostIdUri: `${apiUri}/api/Comment/all`,
+  commentUri: `${apiUri}/api/Comment`,
+
+  whoamiUri: `${apiUri}/User/whoami`,
+  userPostAvatarUri: `${apiUri}/User/avatar`,
+  userUpdateUri: `${apiUri}/User/all`,
+  userUpdatePasswordUri: `${apiUri}/User/password`,
+  userUpdateEmailUri: `${apiUri}/User/email`,
+  userDeleteUri: `${apiUri}/User/me`,
+  userGetAllUri: `${apiUri}/User/all`,
+  userGetByIdUri: `${apiUri}/User`,
+  userFollowByIdUri: `${apiUri}/User/follow`,
+
   jwtAccessToken: 'social-access-token',
   jwtAccessTokenExp: 'social-access-token-expiration',
   jwtRefreshToken: 'social-refresh-token',
