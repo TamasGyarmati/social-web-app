@@ -31,6 +31,7 @@
           <span>Choose an image</span>
         </label>
 
+        <!-- Ha click lenne change helyett, már akkor lefutna mielőtt a fájl kiválasztásra kerül -->>
         <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" />
 
         <span class="selected-file" *ngIf="selectedFileName">

@@ -1,13 +1,12 @@
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import { CommonModule, Location } from '@angular/common';
 import { inject } from '@angular/core';
 import { signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { env } from '../_env/env';
+import { CreatePostService } from '../_services/create-post.service';
 
 @Component({
   selector: 'app-create-post',
@@ -16,11 +15,6 @@ import { env } from '../_env/env';
   styleUrl: './create-post.scss',
 })
 export class CreatePost implements OnInit {
-  private location: Location = inject(Location);
-  private http: HttpClient = inject(HttpClient);
-  private router: Router = inject(Router);
-  private matBar: MatSnackBar = inject(MatSnackBar);
-
   public selectedFileName: string = '';
 
   public isLoading = signal<boolean>(true);
@@ -40,17 +34,22 @@ export class CreatePost implements OnInit {
     }),
   });
 
+  private location: Location = inject(Location);
+  private createPostService: CreatePostService = inject(CreatePostService);
+  private router: Router = inject(Router);
+  private matBar: MatSnackBar = inject(MatSnackBar);
+
   ngOnInit(): void {
     this.isLoading.set(false);
   }
 
   public createPost(): void {
-    this.postGettingCreated.set(true);
-
     if (this.postForm.invalid) {
       this.postForm.markAllAsTouched();
       return;
     }
+
+    this.postGettingCreated.set(true);
 
     const formData = new FormData();
 
@@ -63,26 +62,21 @@ export class CreatePost implements OnInit {
       formData.append('Image', image);
     }
 
-    let headers = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.http.post(env.postUri, formData, { headers }).subscribe({
-      next: (successfully) => {
-        this.router.navigate(['/feed']);
+    this.createPostService.createPostRequest(formData).subscribe({
+      next: () => {
         this.matBar.open('Post created successfully', 'Close', { duration: 3000 });
-        this.postGettingCreated.set(false);
-        console.log('::SUCCESS::', successfully);
+        this.router.navigate(['/feed']);
       },
-
       error: (error) => {
-        console.error('::ERRORS::', error);
+        console.error('::ERROR::', error);
+        this.matBar.open('Failed to create post', 'Close', {
+          duration: 3000,
+        });
+      },
+      complete: () => {
+        this.postGettingCreated.set(false);
       },
     });
-  }
-
-  public goBack(): void {
-    this.location.back();
   }
 
   public onImageSelected(event: Event): void {
@@ -94,5 +88,9 @@ export class CreatePost implements OnInit {
         image: input.files[0],
       });
     }
+  }
+
+  public goBack(): void {
+    this.location.back();
   }
 }
