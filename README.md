@@ -12,7 +12,7 @@ A full-stack social media platform: a **RESTful ASP.NET Core API** paired with a
 - **User Profiles & Social Connections** — Custom avatars, profile management, user discovery, follow/unfollow, and follower/following lists.
 - **Account Management** — Update personal details, change email or password, and delete accounts.
 - **Media & Email** — Image validation and processing with ImageSharp, plus email confirmations via MailKit.
-- **Responsive UI** — Mobile-friendly navigation, Angular Material dialogs and snackbars, and a custom 404 page.
+- **Responsive UI** — Mobile-friendly navigation, Angular Material dialogs and snackbars.
 - **REST API** — ASP.NET Core API with authentication, user, post, and comment endpoints, role-based administration, and CORS configuration.
 
 ## 🛠️ Tech Stack
