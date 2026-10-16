@@ -2,8 +2,6 @@
 
 A full-stack social media platform: a **RESTful ASP.NET Core API** paired with a complete **Angular single-page application** frontend.
 
-The frontend is no longer a placeholder — `Frontend/Social` contains a working SPA that consumes the API end to end: authentication, a post feed with image uploads, nested comments, likes, a follow graph, user profiles, user search and account management.
-
 ## ✨ Features
 
 ### Frontend (Angular SPA)
