@@ -49,6 +49,7 @@
       class="mobile-user"
       *ngIf="this.auth.isLoggedIn()"
       [routerLink]="['user', this.auth.user()?.id]"
+      (click)="closeMobileMenu()"
     >
       <img [src]="this.apiUri + '/' + this.auth.user()?.avatarUrl" />
       <span>@{{ this.auth.user()?.userName }}</span>

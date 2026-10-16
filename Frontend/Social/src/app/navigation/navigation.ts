@@ -1,4 +1,4 @@
-import { signal } from '@angular/core';
+import { inject, signal } from '@angular/core';
 import { Component } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -15,20 +15,20 @@ import { env } from '../_env/env';
   styleUrl: './navigation.scss',
 })
 export class Navigation {
-  constructor(public auth: AuthService) {}
-
   public readonly apiUri = env.apiUri;
   public readonly isMobileMenuOpen = signal<boolean>(false);
 
-  public logout(): void {
-    this.auth.logout();
-  }
+  public auth: AuthService = inject(AuthService);
 
-  toggleMobileMenu(): void {
+  public toggleMobileMenu(): void {
     this.isMobileMenuOpen.update((open) => !open);
   }
 
-  closeMobileMenu(): void {
+  public closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+  }
+
+  public logout(): void {
+    this.auth.logout();
   }
 }
