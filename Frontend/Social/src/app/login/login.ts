@@ -51,19 +51,15 @@ export class Login implements OnInit {
     return this.password.hasError('password') ? 'Not a valid password' : '';
   }
 
-  get checkInput(): boolean {
+  public checkInput(): boolean {
     return this.email.valid && this.password.valid;
   }
 
-  get formattedEmail(): string {
-    return this.email.value.substring(0, this.email.value.indexOf('@'));
-  }
-
-  toggleHide() {
+  public toggleHide() {
     this.hide.set(!this.hide());
   }
 
-  sendLoginCredentials(): void {
+  public sendLoginCredentials(): void {
     const loginModel: LoginModel = {
       email: this.email.value ?? '',
       password: this.password.value ?? '',
