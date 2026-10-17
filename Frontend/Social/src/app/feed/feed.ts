@@ -145,8 +145,9 @@ export class Feed implements OnInit {
           this.comments.set(comments);
 
           // berakjuk a nyitott kommentek közé
-          opened.add(postId);
-          this.openedComments.set(opened);
+          const updatedOpened = new Set(this.openedComments());
+          updatedOpened.add(postId);
+          this.openedComments.set(updatedOpened);
 
           console.log('::[API] GET COMMENTS TO POST::', success);
           console.log('--OPEN COMMENTS--');
@@ -162,6 +163,7 @@ export class Feed implements OnInit {
   public addComment(postId: string, comment: CommentToPost): void {
     this.comments.update((comments) => {
       const newComments = new Map(comments);
+      // előre tesszük az új commentet, majd utána pedig a poszthoz már meglévő kommenteket, ha nem voltak akkor üres tömböt
       newComments.set(postId, [comment, ...(newComments.get(postId) ?? [])]);
       return newComments;
     });

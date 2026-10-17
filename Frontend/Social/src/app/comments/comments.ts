@@ -1,13 +1,13 @@
 import { env } from '../_env/env';
-import { HttpClient } from '@angular/common/http';
 import { Comment } from '../_models/comment';
-import { Component, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
 import { CommentToPost } from '../_models/commentToPost';
 import { CommentItem } from '../comment-item/comment-item';
 import { CommonModule } from '@angular/common';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommentsService } from '../_services/comments.service';
 
 @Component({
   selector: 'app-comments',
@@ -16,33 +16,41 @@ import { Router } from '@angular/router';
   styleUrl: './comments.scss',
 })
 export class Comments {
-  public comments = input<CommentToPost[]>([]);
-  public commentCreated = output<CommentToPost>();
-  public replyCreated = output<CommentToPost>();
-  public postId = input.required<string>();
   public commentContent: string = '';
-  public activeReplyCommentId = signal<string | null>(null);
 
+  public comments = input<CommentToPost[]>([]);
+  public postId = input.required<string>();
+  public commentCreated = output<CommentToPost>();
   public commentLiked = output<{
     commentId: string;
     likes: number;
     isLiked: boolean;
   }>();
+  public replyCreated = output<CommentToPost>();
 
-  constructor(
-    private httpClient: HttpClient,
-    private router: Router,
-  ) {}
+  public activeReplyCommentId = signal<string | null>(null);
 
-  onReplyCreated(reply: CommentToPost): void {
+  private router: Router = inject(Router);
+  private commentsService: CommentsService = inject(CommentsService);
+
+  public onReplyCreated(reply: CommentToPost): void {
     this.replyCreated.emit(reply);
   }
 
-  onReplyClicked(commentId: string | null): void {
+  public onReplyClicked(commentId: string | null): void {
     this.activeReplyCommentId.set(commentId);
   }
 
-  createComment(): void {
+  public onCommentLiked(event: { commentId: string; likes: number; isLiked: boolean }): void {
+    this.commentLiked.emit(event);
+  }
+
+  // Olyan kommentek amelyeknek nincs parentCommentjük
+  public getRootItems(): CommentToPost[] {
+    return this.comments().filter((comment) => !comment.parentCommentId);
+  }
+
+  public createComment(): void {
     const token = localStorage.getItem(env.jwtAccessToken);
     if (!token) {
       this.router.navigate(['/login']);
@@ -55,23 +63,16 @@ export class Comments {
       parentCommentId: null,
     };
 
-    this.httpClient.post<{ comment: CommentToPost }>(env.commentUri, commentRequest).subscribe(
-      (success) => {
-        console.log('::SUCCESS::', success);
+    this.commentsService.createCommentRequest(commentRequest).subscribe({
+      next: (success) => {
         this.commentCreated.emit(success.comment);
         this.commentContent = '';
+        console.log('::SUCCESS::', success);
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
       },
-    );
-  }
-
-  getRootItems(): CommentToPost[] {
-    return this.comments().filter((comment) => !comment.parentCommentId);
-  }
-
-  onCommentLiked(event: { commentId: string; likes: number; isLiked: boolean }): void {
-    this.commentLiked.emit(event);
+    });
   }
 }

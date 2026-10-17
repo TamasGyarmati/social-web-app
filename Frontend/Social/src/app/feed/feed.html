@@ -84,8 +84,8 @@
       [postId]="post.id"
       [comments]="comments().get(post.id) || []"
       (commentCreated)="addComment(post.id, $event)"
-      (replyCreated)="onReplyCreated($event)"
       (commentLiked)="onCommentLiked($event)"
+      (replyCreated)="onReplyCreated($event)"
     >
     </app-comments>
   </div>

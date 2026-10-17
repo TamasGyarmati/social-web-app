@@ -1,4 +1,4 @@
-import { effect } from '@angular/core';
+import { effect, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { env } from '../_env/env';
 import { Component, input, output, signal } from '@angular/core';
@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import { Comment } from '../_models/comment';
 import { AuthService } from '../_services/auth.service';
 import { Router, RouterLink } from '@angular/router';
+import { CommentItemService } from '../_services/comment-item.service';
 
 @Component({
   selector: 'app-comment-item',
@@ -18,55 +19,43 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class CommentItem {
   public apiUri: string = env.apiUri;
-
-  public comment = input.required<CommentToPost>();
-  public allComments = input<CommentToPost[]>([]);
-  public likes = signal<number>(0);
-  public isLiked = signal<boolean>(false);
-  public showReplyInput = signal<boolean>(false);
   public reply: string = '';
-  public replyCreated = output<CommentToPost>();
-  public activeReplyCommentId = input<string | null>(null);
-  public replyClicked = output<string | null>();
 
+  public allComments = input<CommentToPost[]>([]);
+  public comment = input.required<CommentToPost>();
+  public activeReplyCommentId = input<string | null>(null);
+  public replyCreated = output<CommentToPost>();
+  public replyClicked = output<string | null>();
   public commentLiked = output<{
     commentId: string;
     likes: number;
     isLiked: boolean;
   }>();
 
-  constructor(
-    private httpClient: HttpClient,
-    public auth: AuthService,
-    private router: Router,
-  ) {
+  public likes = signal<number>(0);
+  public isLiked = signal<boolean>(false);
+  public showReplyInput = signal<boolean>(false);
+
+  private commentItemService: CommentItemService = inject(CommentItemService);
+  public auth: AuthService = inject(AuthService);
+  private router: Router = inject(Router);
+
+  constructor() {
     effect(() => {
       this.likes.set(this.comment().likes);
       this.isLiked.set(this.comment().isLiked);
     });
   }
 
-  createReply(comment: CommentToPost): void {
-    const commentRequest: Comment = {
-      content: this.reply,
-      postId: comment.postId,
-      parentCommentId: comment.id,
-    };
-
-    this.httpClient.post<{ comment: CommentToPost }>(env.commentUri, commentRequest).subscribe(
-      (success) => {
-        console.log('::SUCCESS::', success);
-        this.replyCreated.emit(success.comment);
-        this.reply = '';
-        this.showReplyInput.set(false);
-      },
-      (error) => {
-        console.log('::ERROR::', error);
-      },
-    );
+  public onReplyCreated(reply: CommentToPost): void {
+    this.replyCreated.emit(reply);
   }
 
-  toggleReplyInput(): void {
+  public onCommentLiked(event: { commentId: string; likes: number; isLiked: boolean }): void {
+    this.commentLiked.emit(event);
+  }
+
+  public toggleReplyInput(): void {
     if (!this.auth.isLoggedIn()) {
       this.router.navigate(['/login']);
       return;
@@ -79,20 +68,39 @@ export class CommentItem {
     }
   }
 
-  getReplies(): CommentToPost[] {
+  public get getReplies(): CommentToPost[] {
     return this.allComments().filter((comment) => comment.parentCommentId === this.comment().id);
   }
 
-  likeComment(commentId: string): void {
+  public createReply(comment: CommentToPost): void {
+    const commentRequest: Comment = {
+      content: this.reply,
+      postId: comment.postId,
+      parentCommentId: comment.id,
+    };
+
+    this.commentItemService.createReplyRequest(commentRequest).subscribe({
+      next: (success) => {
+        console.log('::SUCCESS::', success);
+        this.replyCreated.emit(success.comment);
+        this.reply = '';
+        this.showReplyInput.set(false);
+      },
+
+      error: (error) => {
+        console.log('::ERROR::', error);
+      },
+    });
+  }
+
+  public likeComment(commentId: string): void {
     if (!this.auth.isLoggedIn()) {
       this.router.navigate(['/login']);
       return;
     }
 
-    const uri = `${env.commentUri}/${commentId}/like`;
-
-    this.httpClient.post<any>(uri, null).subscribe(
-      (success) => {
+    this.commentItemService.likeCommentRequest(commentId).subscribe({
+      next: (success) => {
         console.log('::SUCCESS::', success);
         this.likes.set(success.likes);
         this.isLiked.set(success.isLiked);
@@ -103,17 +111,10 @@ export class CommentItem {
           isLiked: success.isLiked,
         });
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
       },
-    );
-  }
-
-  onReplyCreated(reply: CommentToPost): void {
-    this.replyCreated.emit(reply);
-  }
-
-  onCommentLiked(event: { commentId: string; likes: number; isLiked: boolean }): void {
-    this.commentLiked.emit(event);
+    });
   }
 }

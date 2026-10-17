@@ -39,9 +39,9 @@
     </form>
   </div>
 
-  <div class="replies" *ngIf="getReplies().length > 0">
+  <div class="replies" *ngIf="getReplies.length > 0">
     <app-comment-item
-      *ngFor="let reply of getReplies()"
+      *ngFor="let reply of getReplies"
       [comment]="reply"
       [allComments]="allComments()"
       [activeReplyCommentId]="activeReplyCommentId()"
