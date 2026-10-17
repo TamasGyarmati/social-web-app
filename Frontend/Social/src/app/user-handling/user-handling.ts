@@ -92,7 +92,49 @@ export class UserHandling implements OnInit {
     this.whoami();
   }
 
-  updateAvatar(): void {
+  private whoami(): void {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
+    });
+
+    this.http.get<{ user: User }>(`${env.whoamiUri}`, { headers: headers }).subscribe(
+      (success) => {
+        this.user.set(success.user);
+        this.userForm.patchValue({
+          userName: success.user.userName,
+          firstName: success.user.firstName,
+          lastName: success.user.lastName,
+        });
+        console.log('::SUCCESS::', success);
+      },
+      (error) => {
+        console.log('::ERROR::', error);
+      },
+    );
+  }
+
+  private deleteUser(): void {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
+    });
+
+    this.http.delete(env.userDeleteUri, { headers: headers }).subscribe(
+      (success) => {
+        console.log('::SUCCESS::', success);
+        this.auth.logout();
+        this.router.navigate(['/login']);
+        this.matBar.open('User successfully deleted.', 'Close', { duration: 3000 });
+      },
+      (error) => {
+        console.log('::ERROR::', error);
+        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
+      },
+    );
+  }
+
+  public updateAvatar(): void {
     if (this.imageForm.invalid) {
       this.imageForm.markAllAsTouched();
       return;
@@ -132,7 +174,7 @@ export class UserHandling implements OnInit {
     );
   }
 
-  updateUser(): void {
+  public updateUser(): void {
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       return;
@@ -169,52 +211,7 @@ export class UserHandling implements OnInit {
     );
   }
 
-  whoami(): void {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.http.get<{ user: User }>(`${env.whoamiUri}`, { headers: headers }).subscribe(
-      (success) => {
-        this.user.set(success.user);
-        this.userForm.patchValue({
-          userName: success.user.userName,
-          firstName: success.user.firstName,
-          lastName: success.user.lastName,
-        });
-        console.log('::SUCCESS::', success);
-      },
-      (error) => {
-        console.log('::ERROR::', error);
-      },
-    );
-  }
-
-  public onImageSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-
-    if (input.files && input.files.length > 0) {
-      this.selectedFileName = input.files[0].name;
-      this.imageForm.setValue(input.files[0]);
-    }
-  }
-
-  toggleUserUpdate(): void {
-    this.isUserUpdateEnabled.update((value) => !value);
-
-    if (this.isUserUpdateEnabled()) {
-      this.userForm.enable();
-    } else {
-      this.userForm.disable();
-    }
-  }
-
-  checkFileName(): boolean {
-    return this.selectedFileName === null;
-  }
-
-  updatePassword(): void {
+  public updatePassword(): void {
     if (this.passwordForm.invalid) {
       this.passwordForm.markAllAsTouched();
       return;
@@ -248,7 +245,7 @@ export class UserHandling implements OnInit {
     );
   }
 
-  updateMail(): void {
+  public updateMail(): void {
     if (this.newEmailForm.invalid) {
       this.newEmailForm.markAllAsTouched();
       return;
@@ -283,26 +280,6 @@ export class UserHandling implements OnInit {
     );
   }
 
-  private deleteUser(): void {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.http.delete(env.userDeleteUri, { headers: headers }).subscribe(
-      (success) => {
-        console.log('::SUCCESS::', success);
-        this.auth.logout();
-        this.router.navigate(['/login']);
-        this.matBar.open('User successfully deleted.', 'Close', { duration: 3000 });
-      },
-      (error) => {
-        console.log('::ERROR::', error);
-        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
-      },
-    );
-  }
-
   public openDeleteUserDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
     const dialogRef = this.dialog.open(DeleteUserDialog, {
       width: '460px',
@@ -315,5 +292,28 @@ export class UserHandling implements OnInit {
         this.deleteUser();
       }
     });
+  }
+
+  public onImageSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      this.selectedFileName = input.files[0].name;
+      this.imageForm.setValue(input.files[0]);
+    }
+  }
+
+  public toggleUserUpdate(): void {
+    this.isUserUpdateEnabled.update((value) => !value);
+
+    if (this.isUserUpdateEnabled()) {
+      this.userForm.enable();
+    } else {
+      this.userForm.disable();
+    }
+  }
+
+  public checkFileName(): boolean {
+    return this.selectedFileName === null;
   }
 }
