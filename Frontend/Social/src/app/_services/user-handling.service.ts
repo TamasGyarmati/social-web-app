@@ -1,33 +1,50 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { DeleteUserDialog } from '../delete-user-dialog/delete-user-dialog';
-import { MatDialog } from '@angular/material/dialog';
 import { ChangeEmailRequest } from '../_models/changeEmailRequest';
 import { ChangePasswordRequest } from '../_models/changePasswordRequest';
 import { UserUpdate } from '../_models/userUpdate';
 import { User } from '../_models/user';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { env } from '../_env/env';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { MATERIAL_IMPORTS } from '../_shared/material';
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { AuthService } from '../_services/auth.service';
+import { inject } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserHandlingService {
-  public auth = inject(AuthService);
-  readonly dialog = inject(MatDialog);
-  private router = inject(Router);
-  private http = inject(HttpClient);
-  private matBar = inject(MatSnackBar);
+  private http: HttpClient = inject(HttpClient);
+
+  private getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem(env.jwtAccessToken)}`,
+    });
+  }
+
+  public whoami(): Observable<{ user: User }> {
+    return this.http.get<{ user: User }>(env.whoamiUri, { headers: this.getAuthHeaders() });
+  }
+
+  public deleteUser(): Observable<unknown> {
+    return this.http.delete(env.userDeleteUri, { headers: this.getAuthHeaders() });
+  }
+
+  public updateAvatar(formData: FormData): Observable<{ avatarUrl: string }> {
+    return this.http.post<{ avatarUrl: string }>(env.userPostAvatarUri, formData, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  public updateUser(userUpdate: UserUpdate): Observable<unknown> {
+    return this.http.put(env.userUpdateUri, userUpdate, { headers: this.getAuthHeaders() });
+  }
+
+  public updatePassword(passwordUpdate: ChangePasswordRequest): Observable<unknown> {
+    return this.http.put(env.userUpdatePasswordUri, passwordUpdate, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  public updateMail(emailUpdate: ChangeEmailRequest): Observable<unknown> {
+    return this.http.put(env.userUpdateEmailUri, emailUpdate, { headers: this.getAuthHeaders() });
+  }
 }

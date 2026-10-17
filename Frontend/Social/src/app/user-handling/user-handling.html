@@ -76,7 +76,7 @@
           </span>
         </div>
         <div class="update-avatar-button">
-          <button type="submit" matButton (click)="updateAvatar()" [disabled]="checkFileName()">
+          <button type="submit" matButton (click)="updateAvatar()" [disabled]="imageForm.invalid">
             Upload
           </button>
         </div>

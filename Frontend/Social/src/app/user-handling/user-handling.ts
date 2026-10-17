@@ -6,8 +6,6 @@ import { ChangePasswordRequest } from '../_models/changePasswordRequest';
 import { UserUpdate } from '../_models/userUpdate';
 import { User } from '../_models/user';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { env } from '../_env/env';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import {
@@ -19,6 +17,8 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../_services/auth.service';
+import { UserHandlingService } from '../_services/user-handling.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-user-handling',
@@ -32,11 +32,11 @@ export class UserHandling implements OnInit {
   public user = signal<User | null>(null);
   public isUserUpdateEnabled = signal(false);
 
-  public auth = inject(AuthService);
-  readonly dialog = inject(MatDialog);
-  private router = inject(Router);
-  private http = inject(HttpClient);
-  private matBar = inject(MatSnackBar);
+  public auth: AuthService = inject(AuthService);
+  private dialog: MatDialog = inject(MatDialog);
+  private router: Router = inject(Router);
+  private matBar: MatSnackBar = inject(MatSnackBar);
+  private userHandlingService: UserHandlingService = inject(UserHandlingService);
 
   public userForm = new FormGroup({
     userName: new FormControl('', {
@@ -93,13 +93,8 @@ export class UserHandling implements OnInit {
   }
 
   private whoami(): void {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.http.get<{ user: User }>(`${env.whoamiUri}`, { headers: headers }).subscribe(
-      (success) => {
+    this.userHandlingService.whoami().subscribe({
+      next: (success) => {
         this.user.set(success.user);
         this.userForm.patchValue({
           userName: success.user.userName,
@@ -108,30 +103,27 @@ export class UserHandling implements OnInit {
         });
         console.log('::SUCCESS::', success);
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
       },
-    );
+    });
   }
 
   private deleteUser(): void {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.http.delete(env.userDeleteUri, { headers: headers }).subscribe(
-      (success) => {
+    this.userHandlingService.deleteUser().subscribe({
+      next: (success) => {
         console.log('::SUCCESS::', success);
         this.auth.logout();
         this.router.navigate(['/login']);
         this.matBar.open('User successfully deleted.', 'Close', { duration: 3000 });
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
         this.matBar.open(error.error.message, 'Close', { duration: 3000 });
       },
-    );
+    });
   }
 
   public updateAvatar(): void {
@@ -140,24 +132,20 @@ export class UserHandling implements OnInit {
       return;
     }
 
-    const formData = new FormData();
     const image = this.imageForm.value;
-
-    if (image) {
-      formData.append('Image', image);
+    if (!image) {
+      return;
     }
 
-    let headers = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
+    const formData = new FormData();
+    formData.append('Image', image);
 
-    this.http.post<{ avatarUrl: string }>(env.userPostAvatarUri, formData, { headers }).subscribe(
-      (success) => {
+    this.userHandlingService.updateAvatar(formData).subscribe({
+      next: (success) => {
         this.auth.user.update((user) =>
           user
             ? {
                 ...user,
-
                 avatarUrl: success.avatarUrl,
               }
             : user,
@@ -168,10 +156,11 @@ export class UserHandling implements OnInit {
         this.matBar.open('Successfully uploaded the avatar', 'Close', { duration: 3000 });
         console.log('::SUCCESS::', success);
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
       },
-    );
+    });
   }
 
   public updateUser(): void {
@@ -180,15 +169,10 @@ export class UserHandling implements OnInit {
       return;
     }
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
     const userUpdate: UserUpdate = this.userForm.getRawValue();
 
-    this.http.put(env.userUpdateUri, userUpdate, { headers: headers }).subscribe(
-      (success) => {
+    this.userHandlingService.updateUser(userUpdate).subscribe({
+      next: (success) => {
         this.auth.user.update((user) =>
           user
             ? {
@@ -199,16 +183,16 @@ export class UserHandling implements OnInit {
               }
             : user,
         );
-        this.whoami();
         this.toggleUserUpdate();
         this.matBar.open('Successfully updated your profile', 'Close', { duration: 3000 });
         console.log('::SUCCESS::', success);
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
         this.matBar.open(error.error.message, 'Close', { duration: 3000 });
       },
-    );
+    });
   }
 
   public updatePassword(): void {
@@ -217,32 +201,31 @@ export class UserHandling implements OnInit {
       return;
     }
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
     const passwordUpdate: ChangePasswordRequest = {
       oldPassword: this.passwordForm.controls.currentPassword.value,
       newPassword: this.passwordForm.controls.newPassword.value,
     };
 
-    this.http.put(env.userUpdatePasswordUri, passwordUpdate, { headers: headers }).subscribe(
-      (success) => {
-        this.matBar.open('Successfully updated your profile', 'Close', { duration: 3000 });
-        this.passwordForm.reset();
-        this.passwordForm.markAsPristine();
-        this.passwordForm.markAsUntouched();
-        console.log('::SUCCESS::', success);
-      },
-      (error) => {
-        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
-        this.passwordForm.reset();
-        this.passwordForm.markAsPristine();
-        this.passwordForm.markAsUntouched();
-        console.log('::ERROR::', error);
-      },
-    );
+    this.userHandlingService
+      .updatePassword(passwordUpdate)
+      .pipe(
+        finalize(() => {
+          this.passwordForm.reset();
+          this.passwordForm.markAsPristine();
+          this.passwordForm.markAsUntouched();
+        }),
+      )
+      .subscribe({
+        next: (success) => {
+          this.matBar.open('Successfully updated your profile', 'Close', { duration: 3000 });
+          console.log('::SUCCESS::', success);
+        },
+
+        error: (error) => {
+          this.matBar.open(error.error.message, 'Close', { duration: 3000 });
+          console.log('::ERROR::', error);
+        },
+      });
   }
 
   public updateMail(): void {
@@ -251,33 +234,29 @@ export class UserHandling implements OnInit {
       return;
     }
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
     const emailUpdate: ChangeEmailRequest = {
       newEmail: this.newEmailForm.getRawValue(),
     };
 
-    this.http.put(env.userUpdateEmailUri, emailUpdate, { headers: headers }).subscribe(
-      (success) => {
+    this.userHandlingService.updateMail(emailUpdate).subscribe({
+      next: (success) => {
         console.log('::SUCCESS::', success);
         this.matBar.open('Confirmation link to your new email was sent out!', 'Close', {
           duration: 3000,
         });
         this.newEmailForm.reset();
-        this.passwordForm.markAsPristine();
-        this.passwordForm.markAsUntouched();
+        this.newEmailForm.markAsPristine();
+        this.newEmailForm.markAsUntouched();
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
         this.matBar.open(error.error.message, 'Close', { duration: 3000 });
         this.newEmailForm.reset();
-        this.passwordForm.markAsPristine();
-        this.passwordForm.markAsUntouched();
+        this.newEmailForm.markAsPristine();
+        this.newEmailForm.markAsUntouched();
       },
-    );
+    });
   }
 
   public openDeleteUserDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
@@ -306,14 +285,6 @@ export class UserHandling implements OnInit {
   public toggleUserUpdate(): void {
     this.isUserUpdateEnabled.update((value) => !value);
 
-    if (this.isUserUpdateEnabled()) {
-      this.userForm.enable();
-    } else {
-      this.userForm.disable();
-    }
-  }
-
-  public checkFileName(): boolean {
-    return this.selectedFileName === null;
+    this.isUserUpdateEnabled() ? this.userForm.enable() : this.userForm.disable();
   }
 }
