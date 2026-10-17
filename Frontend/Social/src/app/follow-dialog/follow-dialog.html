@@ -18,14 +18,7 @@
         [routerLink]="['/user', follower.id]"
         (click)="closeDialog()"
       >
-        <img
-          class="user-avatar"
-          [src]="
-            follower.avatarUrl ? this.apiUri + follower.avatarUrl : 'assets/default-avatar.png'
-          "
-          [alt]="follower.userName + ' avatar'"
-        />
-
+        <img class="user-avatar" [src]="follower.avatarUrl" />
         <span class="username">@{{ follower.userName }}</span>
 
         <mat-icon class="arrow-icon">chevron_right</mat-icon>
@@ -40,14 +33,7 @@
         [routerLink]="['/user', following.id]"
         (click)="closeDialog()"
       >
-        <img
-          class="user-avatar"
-          [src]="
-            following.avatarUrl ? this.apiUri + following.avatarUrl : 'assets/default-avatar.png'
-          "
-          [alt]="following.userName + ' avatar'"
-        />
-
+        <img class="user-avatar" [src]="following.avatarUrl" />
         <span class="username">@{{ following.userName }}</span>
 
         <mat-icon class="arrow-icon">chevron_right</mat-icon>

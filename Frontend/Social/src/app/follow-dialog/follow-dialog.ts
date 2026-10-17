@@ -24,8 +24,8 @@ export class FollowDialog implements OnInit {
   public userId = signal<string | null>(null);
   public isLoading = signal<boolean>(true);
 
-  public data = inject<FollowDialogData>(MAT_DIALOG_DATA);
-  private dialogRef = inject(MatDialogRef<FollowDialog>);
+  public data: FollowDialogData = inject<FollowDialogData>(MAT_DIALOG_DATA);
+  private dialogRef: MatDialogRef<FollowDialog> = inject(MatDialogRef<FollowDialog>);
   private followDialogService: FollowDialogService = inject(FollowDialogService);
 
   ngOnInit(): void {
