@@ -43,7 +43,12 @@ export class FollowDialog implements OnInit {
   }
 
   private getFollowers(): void {
-    this.followDialogService.getFollowersRequest(this.userId()).subscribe({
+    const userId = this.userId();
+    if (!userId) {
+      return;
+    }
+
+    this.followDialogService.getFollowersRequest(userId).subscribe({
       next: (success) => {
         this.isLoading.set(false);
         this.followers.set(success.followers);
@@ -58,7 +63,12 @@ export class FollowDialog implements OnInit {
   }
 
   private getFollowings(): void {
-    this.followDialogService.getFollowingsRequest(this.userId()).subscribe({
+    const userId = this.userId();
+    if (!userId) {
+      return;
+    }
+
+    this.followDialogService.getFollowingsRequest(userId).subscribe({
       next: (success) => {
         this.isLoading.set(false);
         this.followings.set(success.followings);

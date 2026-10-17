@@ -12,13 +12,13 @@ import { Observable } from 'rxjs';
 export class FollowDialogService {
   private http = inject(HttpClient);
 
-  public getFollowersRequest(userId: string | null): Observable<{ followers: GetFollowers[] }> {
+  public getFollowersRequest(userId: string): Observable<{ followers: GetFollowers[] }> {
     return this.http.get<{ followers: GetFollowers[] }>(
       `${env.userGetByIdUri}/${userId}/followers`,
     );
   }
 
-  public getFollowingsRequest(userId: string | null): Observable<{ followings: GetFollowings[] }> {
+  public getFollowingsRequest(userId: string): Observable<{ followings: GetFollowings[] }> {
     return this.http.get<{ followings: GetFollowings[] }>(
       `${env.userGetByIdUri}/${userId}/followings`,
     );
