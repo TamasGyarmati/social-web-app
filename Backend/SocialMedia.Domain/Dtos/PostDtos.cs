@@ -13,7 +13,8 @@ public record GetAllPostsResponseDto(
     int Likes,
     int CommentsCount,
     string? CreatorAvatarUrl,
-    string? CreatorUserName
+    string? CreatorUserName,
+    bool isLiked
 );
 
 public record GetPostWithCommentsResponseDto(
@@ -51,7 +52,7 @@ public record CreatePostLikeResponseDto(
 
 public static class PostMappingExtensions
 {
-    public static GetAllPostsResponseDto FromDomainToResponsePostDto(this Post post)
+    public static GetAllPostsResponseDto FromDomainToResponsePostDto(this Post post, string userId)
     {
         return new GetAllPostsResponseDto(
             post.Id,
@@ -63,7 +64,8 @@ public static class PostMappingExtensions
             post.Likes.Count,
             post.Comments.Count,
             post.Creator?.AvatarUrl,
-            post.Creator?.UserName
+            post.Creator?.UserName,
+            post.Likes.Any(like => like.UserId == userId)
         );
     }
 
