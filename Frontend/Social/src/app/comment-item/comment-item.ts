@@ -17,6 +17,8 @@ import { Router, RouterLink } from '@angular/router';
   styleUrl: './comment-item.scss',
 })
 export class CommentItem {
+  public apiUri: string = env.apiUri;
+
   public comment = input.required<CommentToPost>();
   public allComments = input<CommentToPost[]>([]);
   public likes = signal<number>(0);

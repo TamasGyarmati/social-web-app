@@ -161,7 +161,7 @@ mat-progress-spinner {
   }
 }
 
-.my-container {
+.feed-container {
   display: flex;
   flex-direction: column;
   gap: 8rem;
@@ -189,47 +189,52 @@ mat-progress-spinner {
       box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
     }
 
-    .feed-user-data {
+    .feed-top-row {
       display: flex;
-      align-items: center;
-      gap: 14px;
-      min-width: 0;
+      flex-direction: row;
 
-      .avatar {
-        width: 48px;
-        height: 48px;
-        flex-shrink: 0;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 2px solid $card-border;
-      }
-
-      .feed-user-info {
+      .feed-user-data {
         display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 3px;
+        align-items: center;
+        gap: 14px;
         min-width: 0;
+
+        .avatar {
+          width: 48px;
+          height: 48px;
+          flex-shrink: 0;
+          object-fit: cover;
+          border-radius: 50%;
+          border: 2px solid $card-border;
+        }
+
+        .feed-user-info {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 3px;
+          min-width: 0;
+
+          h2 {
+            color: $text-primary;
+            font-size: 1.1rem;
+            font-weight: 600;
+            line-height: 1.4;
+            margin: 0;
+            overflow-wrap: anywhere;
+          }
+
+          h3 {
+            color: $text-secondary;
+            font-size: 0.85rem;
+            font-weight: 400;
+            line-height: 1.4;
+            margin: 0;
+          }
+        }
 
         &:hover {
           cursor: pointer;
-        }
-
-        h2 {
-          color: $text-primary;
-          font-size: 1.1rem;
-          font-weight: 600;
-          line-height: 1.4;
-          margin: 0;
-          overflow-wrap: anywhere;
-        }
-
-        h3 {
-          color: $text-secondary;
-          font-size: 0.85rem;
-          font-weight: 400;
-          line-height: 1.4;
-          margin: 0;
         }
       }
 
@@ -267,6 +272,12 @@ mat-progress-spinner {
         height: auto;
         max-height: 700px;
         object-fit: contain;
+      }
+    }
+
+    .feed-content {
+      h1 {
+        font-size: 30px;
       }
     }
 

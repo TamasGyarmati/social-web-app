@@ -11,4 +11,5 @@ export interface CommentToPost {
   likes: number;
   replyCount: number;
   isLiked: boolean;
+  avatarUrl: string;
 }

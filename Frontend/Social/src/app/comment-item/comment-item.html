@@ -1,6 +1,7 @@
 <div class="comment">
-  <div class="comment-header">
-    <strong [routerLink]="['/user', comment().createdById]">@{{ comment().userName }}</strong>
+  <div class="comment-header" [routerLink]="['/user', comment().createdById]">
+    <img [src]="this.apiUri + '/' + comment().avatarUrl" />
+    <strong>@{{ comment().userName }}</strong>
   </div>
 
   <div class="comment-content">

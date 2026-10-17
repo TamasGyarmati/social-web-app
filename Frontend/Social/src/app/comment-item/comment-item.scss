@@ -9,16 +9,24 @@
     display: flex;
     align-items: center;
     margin-bottom: 8px;
+    gap: 10px;
+    width: fit-content;
+    cursor: pointer;
+
+    img {
+      width: 35px;
+      height: 35px;
+      flex-shrink: 0;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 2px solid $card-border;
+    }
 
     strong {
       color: $text-primary;
       font-size: 0.95rem;
       font-weight: 650;
       transition: color 180ms ease;
-
-      &:hover {
-        cursor: pointer;
-      }
     }
   }
 
@@ -72,7 +80,11 @@
     }
 
     .liked {
-      color: $danger-color;
+      color: #fb7185;
+
+      &:hover {
+        color: #fda4af;
+      }
     }
 
     > div:first-child:hover mat-icon {

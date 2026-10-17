@@ -32,13 +32,15 @@
   </div>
 </div>
 
-<div class="my-container" *ngIf="!this.isLoading()">
+<div class="feed-container" *ngIf="!this.isLoading()">
   <div class="feed-card" *ngFor="let post of this.currentPosts()">
-    <div class="feed-user-data">
-      <img class="avatar" [src]="this.apiUri + '/' + post.creatorAvatarUrl" alt="" />
-      <div class="feed-user-info" [routerLink]="['/user', post.creatorById]">
-        <h2>@{{ post.creatorUserName }}</h2>
-        <h3 style="font-size: 15px">{{ getDayCount(post) }}</h3>
+    <div class="feed-top-row">
+      <div class="feed-user-data" [routerLink]="['/user', post.creatorById]">
+        <img class="avatar" [src]="this.apiUri + '/' + post.creatorAvatarUrl" />
+        <div class="feed-user-info">
+          <h2>@{{ post.creatorUserName }}</h2>
+          <h3 style="font-size: 15px">{{ getDayCount(post) }}</h3>
+        </div>
       </div>
       <div class="feed-actions">
         <button
@@ -59,16 +61,11 @@
         </button>
       </div>
     </div>
-    <div class="feed-image">
-      <img
-        class="post"
-        [src]="this.apiUri + '/' + post.imageUrl"
-        alt=""
-        *ngIf="post.imageUrl !== null"
-      />
+    <div class="feed-image" *ngIf="post.imageUrl !== null">
+      <img class="post" [src]="this.apiUri + '/' + post.imageUrl" />
     </div>
     <div class="feed-content">
-      <h1 style="font-size: 30px">{{ post.title }}</h1>
+      <h1>{{ post.title }}</h1>
       <p>{{ post.description }}</p>
     </div>
     <div class="feed-data">

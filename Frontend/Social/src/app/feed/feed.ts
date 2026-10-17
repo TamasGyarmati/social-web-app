@@ -107,7 +107,6 @@ export class Feed implements OnInit {
           ),
         );
 
-        console.log('opened comments:', this.openedComments());
         console.log('comments:', this.comments());
       },
       (error) => {
