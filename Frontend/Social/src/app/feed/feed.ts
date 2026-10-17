@@ -2,7 +2,6 @@ import { CommentToPost } from '../_models/commentToPost';
 import { env } from '../_env/env';
 import { getAllPost } from '../_models/getAllPost';
 import { inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +14,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../_services/auth.service';
 import { EditPostDialog } from '../edit-post-dialog/edit-post-dialog';
 import { DeletePostDialog } from '../delete-post-dialog/delete-post-dialog';
+import { FeedService } from '../_services/feed.service';
 
 @Component({
   selector: 'app-feed',
@@ -24,115 +24,95 @@ import { DeletePostDialog } from '../delete-post-dialog/delete-post-dialog';
 })
 export class Feed implements OnInit {
   public apiUri: string = env.apiUri;
+
   public posts = signal<getAllPost[]>([]);
   public currentPosts = signal<getAllPost[]>([]);
   public openedComments = signal<Set<string>>(new Set());
   public comments = signal<Map<string, CommentToPost[]>>(new Map());
-  public isLoading = signal<boolean>(true);
-  private readonly dialog = inject(MatDialog);
   public isFiltered = signal<boolean>(false);
   public isDateDescending = signal<boolean>(false);
+  public isLoading = signal<boolean>(true);
 
-  constructor(
-    private httpClient: HttpClient,
-    private matBar: MatSnackBar,
-    private router: Router,
-    public auth: AuthService,
-  ) {}
+  public auth: AuthService = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
+  private matBar: MatSnackBar = inject(MatSnackBar);
+  private router: Router = inject(Router);
+  private feedService: FeedService = inject(FeedService);
 
   ngOnInit(): void {
     this.getAllPosts();
   }
 
   private getAllPosts(): void {
-    this.httpClient.get<getAllPost[]>(env.postGetAllUri).subscribe(
-      (success) => {
+    this.feedService.getAllPostsRequest().subscribe({
+      next: (success) => {
         const sortedPosts = success.sort(
           (a, b) => new Date(b.createdAtUtc).getTime() - new Date(a.createdAtUtc).getTime(),
         );
-        this.posts.set(
-          sortedPosts.map((post) => ({
-            ...post,
-          })),
-        );
-        this.currentPosts.set(
-          sortedPosts.map((post) => ({
-            ...post,
-          })),
-        );
+
+        this.posts.set(sortedPosts);
+        this.currentPosts.set(sortedPosts);
 
         this.applyFilters();
-
         this.isLoading.set(false);
 
-        console.log('::LOADED::', success);
+        console.log('::LOADED POSTS::', success);
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
       },
-    );
+    });
   }
 
-  getDayCount(post: getAllPost): string {
-    const now = new Date();
-    const created = new Date(post.createdAtUtc);
-    const difference = now.getTime() - created.getTime();
-    const result = Math.floor(difference / (1000 * 60 * 60 * 24));
-
-    if (result === 0) {
-      return 'Posted today';
-    } else {
-      return `Posted ${result.toString()} days ago`;
-    }
-  }
-
-  likePost(postId: string): void {
+  public likePost(postId: string): void {
     const token = localStorage.getItem(env.jwtAccessToken);
     if (!token) {
       this.router.navigate(['/login']);
       return;
     }
 
-    this.httpClient.post<any>(`${env.postUri}/${postId}/like`, null).subscribe(
-      (success) => {
-        console.log('::SUCCESS::', success);
-        this.posts.update((posts) =>
+    this.feedService.likePostRequest(postId).subscribe({
+      next: (success) => {
+        const updatePost = (posts: getAllPost[]) =>
           posts.map((post) =>
             post.id === postId ? { ...post, likes: success.likes, isLiked: success.isLiked } : post,
-          ),
-        );
-        this.currentPosts.update((posts) =>
-          posts.map((post) =>
-            post.id === postId ? { ...post, likes: success.likes, isLiked: success.isLiked } : post,
-          ),
-        );
+          );
 
-        console.log('comments:', this.comments());
+        this.posts.update(updatePost);
+        this.currentPosts.update(updatePost);
+
+        console.log('::POST LIKED::', success);
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
       },
-    );
+    });
   }
 
-  deletePost(post: getAllPost): void {
-    this.httpClient.delete(`${env.postUri}/${post.id}`).subscribe(
-      (success) => {
-        this.posts.update((posts) => posts.filter((x) => x.id !== post.id));
-        this.currentPosts.update((posts) => posts.filter((x) => x.id !== post.id));
+  public deletePost(post: getAllPost): void {
+    this.feedService.deletePostRequest(post).subscribe({
+      next: (success) => {
+        const deletePost = (posts: getAllPost[]) => posts.filter((x) => x.id !== post.id);
+
+        this.posts.update(deletePost);
+        this.currentPosts.update(deletePost);
+
         this.matBar.open('Successfully deleted the post!', 'Close', { duration: 3000 });
-        console.log('::SUCCESS::', success);
+        console.log('::POST DELETED::', success);
       },
-      (error) => {
+
+      error: (error) => {
         if (error.status == '403') {
           this.matBar.open('Cannot delete post!', 'Close', { duration: 3000 });
         }
         console.log('::ERROR::', error);
       },
-    );
+    });
   }
 
-  getComments(postId: string): void {
+  public getComments(postId: string): void {
     const opened = new Set(this.openedComments());
 
     if (opened.has(postId)) {
@@ -142,9 +122,9 @@ export class Feed implements OnInit {
     }
 
     if (!this.comments().has(postId)) {
-      this.httpClient.get<CommentToPost[]>(`${env.commentGetByPostIdUri}/${postId}`).subscribe(
-        (success) => {
-          const sortedComments = success.sort(
+      this.feedService.getCommentsRequest(postId).subscribe({
+        next: (success) => {
+          const sortedComments = [...success].sort(
             (a, b) => new Date(b.createdAtUnc).getTime() - new Date(a.createdAtUnc).getTime(),
           );
 
@@ -155,63 +135,50 @@ export class Feed implements OnInit {
           opened.add(postId);
           this.openedComments.set(opened);
 
-          console.log('::SUCCESS::', success);
+          console.log('::GET COMMENTS::', success);
         },
-        (error) => {
+
+        error: (error) => {
           console.log('::ERROR::', error);
         },
-      );
-      return;
+      });
     }
-    opened.add(postId);
-    this.openedComments.set(opened);
   }
 
-  addComment(postId: string, comment: CommentToPost): void {
+  public addComment(postId: string, comment: CommentToPost): void {
     this.comments.update((comments) => {
       const newComments = new Map(comments);
       newComments.set(postId, [comment, ...(newComments.get(postId) ?? [])]);
       return newComments;
     });
 
-    // ideiglenesen a memoriában lévő frontend commentCount-ot növeljük
-    this.posts.update((posts) =>
+    const incrementCommentsCount = (posts: getAllPost[]) =>
       posts.map((post) =>
         post.id === postId ? { ...post, commentsCount: post.commentsCount + 1 } : post,
-      ),
-    );
+      );
 
-    this.currentPosts.update((posts) =>
-      posts.map((post) =>
-        post.id === postId ? { ...post, commentsCount: post.commentsCount + 1 } : post,
-      ),
-    );
+    this.posts.update(incrementCommentsCount);
+    this.currentPosts.update(incrementCommentsCount);
   }
 
-  onReplyCreated(reply: CommentToPost): void {
+  public onReplyCreated(reply: CommentToPost): void {
     this.comments.update((comments) => {
       const newComments = new Map(comments);
       const postComments = newComments.get(reply.postId) ?? [];
-
       newComments.set(reply.postId, [reply, ...postComments]);
-
       return newComments;
     });
 
-    this.posts.update((posts) =>
+    const incrementCommentsCount = (posts: getAllPost[]) =>
       posts.map((post) =>
         post.id === reply.postId ? { ...post, commentsCount: post.commentsCount + 1 } : post,
-      ),
-    );
+      );
 
-    this.currentPosts.update((posts) =>
-      posts.map((post) =>
-        post.id === reply.postId ? { ...post, commentsCount: post.commentsCount + 1 } : post,
-      ),
-    );
+    this.posts.update(incrementCommentsCount);
+    this.currentPosts.update(incrementCommentsCount);
   }
 
-  onCommentLiked(event: { commentId: string; likes: number; isLiked: boolean }): void {
+  public onCommentLiked(event: { commentId: string; likes: number; isLiked: boolean }): void {
     this.comments.update((comments) => {
       const newComments = new Map(comments);
 
@@ -234,7 +201,7 @@ export class Feed implements OnInit {
   }
 
   private applyFilters(): void {
-    let filteredPosts = [...this.posts()]; // spread operator -> másolatot készít
+    let filteredPosts = [...this.posts()]; // spread operator -> shallow másolatot készít, segédváltozó
 
     if (this.isFiltered()) {
       filteredPosts = filteredPosts.filter((item) => item.creatorById === this.auth.user()?.id);
@@ -247,14 +214,27 @@ export class Feed implements OnInit {
     this.currentPosts.set(filteredPosts);
   }
 
-  public filterByMe(): void {
+  public toggleFilterByMe(): void {
     this.isFiltered.update((value) => !value);
     this.applyFilters();
   }
 
-  public filterByDate(): void {
+  public toggleFilterByDate(): void {
     this.isDateDescending.update((value) => !value);
     this.applyFilters();
+  }
+
+  public getDayCount(post: getAllPost): string {
+    const now = new Date();
+    const created = new Date(post.createdAtUtc);
+    const difference = now.getTime() - created.getTime(); // difference in ms
+    const result = Math.floor(difference / (1000 * 60 * 60 * 24)); // 86.400.000 ms -> 1 day
+
+    if (result === 0) {
+      return 'Posted today';
+    } else {
+      return `Posted ${result.toString()} days ago`;
+    }
   }
 
   public openDeleteDialog(

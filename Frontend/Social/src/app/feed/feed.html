@@ -14,7 +14,7 @@
     <button
       matButton
       [class.active]="isFiltered()"
-      (click)="filterByMe()"
+      (click)="toggleFilterByMe()"
       *ngIf="!this.isLoading()"
     >
       Filter by me
@@ -24,7 +24,7 @@
     <button
       matButton
       [class.active]="isDateDescending()"
-      (click)="filterByDate()"
+      (click)="toggleFilterByDate()"
       *ngIf="!this.isLoading()"
     >
       Filter by date

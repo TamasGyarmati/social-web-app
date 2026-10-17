@@ -124,7 +124,7 @@ export class EditPostDialog implements OnInit {
     }
   }
 
-  public closeDialog(updated: boolean = false): void {
+  public closeDialog(updated: boolean = true): void {
     this.dialogRef.close(updated);
   }
 }
