@@ -3,10 +3,10 @@ import { env } from '../_env/env';
 import { UserGetAll } from '../_models/userGetAll';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { MATERIAL_IMPORTS } from '../_shared/material';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatIconButton } from '@angular/material/button';
+import { UsersService } from '../_services/users.service';
 
 @Component({
   selector: 'app-users',
@@ -15,11 +15,15 @@ import { MatIconButton } from '@angular/material/button';
   styleUrl: './users.scss',
 })
 export class Users implements OnInit {
+  public apiUri: string = env.apiUri;
+
   public users = signal<UserGetAll[]>([]);
   public isLoading = signal<boolean>(true);
   public searchText = signal<string>('');
-  public apiUri = env.apiUri;
 
+  public usersService: UsersService = inject(UsersService);
+
+  // reactive, lazy kiértékelés, cache-elt
   public filteredUsers = computed(() => {
     const search = this.searchText().trim().toLowerCase();
     return this.users().filter(
@@ -30,28 +34,31 @@ export class Users implements OnInit {
     );
   });
 
-  private http = inject(HttpClient);
-
   ngOnInit(): void {
-    this.http.get<UserGetAll[]>(env.userGetAllUri).subscribe(
-      (success) => {
+    this.getAllUsers();
+  }
+
+  private getAllUsers(): void {
+    this.usersService.getAllUsersRequest().subscribe({
+      next: (success) => {
         console.log('::SUCCESS::', success);
         this.users.set(success);
         console.log(this.users());
         this.isLoading.set(false);
       },
-      (error) => {
+
+      error: (error) => {
         console.log('::ERROR::', error);
       },
-    );
+    });
   }
 
-  onSearch(event: Event): void {
+  public onSearch(event: Event): void {
     const input = event.target as HTMLInputElement;
     this.searchText.set(input.value);
   }
 
-  clearSearch(): void {
+  public clearSearch(): void {
     this.searchText.set('');
   }
 }

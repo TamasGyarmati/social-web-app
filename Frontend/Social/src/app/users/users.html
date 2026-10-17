@@ -31,11 +31,7 @@
 
 <div class="users-container" *ngIf="!this.isLoading()">
   <div class="card" *ngFor="let user of filteredUsers()" [routerLink]="['/user', user.id]">
-    <img
-      class="user-avatar"
-      [src]="apiUri + '/' + user.imageUrl"
-      [alt]="user.userName + ' avatar'"
-    />
+    <img class="user-avatar" [src]="apiUri + '/' + user.imageUrl" />
 
     <div class="user-info">
       <h2>@{{ user.userName }}</h2>

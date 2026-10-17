@@ -23,7 +23,7 @@ import { DeletePostDialog } from '../delete-post-dialog/delete-post-dialog';
   styleUrl: './feed.scss',
 })
 export class Feed implements OnInit {
-  public apiUri = env.apiUri;
+  public apiUri: string = env.apiUri;
   public posts = signal<getAllPost[]>([]);
   public currentPosts = signal<getAllPost[]>([]);
   public openedComments = signal<Set<string>>(new Set());
