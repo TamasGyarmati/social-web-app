@@ -238,25 +238,28 @@ export class UserHandling implements OnInit {
       newEmail: this.newEmailForm.getRawValue(),
     };
 
-    this.userHandlingService.updateMailRequest(emailUpdate).subscribe({
-      next: (success) => {
-        console.log('::SUCCESS::', success);
-        this.matBar.open('Confirmation link to your new email was sent out!', 'Close', {
-          duration: 3000,
-        });
-        this.newEmailForm.reset();
-        this.newEmailForm.markAsPristine();
-        this.newEmailForm.markAsUntouched();
-      },
+    this.userHandlingService
+      .updateMailRequest(emailUpdate)
+      .pipe(
+        finalize(() => {
+          this.newEmailForm.reset();
+          this.newEmailForm.markAsPristine();
+          this.newEmailForm.markAsUntouched();
+        }),
+      )
+      .subscribe({
+        next: (success) => {
+          console.log('::SUCCESS::', success);
+          this.matBar.open('Confirmation link to your new email was sent out!', 'Close', {
+            duration: 3000,
+          });
+        },
 
-      error: (error) => {
-        console.log('::ERROR::', error);
-        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
-        this.newEmailForm.reset();
-        this.newEmailForm.markAsPristine();
-        this.newEmailForm.markAsUntouched();
-      },
-    });
+        error: (error) => {
+          console.log('::ERROR::', error);
+          this.matBar.open(error.error.message, 'Close', { duration: 3000 });
+        },
+      });
   }
 
   public openDeleteUserDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
