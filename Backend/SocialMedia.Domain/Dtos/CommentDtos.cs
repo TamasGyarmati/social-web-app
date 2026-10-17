@@ -14,7 +14,8 @@ public record CommentResponseDto(
     string UserName,
     int Likes,
     int ReplyCount,
-    bool isLiked
+    bool isLiked,
+    string? AvatarUrl
 );
 
 public record CommentShortDto(
@@ -64,7 +65,8 @@ public static class CommentMappingExtensions
             comment.Creator?.UserName ?? string.Empty,
             comment.Likes.Count,
             comment.Replies.Count,
-            comment.Likes.Any(like => like.UserId == userId)
+            comment.Likes.Any(like => like.UserId == userId),
+            comment.Creator?.AvatarUrl ?? string.Empty
         );
     }
 
