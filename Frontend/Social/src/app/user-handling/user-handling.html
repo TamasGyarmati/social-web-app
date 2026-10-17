@@ -56,23 +56,31 @@
         </div>
       </div>
 
-      <form [formGroup]="postForm">
+      <form>
         <div class="file-input">
           <label for="image">
             <mat-icon>image</mat-icon>
             <span>Upload avatar</span>
           </label>
 
-          <input id="image" type="file" accept="image/*" (change)="onImageSelected($event)" />
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+            (change)="onImageSelected($event)"
+            [formControl]="imageForm"
+          />
 
           <span class="selected-file" *ngIf="selectedFileName">
             {{ selectedFileName }}
           </span>
         </div>
+        <div class="update-avatar-button">
+          <button type="submit" matButton (click)="updateAvatar()" [disabled]="checkFileName()">
+            Upload
+          </button>
+        </div>
       </form>
-      <div class="update-avatar-button">
-        <button matButton (click)="updateAvatar()" [disabled]="checkFileName()">Upload</button>
-      </div>
     </div>
   </div>
 
@@ -142,27 +150,25 @@
         </div>
       </div>
 
-      <form [formGroup]="mailForm" (ngSubmit)="updateMail()">
+      <form (ngSubmit)="updateMail()">
         <h2>Current email: {{ this.user()?.email }}</h2>
         <mat-form-field appearance="outline">
           <mat-label>New Email</mat-label>
-          <input type="email" matInput formControlName="newEmail" />
+          <input type="email" matInput [formControl]="newEmailForm" />
           <mat-icon matSuffix>mail</mat-icon>
-          <mat-error
-            *ngIf="
-              mailForm.controls.newEmail.hasError('required') && mailForm.controls.newEmail.touched
-            "
-          >
+          <mat-error *ngIf="newEmailForm.hasError('required') && newEmailForm.touched">
             Email is required
           </mat-error>
         </mat-form-field>
 
-        <button matButton type="submit" [disabled]="mailForm.invalid">Update</button>
+        <button matButton type="submit" [disabled]="newEmailForm.invalid">Update</button>
       </form>
     </div>
   </div>
 </div>
 
 <div class="remove-account">
-  <button matButton type="button" (click)="openDialog('300ms', '150ms')">Delete account</button>
+  <button matButton type="button" (click)="openDeleteUserDialog('300ms', '150ms')">
+    Delete account
+  </button>
 </div>

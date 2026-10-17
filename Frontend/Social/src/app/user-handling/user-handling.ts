@@ -27,12 +27,16 @@ import { AuthService } from '../_services/auth.service';
   styleUrl: './user-handling.scss',
 })
 export class UserHandling implements OnInit {
+  public selectedFileName: string | null = null;
+
   public user = signal<User | null>(null);
   public isUserUpdateEnabled = signal(false);
-  public selectedFileName: string | null = null;
+
   public auth = inject(AuthService);
   readonly dialog = inject(MatDialog);
   private router = inject(Router);
+  private http = inject(HttpClient);
+  private matBar = inject(MatSnackBar);
 
   public userForm = new FormGroup({
     userName: new FormControl('', {
@@ -51,10 +55,8 @@ export class UserHandling implements OnInit {
     }),
   });
 
-  public postForm = new FormGroup({
-    image: new FormControl<File | null>(null, {
-      validators: [Validators.required],
-    }),
+  public imageForm = new FormControl<File | null>(null, {
+    validators: [Validators.required],
   });
 
   public passwordForm = new FormGroup(
@@ -80,15 +82,10 @@ export class UserHandling implements OnInit {
     },
   );
 
-  public mailForm = new FormGroup({
-    newEmail: new FormControl('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.email],
-    }),
+  public newEmailForm = new FormControl('', {
+    nonNullable: true,
+    validators: [Validators.required, Validators.email],
   });
-
-  private http = inject(HttpClient);
-  private matBar = inject(MatSnackBar);
 
   ngOnInit(): void {
     this.userForm.disable();
@@ -96,13 +93,13 @@ export class UserHandling implements OnInit {
   }
 
   updateAvatar(): void {
-    if (this.postForm.invalid) {
-      this.postForm.markAllAsTouched();
+    if (this.imageForm.invalid) {
+      this.imageForm.markAllAsTouched();
       return;
     }
 
     const formData = new FormData();
-    const image = this.postForm.controls.image.value;
+    const image = this.imageForm.value;
 
     if (image) {
       formData.append('Image', image);
@@ -125,7 +122,7 @@ export class UserHandling implements OnInit {
         );
 
         this.selectedFileName = null;
-        this.postForm.reset();
+        this.imageForm.reset();
         this.matBar.open('Successfully uploaded the avatar', 'Close', { duration: 3000 });
         console.log('::SUCCESS::', success);
       },
@@ -199,9 +196,7 @@ export class UserHandling implements OnInit {
 
     if (input.files && input.files.length > 0) {
       this.selectedFileName = input.files[0].name;
-      this.postForm.patchValue({
-        image: input.files[0],
-      });
+      this.imageForm.setValue(input.files[0]);
     }
   }
 
@@ -254,8 +249,8 @@ export class UserHandling implements OnInit {
   }
 
   updateMail(): void {
-    if (this.mailForm.invalid) {
-      this.mailForm.markAllAsTouched();
+    if (this.newEmailForm.invalid) {
+      this.newEmailForm.markAllAsTouched();
       return;
     }
 
@@ -264,7 +259,9 @@ export class UserHandling implements OnInit {
       Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
     });
 
-    const emailUpdate: ChangeEmailRequest = this.mailForm.getRawValue();
+    const emailUpdate: ChangeEmailRequest = {
+      newEmail: this.newEmailForm.getRawValue(),
+    };
 
     this.http.put(env.userUpdateEmailUri, emailUpdate, { headers: headers }).subscribe(
       (success) => {
@@ -272,14 +269,14 @@ export class UserHandling implements OnInit {
         this.matBar.open('Confirmation link to your new email was sent out!', 'Close', {
           duration: 3000,
         });
-        this.mailForm.reset();
+        this.newEmailForm.reset();
         this.passwordForm.markAsPristine();
         this.passwordForm.markAsUntouched();
       },
       (error) => {
         console.log('::ERROR::', error);
         this.matBar.open(error.error.message, 'Close', { duration: 3000 });
-        this.mailForm.reset();
+        this.newEmailForm.reset();
         this.passwordForm.markAsPristine();
         this.passwordForm.markAsUntouched();
       },
@@ -306,7 +303,7 @@ export class UserHandling implements OnInit {
     );
   }
 
-  openDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
+  public openDeleteUserDialog(enterAnimationDuration: string, exitAnimationDuration: string): void {
     const dialogRef = this.dialog.open(DeleteUserDialog, {
       width: '460px',
       enterAnimationDuration,
@@ -314,7 +311,7 @@ export class UserHandling implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe((result: boolean) => {
-      if (result === true) {
+      if (result) {
         this.deleteUser();
       }
     });
