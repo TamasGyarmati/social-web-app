@@ -111,7 +111,7 @@ export class UserHandling implements OnInit {
   }
 
   private deleteUser(): void {
-    this.userHandlingService.deleteUser().subscribe({
+    this.userHandlingService.deleteUserRequest().subscribe({
       next: (success) => {
         console.log('::SUCCESS::', success);
         this.auth.logout();
@@ -140,7 +140,7 @@ export class UserHandling implements OnInit {
     const formData = new FormData();
     formData.append('Image', image);
 
-    this.userHandlingService.updateAvatar(formData).subscribe({
+    this.userHandlingService.updateAvatarRequest(formData).subscribe({
       next: (success) => {
         this.auth.user.update((user) =>
           user
@@ -171,7 +171,7 @@ export class UserHandling implements OnInit {
 
     const userUpdate: UserUpdate = this.userForm.getRawValue();
 
-    this.userHandlingService.updateUser(userUpdate).subscribe({
+    this.userHandlingService.updateUserRequest(userUpdate).subscribe({
       next: (success) => {
         this.auth.user.update((user) =>
           user
@@ -207,7 +207,7 @@ export class UserHandling implements OnInit {
     };
 
     this.userHandlingService
-      .updatePassword(passwordUpdate)
+      .updatePasswordRequest(passwordUpdate)
       .pipe(
         finalize(() => {
           this.passwordForm.reset();
@@ -238,7 +238,7 @@ export class UserHandling implements OnInit {
       newEmail: this.newEmailForm.getRawValue(),
     };
 
-    this.userHandlingService.updateMail(emailUpdate).subscribe({
+    this.userHandlingService.updateMailRequest(emailUpdate).subscribe({
       next: (success) => {
         console.log('::SUCCESS::', success);
         this.matBar.open('Confirmation link to your new email was sent out!', 'Close', {
@@ -284,7 +284,6 @@ export class UserHandling implements OnInit {
 
   public toggleUserUpdate(): void {
     this.isUserUpdateEnabled.update((value) => !value);
-
     this.isUserUpdateEnabled() ? this.userForm.enable() : this.userForm.disable();
   }
 }

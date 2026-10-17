@@ -14,37 +14,27 @@ import { Observable } from 'rxjs';
 export class UserHandlingService {
   private http: HttpClient = inject(HttpClient);
 
-  private getAuthHeaders(): HttpHeaders {
-    return new HttpHeaders({
-      Authorization: `Bearer ${localStorage.getItem(env.jwtAccessToken)}`,
-    });
-  }
-
   public whoami(): Observable<{ user: User }> {
-    return this.http.get<{ user: User }>(env.whoamiUri, { headers: this.getAuthHeaders() });
+    return this.http.get<{ user: User }>(env.whoamiUri);
   }
 
-  public deleteUser(): Observable<unknown> {
-    return this.http.delete(env.userDeleteUri, { headers: this.getAuthHeaders() });
+  public deleteUserRequest(): Observable<unknown> {
+    return this.http.delete(env.userDeleteUri);
   }
 
-  public updateAvatar(formData: FormData): Observable<{ avatarUrl: string }> {
-    return this.http.post<{ avatarUrl: string }>(env.userPostAvatarUri, formData, {
-      headers: this.getAuthHeaders(),
-    });
+  public updateAvatarRequest(formData: FormData): Observable<{ avatarUrl: string }> {
+    return this.http.post<{ avatarUrl: string }>(env.userPostAvatarUri, formData);
   }
 
-  public updateUser(userUpdate: UserUpdate): Observable<unknown> {
-    return this.http.put(env.userUpdateUri, userUpdate, { headers: this.getAuthHeaders() });
+  public updateUserRequest(userUpdate: UserUpdate): Observable<unknown> {
+    return this.http.put(env.userUpdateUri, userUpdate);
   }
 
-  public updatePassword(passwordUpdate: ChangePasswordRequest): Observable<unknown> {
-    return this.http.put(env.userUpdatePasswordUri, passwordUpdate, {
-      headers: this.getAuthHeaders(),
-    });
+  public updatePasswordRequest(passwordUpdate: ChangePasswordRequest): Observable<unknown> {
+    return this.http.put(env.userUpdatePasswordUri, passwordUpdate);
   }
 
-  public updateMail(emailUpdate: ChangeEmailRequest): Observable<unknown> {
-    return this.http.put(env.userUpdateEmailUri, emailUpdate, { headers: this.getAuthHeaders() });
+  public updateMailRequest(emailUpdate: ChangeEmailRequest): Observable<unknown> {
+    return this.http.put(env.userUpdateEmailUri, emailUpdate);
   }
 }
