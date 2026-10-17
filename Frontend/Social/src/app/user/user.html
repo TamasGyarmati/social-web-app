@@ -7,13 +7,7 @@
     <div class="profile-card">
       <div class="profile-header">
         <div class="avatar-container">
-          <img
-            class="profile-avatar"
-            [src]="
-              currentUser.avatarUrl ? apiUri + currentUser.avatarUrl : 'assets/default-avatar.png'
-            "
-            [alt]="currentUser.userName + ' avatar'"
-          />
+          <img class="profile-avatar" [src]="apiUri + currentUser.avatarUrl" />
         </div>
 
         <div class="profile-info">
@@ -75,16 +69,13 @@
         </button>
       </div>
 
-      <!-- Divider -->
       <div class="divider"></div>
 
-      <!-- Statistics -->
       <div class="profile-stats">
         <button
           type="button"
           class="stat"
-          aria-label="View followers"
-          (click)="openDialog('followers', '300ms', '150ms')"
+          (click)="openFollowDialog('followers', '300ms', '150ms')"
         >
           <span class="stat-value">{{ currentUser.followerCount }}</span>
           <span class="stat-label">Followers</span>
@@ -95,8 +86,7 @@
         <button
           type="button"
           class="stat"
-          aria-label="View following"
-          (click)="openDialog('following', '300ms', '150ms')"
+          (click)="openFollowDialog('following', '300ms', '150ms')"
         >
           <span class="stat-value">{{ currentUser.followingCount }}</span>
           <span class="stat-label">Following</span>

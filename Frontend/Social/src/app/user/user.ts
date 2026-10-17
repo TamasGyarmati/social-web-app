@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { env } from '../_env/env';
 import { User as UserModel } from '../_models/user';
@@ -6,11 +5,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { MATERIAL_IMPORTS } from '../_shared/material';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { FollowResponse } from '../_models/followResponse';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { FollowDialog } from '../follow-dialog/follow-dialog';
 import { AuthService } from '../_services/auth.service';
+import { UserService } from '../_services/user.service';
 
 @Component({
   selector: 'app-user',
@@ -19,76 +18,85 @@ import { AuthService } from '../_services/auth.service';
   styleUrl: './user.scss',
 })
 export class User implements OnInit {
-  public user = signal<UserModel | null>(null);
-  public isLoading = signal<boolean>(true);
-  private http = inject(HttpClient);
-  private route = inject(ActivatedRoute);
-  private matBar = inject(MatSnackBar);
-  readonly dialog = inject(MatDialog);
-  public auth = inject(AuthService);
   public apiUri = env.apiUri;
+
+  public user = signal<UserModel | null>(null);
+  public userId = signal<string | null>(null);
+  public isLoading = signal<boolean>(true);
   public isFollowing = signal<boolean | null>(null);
   public isFollowingMe = signal<boolean | null>(null);
+
+  private route: ActivatedRoute = inject(ActivatedRoute);
+  private matBar: MatSnackBar = inject(MatSnackBar);
+  readonly dialog: MatDialog = inject(MatDialog);
+  public auth: AuthService = inject(AuthService);
+  public userService: UserService = inject(UserService);
 
   ngOnInit(): void {
     this.route.paramMap.subscribe((params) => {
       const userId = params.get('id');
 
       if (userId) {
+        this.userId.set(userId);
         this.getUserById(userId);
       }
     });
   }
 
-  getUserById(userId: string): void {
-    this.http.get<{ user: UserModel }>(`${env.userGetByIdUri}/${userId}`).subscribe(
-      (success) => {
-        console.log('::SUCCESS::', success);
+  private getUserById(userId: string): void {
+    this.userService.getUserByIdRequest(userId).subscribe({
+      next: (success) => {
+        this.isLoading.set(false);
+
         this.user.set(success.user);
+
         this.isFollowing.set(success.user.isFollowing);
         this.isFollowingMe.set(success.user.isFollowingMe);
-        this.isLoading.set(false);
-      },
-      (error) => {
-        console.log('::ERROR::', error);
-      },
-    );
-  }
 
-  followUser(): void {
-    const userId = this.route.snapshot.paramMap.get('id');
-
-    if (!userId) {
-      console.error('User ID not found in route!');
-      return;
-    }
-
-    this.http.post<FollowResponse>(`${env.userFollowByIdUri}/${userId}`, {}).subscribe({
-      next: (success) => {
         console.log('::SUCCESS::', success);
-        this.getUserById(userId);
-        this.matBar.open(success.message, 'Close', { duration: 3000 });
       },
+
       error: (error) => {
         console.log('::ERROR::', error);
-        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
       },
     });
   }
 
-  openDialog(
-    type: 'followers' | 'following',
-    enterAnimationDuration: string,
-    exitAnimationDuration: string,
-  ): void {
-    const userId = this.route.snapshot.paramMap.get('id');
+  public followUser(): void {
+    const userId = this.userId();
 
     if (!userId) {
       console.error('User ID not found in route!');
       return;
     }
 
-    const dialogRef = this.dialog.open(FollowDialog, {
+    this.userService.followUserRequest(userId).subscribe({
+      next: (success) => {
+        this.getUserById(userId);
+        this.matBar.open(success.message, 'Close', { duration: 3000 });
+        console.log('::SUCCESS::', success);
+      },
+
+      error: (error) => {
+        this.matBar.open(error.error.message, 'Close', { duration: 3000 });
+        console.log('::ERROR::', error);
+      },
+    });
+  }
+
+  public openFollowDialog(
+    type: 'followers' | 'following',
+    enterAnimationDuration: string,
+    exitAnimationDuration: string,
+  ): void {
+    const userId = this.userId();
+
+    if (!userId) {
+      console.error('User ID not found in route!');
+      return;
+    }
+
+    this.dialog.open(FollowDialog, {
       width: '440px',
       enterAnimationDuration,
       exitAnimationDuration,

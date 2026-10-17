@@ -1,18 +1,14 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { env } from '../_env/env';
 import { GetFollowers } from '../_models/getFollowers';
 import { GetFollowings } from '../_models/getFollowings';
 import { MATERIAL_IMPORTS } from '../_shared/material';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface FollowDialogData {
-  userId: string;
-  type: 'followers' | 'following';
-}
+import { FollowDialogData } from '../_models/followDialogData';
+import { FollowDialogService } from '../_services/follow-dialog.service';
 
 @Component({
   selector: 'app-follow-dialog',
@@ -21,54 +17,58 @@ interface FollowDialogData {
   styleUrl: './follow-dialog.scss',
 })
 export class FollowDialog implements OnInit {
-  public data = inject<FollowDialogData>(MAT_DIALOG_DATA);
-  private http = inject(HttpClient);
-  private dialogRef = inject(MatDialogRef<FollowDialog>);
-  public isLoading = signal<boolean>(true);
-  public followers = signal<GetFollowers[] | null>(null);
-  public followings = signal<GetFollowings[] | null>(null);
   public apiUri = env.apiUri;
 
+  public followers = signal<GetFollowers[] | null>(null);
+  public followings = signal<GetFollowings[] | null>(null);
+  public userId = signal<string | null>(null);
+  public isLoading = signal<boolean>(true);
+
+  public data = inject<FollowDialogData>(MAT_DIALOG_DATA);
+  private dialogRef = inject(MatDialogRef<FollowDialog>);
+  private followDialogService: FollowDialogService = inject(FollowDialogService);
+
   ngOnInit(): void {
+    const userId = this.data.userId;
+
+    if (userId) {
+      this.userId.set(userId);
+    }
+
     if (this.data.type === 'followers') {
       this.getFollowers();
-    } else {
+    } else if (this.data.type === 'following') {
       this.getFollowings();
     }
   }
 
   private getFollowers(): void {
-    const userId = this.data.userId;
+    this.followDialogService.getFollowersRequest(this.userId()).subscribe({
+      next: (success) => {
+        this.isLoading.set(false);
+        this.followers.set(success.followers);
 
-    this.http
-      .get<{ followers: GetFollowers[] }>(`${env.userGetByIdUri}/${userId}/followers`)
-      .subscribe(
-        (success) => {
-          console.log('::SUCCESS:', success);
-          this.isLoading.set(false);
-          this.followers.set(success.followers);
-        },
-        (error) => {
-          console.log('::ERROR:', error);
-        },
-      );
+        console.log('::SUCCESS:', success);
+      },
+
+      error: (error) => {
+        console.log('::ERROR:', error);
+      },
+    });
   }
 
   private getFollowings(): void {
-    const userId = this.data.userId;
+    this.followDialogService.getFollowingsRequest(this.userId()).subscribe({
+      next: (success) => {
+        this.isLoading.set(false);
+        this.followings.set(success.followings);
+        console.log('::SUCCESS:', success);
+      },
 
-    this.http
-      .get<{ followings: GetFollowings[] }>(`${env.userGetByIdUri}/${userId}/followings`)
-      .subscribe(
-        (success) => {
-          console.log('::SUCCESS:', success);
-          this.isLoading.set(false);
-          this.followings.set(success.followings);
-        },
-        (error) => {
-          console.log('::ERROR:', error);
-        },
-      );
+      error: (error) => {
+        console.log('::ERROR:', error);
+      },
+    });
   }
 
   public closeDialog(): void {
