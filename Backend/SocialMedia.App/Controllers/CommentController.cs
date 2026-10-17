@@ -12,7 +12,6 @@ namespace SocialMedia.App.Controllers;
 public class CommentController(ICommentLogic _logic) : ControllerBase
 {
     [HttpGet("all/{postId:guid}")]
-    [Authorize]
     [ProducesResponseType(typeof(List<CommentResponseDto>), StatusCodes.Status200OK)]
     [EndpointSummary("Fetches all the comments from the provided post.")]
     public async Task<ActionResult<List<CommentResponseDto>>> GetAllCommentFromPostAsync(
@@ -20,16 +19,11 @@ public class CommentController(ICommentLogic _logic) : ControllerBase
         CancellationToken ct = default)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (currentUserId is null)
-        {
-            return Unauthorized();
-        }
 
         return Ok(await _logic.ReadAllFromPostAsync(postId, currentUserId, ct));
     }
 
     [HttpGet("{id:guid}")]
-    [Authorize]
     [ProducesResponseType(typeof(CommentResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Fetches the comment by ID.")]
@@ -38,10 +32,6 @@ public class CommentController(ICommentLogic _logic) : ControllerBase
         CancellationToken ct = default)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (currentUserId is null)
-        {
-            return Unauthorized();
-        }
 
         var comment = await _logic.GetByIdAsync(id, currentUserId, ct);
 

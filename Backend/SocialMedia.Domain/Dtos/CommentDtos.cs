@@ -51,7 +51,7 @@ public record CreateCommentLikeResponseDto(
 
 public static class CommentMappingExtensions
 {
-    public static CommentResponseDto FromDomainToCommentResponseDto(this Comment comment, string userId)
+    public static CommentResponseDto FromDomainToCommentResponseDto(this Comment comment, string? userId)
     {
         return new CommentResponseDto(
             comment.Id,

@@ -84,6 +84,11 @@ export class CommentItem {
   }
 
   likeComment(commentId: string): void {
+    if (!this.auth.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     const uri = `${env.commentUri}/${commentId}/like`;
 
     this.httpClient.post<any>(uri, null).subscribe(

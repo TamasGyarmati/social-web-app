@@ -13,16 +13,11 @@ namespace SocialMedia.App.Controllers;
 public class PostController(IPostLogic _logic) : ControllerBase
 {
     [HttpGet("all/")]
-    [Authorize]
     [ProducesResponseType(typeof(List<GetAllPostsResponseDto>), StatusCodes.Status200OK)]
     [EndpointSummary("Fetches all the posts.")]
     public async Task<ActionResult<List<GetAllPostsResponseDto>>> GetAllPosts(CancellationToken ct = default)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (currentUserId is null)
-        {
-            return Unauthorized();
-        }
 
         return Ok(await _logic.ReadAll(currentUserId, ct));
     }

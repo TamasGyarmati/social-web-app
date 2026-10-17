@@ -52,7 +52,7 @@ public record CreatePostLikeResponseDto(
 
 public static class PostMappingExtensions
 {
-    public static GetAllPostsResponseDto FromDomainToResponsePostDto(this Post post, string userId)
+    public static GetAllPostsResponseDto FromDomainToResponsePostDto(this Post post, string? userId)
     {
         return new GetAllPostsResponseDto(
             post.Id,

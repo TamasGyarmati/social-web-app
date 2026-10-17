@@ -9,7 +9,7 @@ namespace SocialMedia.Logic.Logics;
 
 public interface IPostLogic
 {
-    Task<List<GetAllPostsResponseDto>> ReadAll(string userId, CancellationToken ct = default);
+    Task<List<GetAllPostsResponseDto>> ReadAll(string? userId, CancellationToken ct = default);
     Task<GetPostWithCommentsResponseDto?> ReadWithCommentsByIdAsync(Guid id, CancellationToken ct = default);
     Task<Guid> CreateAsync(CreatePostRequestDto dto, string currentUserId, CancellationToken ct = default);
     Task<PostLikeToggleResult?> ToggleLikeAsync(Guid id, string currentUserId, CancellationToken ct = default);
@@ -21,7 +21,7 @@ public class PostLogic(
     IPostRepository _repo,
     IImageProcessor _imageProcessor) : IPostLogic
 {
-    public async Task<List<GetAllPostsResponseDto>> ReadAll(string userId, CancellationToken ct = default)
+    public async Task<List<GetAllPostsResponseDto>> ReadAll(string? userId, CancellationToken ct = default)
     {
         var posts = await _repo.GetAllAsync(ct);
         return posts.Select(x => x.FromDomainToResponsePostDto(userId)).ToList();

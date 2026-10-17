@@ -8,8 +8,8 @@ namespace SocialMedia.Logic.Logics;
 
 public interface ICommentLogic
 {
-    Task<List<CommentResponseDto>> ReadAllFromPostAsync(Guid id, string userId, CancellationToken ct = default);
-    Task<CommentResponseDto?> GetByIdAsync(Guid id, string userId, CancellationToken ct = default);
+    Task<List<CommentResponseDto>> ReadAllFromPostAsync(Guid id, string? userId, CancellationToken ct = default);
+    Task<CommentResponseDto?> GetByIdAsync(Guid id, string? userId, CancellationToken ct = default);
     Task<CommentResponseDto> CreateAsync(CreateCommentRequestDto dto, string currentUserId, CancellationToken ct = default);
     Task<CommentLikeToggleResult?> ToggleLikeAsync(Guid id, string currentUserId, CancellationToken ct = default);
     Task<CommentResult> UpdateAsync(Guid id, UpdateCommentRequestDto dto, string currentUserId, CancellationToken ct = default);
@@ -18,14 +18,14 @@ public interface ICommentLogic
 
 public class CommentLogic(ICommentRepository _repo) : ICommentLogic
 {
-    public async Task<List<CommentResponseDto>> ReadAllFromPostAsync(Guid id, string userId, CancellationToken ct = default)
+    public async Task<List<CommentResponseDto>> ReadAllFromPostAsync(Guid id, string? userId, CancellationToken ct = default)
     {
         var comments = await _repo.GetAllFromPostAsync(id, ct);
         var responseDtos = comments.Select(x => x.FromDomainToCommentResponseDto(userId)).ToList();
         return responseDtos;
     }
 
-    public async Task<CommentResponseDto?> GetByIdAsync(Guid id, string userId, CancellationToken ct = default)
+    public async Task<CommentResponseDto?> GetByIdAsync(Guid id, string? userId, CancellationToken ct = default)
     {
         var comment = await _repo.GetByIdAsync(id, ct);
         var response = comment?.FromDomainToCommentResponseDto(userId);
