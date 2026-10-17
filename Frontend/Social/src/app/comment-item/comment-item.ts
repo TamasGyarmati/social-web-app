@@ -1,5 +1,4 @@
 import { effect, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { env } from '../_env/env';
 import { Component, input, output, signal } from '@angular/core';
 import { CommentToPost } from '../_models/commentToPost';
@@ -47,6 +46,10 @@ export class CommentItem {
     });
   }
 
+  public get getReplies(): CommentToPost[] {
+    return this.allComments().filter((comment) => comment.parentCommentId === this.comment().id);
+  }
+
   public onReplyCreated(reply: CommentToPost): void {
     this.replyCreated.emit(reply);
   }
@@ -66,10 +69,6 @@ export class CommentItem {
     } else {
       this.replyClicked.emit(this.comment().id);
     }
-  }
-
-  public get getReplies(): CommentToPost[] {
-    return this.allComments().filter((comment) => comment.parentCommentId === this.comment().id);
   }
 
   public createReply(comment: CommentToPost): void {
