@@ -3,7 +3,7 @@ import { ChangeEmailRequest } from '../_models/changeEmailRequest';
 import { ChangePasswordRequest } from '../_models/changePasswordRequest';
 import { UserUpdate } from '../_models/userUpdate';
 import { User } from '../_models/user';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { env } from '../_env/env';
 import { inject } from '@angular/core';
 import { Observable } from 'rxjs';

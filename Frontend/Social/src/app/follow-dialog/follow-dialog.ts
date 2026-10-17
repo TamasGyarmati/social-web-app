@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { env } from '../_env/env';
@@ -40,15 +40,8 @@ export class FollowDialog implements OnInit {
   private getFollowers(): void {
     const userId = this.data.userId;
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
     this.http
-      .get<{ followers: GetFollowers[] }>(`${env.userGetByIdUri}/${userId}/followers`, {
-        headers: headers,
-      })
+      .get<{ followers: GetFollowers[] }>(`${env.userGetByIdUri}/${userId}/followers`)
       .subscribe(
         (success) => {
           console.log('::SUCCESS:', success);
@@ -64,15 +57,8 @@ export class FollowDialog implements OnInit {
   private getFollowings(): void {
     const userId = this.data.userId;
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
     this.http
-      .get<{ followings: GetFollowings[] }>(`${env.userGetByIdUri}/${userId}/followings`, {
-        headers: headers,
-      })
+      .get<{ followings: GetFollowings[] }>(`${env.userGetByIdUri}/${userId}/followings`)
       .subscribe(
         (success) => {
           console.log('::SUCCESS:', success);

@@ -1,5 +1,5 @@
 import { effect } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { env } from '../_env/env';
 import { Component, input, output, signal } from '@angular/core';
 import { CommentToPost } from '../_models/commentToPost';
@@ -51,24 +51,17 @@ export class CommentItem {
       parentCommentId: comment.id,
     };
 
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.httpClient
-      .post<{ comment: CommentToPost }>(env.commentUri, commentRequest, { headers: headers })
-      .subscribe(
-        (success) => {
-          console.log('::SUCCESS::', success);
-          this.replyCreated.emit(success.comment);
-          this.reply = '';
-          this.showReplyInput.set(false);
-        },
-        (error) => {
-          console.log('::ERROR::', error);
-        },
-      );
+    this.httpClient.post<{ comment: CommentToPost }>(env.commentUri, commentRequest).subscribe(
+      (success) => {
+        console.log('::SUCCESS::', success);
+        this.replyCreated.emit(success.comment);
+        this.reply = '';
+        this.showReplyInput.set(false);
+      },
+      (error) => {
+        console.log('::ERROR::', error);
+      },
+    );
   }
 
   toggleReplyInput(): void {
@@ -91,12 +84,7 @@ export class CommentItem {
   likeComment(commentId: string): void {
     const uri = `${env.commentUri}/${commentId}/like`;
 
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.httpClient.post<any>(uri, null, { headers: headers }).subscribe(
+    this.httpClient.post<any>(uri, null).subscribe(
       (success) => {
         console.log('::SUCCESS::', success);
         this.likes.set(success.likes);

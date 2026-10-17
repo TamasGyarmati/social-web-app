@@ -1,5 +1,5 @@
 import { env } from '../_env/env';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Comment } from '../_models/comment';
 import { Component, input, output, signal } from '@angular/core';
 import { CommentToPost } from '../_models/commentToPost';
@@ -55,23 +55,16 @@ export class Comments {
       parentCommentId: null,
     };
 
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.httpClient
-      .post<{ comment: CommentToPost }>(env.commentUri, commentRequest, { headers: headers })
-      .subscribe(
-        (success) => {
-          console.log('::SUCCESS::', success);
-          this.commentCreated.emit(success.comment);
-          this.commentContent = '';
-        },
-        (error) => {
-          console.log('::ERROR::', error);
-        },
-      );
+    this.httpClient.post<{ comment: CommentToPost }>(env.commentUri, commentRequest).subscribe(
+      (success) => {
+        console.log('::SUCCESS::', success);
+        this.commentCreated.emit(success.comment);
+        this.commentContent = '';
+      },
+      (error) => {
+        console.log('::ERROR::', error);
+      },
+    );
   }
 
   getRootItems(): CommentToPost[] {

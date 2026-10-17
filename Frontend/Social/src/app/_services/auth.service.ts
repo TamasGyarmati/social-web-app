@@ -2,7 +2,7 @@ import { User } from '../_models/user';
 import { inject, Injectable, signal } from '@angular/core';
 import { env } from '../_env/env';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -23,11 +23,7 @@ export class AuthService {
   }
 
   private whoami(): void {
-    const headers = new HttpHeaders({
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.http.get<{ user: User }>(`${env.whoamiUri}`, { headers: headers }).subscribe(
+    this.http.get<{ user: User }>(`${env.whoamiUri}`).subscribe(
       (success) => {
         this.user.set(success.user);
         console.log('::SUCCESS::', success);

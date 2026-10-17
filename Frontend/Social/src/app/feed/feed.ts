@@ -2,7 +2,7 @@ import { CommentToPost } from '../_models/commentToPost';
 import { env } from '../_env/env';
 import { getAllPost } from '../_models/getAllPost';
 import { inject, signal } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -93,14 +93,7 @@ export class Feed implements OnInit {
       return;
     }
 
-    const uri = `${env.postUri}/${postId}/like`;
-
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.httpClient.post<any>(uri, null, { headers: headers }).subscribe(
+    this.httpClient.post<any>(`${env.postUri}/${postId}/like`, null).subscribe(
       (success) => {
         console.log('::SUCCESS::', success);
         this.posts.update((posts) =>
@@ -124,12 +117,7 @@ export class Feed implements OnInit {
   }
 
   deletePost(post: getAllPost): void {
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      Authorization: 'Bearer ' + localStorage.getItem(env.jwtAccessToken),
-    });
-
-    this.httpClient.delete(`${env.postUri}/${post.id}`, { headers: headers }).subscribe(
+    this.httpClient.delete(`${env.postUri}/${post.id}`).subscribe(
       (success) => {
         this.posts.update((posts) => posts.filter((x) => x.id !== post.id));
         this.currentPosts.update((posts) => posts.filter((x) => x.id !== post.id));
