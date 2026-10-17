@@ -27,8 +27,8 @@ export class Feed implements OnInit {
 
   public posts = signal<getAllPost[]>([]);
   public currentPosts = signal<getAllPost[]>([]);
-  public openedComments = signal<Set<string>>(new Set());
-  public comments = signal<Map<string, CommentToPost[]>>(new Map());
+  public openedComments = signal<Set<string>>(new Set()); // nyitott kommentek postId-jai
+  public comments = signal<Map<string, CommentToPost[]>>(new Map()); // posztok azonosítóihoz vannak a kommentek eltárolva
   public isFiltered = signal<boolean>(false);
   public isDateDescending = signal<boolean>(false);
   public isLoading = signal<boolean>(true);
@@ -56,7 +56,7 @@ export class Feed implements OnInit {
         this.applyFilters();
         this.isLoading.set(false);
 
-        console.log('::LOADED POSTS::', success);
+        console.log('::[API] LOADED POSTS::', success);
       },
 
       error: (error) => {
@@ -82,7 +82,7 @@ export class Feed implements OnInit {
         this.posts.update(updatePost);
         this.currentPosts.update(updatePost);
 
-        console.log('::POST LIKED::', success);
+        console.log('::[API] POST LIKED::', success);
       },
 
       error: (error) => {
@@ -100,7 +100,7 @@ export class Feed implements OnInit {
         this.currentPosts.update(deletePost);
 
         this.matBar.open('Successfully deleted the post!', 'Close', { duration: 3000 });
-        console.log('::POST DELETED::', success);
+        console.log('::[API] POST DELETED::', success);
       },
 
       error: (error) => {
@@ -115,12 +115,23 @@ export class Feed implements OnInit {
   public getComments(postId: string): void {
     const opened = new Set(this.openedComments());
 
+    // ha jelenleg meg van nyitva a komment szekció, zárjuk be
     if (opened.has(postId)) {
       opened.delete(postId);
       this.openedComments.set(opened);
+      console.log('--CLOSE COMMENTS--');
       return;
     }
 
+    // ha már betöltöttük a kommenteket, csak megnyitjuk őket (nincs http request fölöslegesen)
+    if (this.comments().has(postId)) {
+      opened.add(postId);
+      this.openedComments.set(opened);
+      console.log('--OPEN COMMENTS--\n\t--COMMENTS ALREADY LOADED--');
+      return;
+    }
+
+    // csak akkor kérjük le a poszthoz a kommenteket, hogy ha még nincsenek betöltve
     if (!this.comments().has(postId)) {
       this.feedService.getCommentsRequest(postId).subscribe({
         next: (success) => {
@@ -128,14 +139,17 @@ export class Feed implements OnInit {
             (a, b) => new Date(b.createdAtUnc).getTime() - new Date(a.createdAtUnc).getTime(),
           );
 
+          // berakjuk az összes komment közé
           const comments = new Map(this.comments());
           comments.set(postId, sortedComments);
           this.comments.set(comments);
 
+          // berakjuk a nyitott kommentek közé
           opened.add(postId);
           this.openedComments.set(opened);
 
-          console.log('::GET COMMENTS::', success);
+          console.log('::[API] GET COMMENTS TO POST::', success);
+          console.log('--OPEN COMMENTS--');
         },
 
         error: (error) => {
