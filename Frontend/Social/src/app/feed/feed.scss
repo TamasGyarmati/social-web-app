@@ -22,20 +22,24 @@
 }
 
 #delete-button {
-  color: $danger-color;
+  //color: $danger-color;
+  color: $feed-action-btn-color;
   transition: color 0.2s ease;
 
   &:hover {
-    color: #fca5a5;
+    //color: #fca5a5;
+    color: #fd4646df;
   }
 }
 
 #edit-button {
-  color: $edit-btn-color;
+  //color: $edit-btn-color;
+  color: $feed-action-btn-color;
   transition: color 0.2s ease;
 
   &:hover {
-    color: rgba(255, 240, 128, 0.9);
+    //color: rgba(255, 240, 128, 0.9);
+    color: rgba(255, 214, 31, 0.9);
   }
 }
 
@@ -237,6 +241,10 @@ mat-progress-spinner {
 
         button {
           flex-shrink: 0;
+
+          mat-icon {
+            margin: 0;
+          }
         }
       }
     }

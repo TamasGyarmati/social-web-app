@@ -47,7 +47,7 @@
           *ngIf="post.creatorById === this.auth.user()?.id"
           (click)="openEditDialog('300ms', '0ms', post)"
         >
-          Edit
+          <mat-icon>edit</mat-icon>
         </button>
         <button
           id="delete-button"
@@ -55,7 +55,7 @@
           *ngIf="post.creatorById === this.auth.user()?.id"
           (click)="openDeleteDialog('300ms', '150ms', post)"
         >
-          Delete
+          <mat-icon>delete</mat-icon>
         </button>
       </div>
     </div>
