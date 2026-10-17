@@ -13,6 +13,7 @@ namespace SocialMedia.App.Controllers;
 public class PostController(IPostLogic _logic) : ControllerBase
 {
     [HttpGet("all/")]
+    [Authorize]
     [ProducesResponseType(typeof(List<GetAllPostsResponseDto>), StatusCodes.Status200OK)]
     [EndpointSummary("Fetches all the posts.")]
     public async Task<ActionResult<List<GetAllPostsResponseDto>>> GetAllPosts(CancellationToken ct = default)

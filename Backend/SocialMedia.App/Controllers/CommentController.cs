@@ -12,25 +12,41 @@ namespace SocialMedia.App.Controllers;
 public class CommentController(ICommentLogic _logic) : ControllerBase
 {
     [HttpGet("all/{postId:guid}")]
+    [Authorize]
     [ProducesResponseType(typeof(List<CommentResponseDto>), StatusCodes.Status200OK)]
     [EndpointSummary("Fetches all the comments from the provided post.")]
     public async Task<ActionResult<List<CommentResponseDto>>> GetAllCommentFromPostAsync(
-        Guid postId, 
+        Guid postId,
         CancellationToken ct = default)
-        => Ok(await _logic.ReadAllFromPostAsync(postId, ct));
-    
+    {
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        return Ok(await _logic.ReadAllFromPostAsync(postId, currentUserId, ct));
+    }
+
     [HttpGet("{id:guid}")]
+    [Authorize]
     [ProducesResponseType(typeof(CommentResponseDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Fetches the comment by ID.")]
     public async Task<ActionResult<CommentResponseDto>> GetCommentByIdAsync(
-        Guid id, 
+        Guid id,
         CancellationToken ct = default)
     {
-        var comment = await _logic.GetByIdAsync(id, ct);
-        
-        return comment is null 
-            ? NotFound(new { Message = "Comment was not found."}) 
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (currentUserId is null)
+        {
+            return Unauthorized();
+        }
+
+        var comment = await _logic.GetByIdAsync(id, currentUserId, ct);
+
+        return comment is null
+            ? NotFound(new { Message = "Comment was not found." })
             : Ok(comment);
     }
 
@@ -41,7 +57,7 @@ public class CommentController(ICommentLogic _logic) : ControllerBase
     [EndpointSummary("Creates the comment from the provided DTO object.")]
     [EndpointDescription("Returns the created entity's ID back.")]
     public async Task<ActionResult<CreateCommentResponseDto>> CreateCommentAsync(
-        CreateCommentRequestDto dto, 
+        CreateCommentRequestDto dto,
         CancellationToken ct = default)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -51,10 +67,10 @@ public class CommentController(ICommentLogic _logic) : ControllerBase
         }
 
         var commentDto = await _logic.CreateAsync(dto, currentUserId, ct);
-        
+
         return Ok(new CreateCommentResponseDto(commentDto));
     }
-    
+
     [HttpPost("{id:guid}/like")]
     [Authorize]
     [ProducesResponseType(typeof(CreateCommentLikeResponseDto), StatusCodes.Status200OK)]
@@ -62,7 +78,7 @@ public class CommentController(ICommentLogic _logic) : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Likes the provided comment.")]
     public async Task<ActionResult<CreateCommentLikeResponseDto>> ToggleCommentLikeAsync(
-        Guid id, 
+        Guid id,
         CancellationToken ct = default)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -70,11 +86,11 @@ public class CommentController(ICommentLogic _logic) : ControllerBase
         {
             return Unauthorized();
         }
-        
+
         var result = await _logic.ToggleLikeAsync(id, currentUserId, ct);
-        
-        return result is null 
-            ? NotFound(new { Message = "The comment was not found."}) 
+
+        return result is null
+            ? NotFound(new { Message = "The comment was not found." })
             : Ok(new CreateCommentLikeResponseDto(result.IsLiked, result.Message, result.Likes));
     }
 
@@ -87,8 +103,8 @@ public class CommentController(ICommentLogic _logic) : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [EndpointSummary("Updates the provided comment.")]
     public async Task<ActionResult<UpdateCommentResponseDto>> UpdateCommentAsync(
-        Guid id, 
-        [FromBody] UpdateCommentRequestDto dto, 
+        Guid id,
+        [FromBody] UpdateCommentRequestDto dto,
         CancellationToken ct = default)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

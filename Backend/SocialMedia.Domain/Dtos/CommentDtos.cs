@@ -13,7 +13,8 @@ public record CommentResponseDto(
     string CreatedById,
     string UserName,
     int Likes,
-    int ReplyCount
+    int ReplyCount,
+    bool isLiked
 );
 
 public record CommentShortDto(
@@ -42,14 +43,14 @@ public record UpdateCommentResponseDto(
 );
 
 public record CreateCommentLikeResponseDto(
-    bool IsLiked, 
+    bool IsLiked,
     string Message,
     int? Likes
 );
 
 public static class CommentMappingExtensions
 {
-    public static CommentResponseDto FromDomainToCommentResponseDto(this Comment comment)
+    public static CommentResponseDto FromDomainToCommentResponseDto(this Comment comment, string userId)
     {
         return new CommentResponseDto(
             comment.Id,
@@ -62,10 +63,11 @@ public static class CommentMappingExtensions
             comment.CreatedById,
             comment.Creator?.UserName ?? string.Empty,
             comment.Likes.Count,
-            comment.Replies.Count
+            comment.Replies.Count,
+            comment.Likes.Any(like => like.UserId == userId)
         );
     }
-    
+
     public static Comment FromCreateCommentToDomain(this CreateCommentRequestDto dto, string creatorId)
     {
         return new Comment
