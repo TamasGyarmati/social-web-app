@@ -13,6 +13,4 @@ import {
   templateUrl: './delete-post-dialog.html',
   styleUrl: './delete-post-dialog.scss',
 })
-export class DeletePostDialog {
-  readonly dialogRef = inject(MatDialogRef<DeletePostDialog>);
-}
+export class DeletePostDialog {}
